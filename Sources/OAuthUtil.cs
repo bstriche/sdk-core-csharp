@@ -45,10 +45,10 @@ namespace Mastercard.SDK
 		}
 
 		/// <summary>
-		/// Generates SignatureBaseString which is used in the OAuth process before the signature is generated
+		/// Generates BaseString which is used in the OAuth process before the signature is generated
 		/// </summary>
 		/// <returns>A string representing the OAuth SignatureBaseString</returns>
-		public static String GetSignatureBaseString(String requestUrl, String httpMethod, SortedDictionary<String, String> baseParameters) {
+		public static String GetBaseString(String requestUrl, String httpMethod, SortedDictionary<String, String> baseParameters) {
 			return UriEncode(httpMethod.ToUpper()) + "&" + UriEncode(normalizeUrl(requestUrl)) + "&" + UriEncode(normalizeParameters(requestUrl, baseParameters));
 		}
 
@@ -68,21 +68,21 @@ namespace Mastercard.SDK
 		/// </summary>
 		/// <returns>A string representing the normalized parameters</returns>
 		private static String normalizeParameters(String requestUrl, SortedDictionary<String, String> requestParameters) {
-			SortedDictionary<String,String> parameters = new SortedDictionary<String, String>(requestParameters);
 
-			NameValueCollection nameValueCollecion = HttpUtility.ParseQueryString (requestUrl.Substring (requestUrl.IndexOf ('?')));
+			if (requestUrl.IndexOf ('?') > 0) {
+				
+				NameValueCollection nameValueCollecion = HttpUtility.ParseQueryString (requestUrl.Substring (requestUrl.IndexOf ('?')));
 
-			foreach (String key in nameValueCollecion) 
-			{
-				foreach(String value in nameValueCollecion.GetValues(key))
-				{
-					parameters.Add (key, value);
+				foreach (String key in nameValueCollecion) {
+					foreach (String value in nameValueCollecion.GetValues(key)) {
+						requestParameters.Add (key, value);
+					}
 				}
 			}
 
 			StringBuilder paramString1 = new StringBuilder();
 
-			foreach(KeyValuePair<string, string> entry in parameters)
+			foreach(KeyValuePair<string, string> entry in requestParameters)
 			{
 				// do something with entry.Value or entry.Key
 				if (paramString1.Length > 0) {
@@ -178,7 +178,7 @@ namespace Mastercard.SDK
 			}
 
 
-			String baseString = OAuthUtil.GetSignatureBaseString(URL, method, oAuthParameters.getBaseParameters());
+			String baseString = OAuthUtil.GetBaseString(URL, method, oAuthParameters.getBaseParameters());
 			String signature = RsaSign(baseString, MasterCardApiConfig.getPrivateKey());
 			oAuthParameters.setOAuthSignature(signature);
 
