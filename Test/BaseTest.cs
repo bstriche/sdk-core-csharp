@@ -4,8 +4,8 @@ using System.Text;
 using NUnit.Framework;
 using Mastercard.SDK;
 
-[TestFixture ()]
-class BaseTest
+[TestFixture]
+public class BaseTest
 {
 
 	[SetUp]
@@ -15,7 +15,7 @@ class BaseTest
 		MasterCardApiConfig.setClientId("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d");
 	}
 
-	[Test ()]
+	[Test]
 	public void TestSHA1 ()
 	{
 		String value = "password";
@@ -25,7 +25,7 @@ class BaseTest
 
 	}
 
-	[Test ()]
+	[Test]
 	public void TestBase64 ()
 	{
 		String value = "password";
@@ -35,9 +35,10 @@ class BaseTest
 	}
 
 
-	[Test ()]
+	[Test]
 	public void TestGenerateSignature ()
 	{
+
 		String body = "{ \"name\":\"andrea\", \"surname\":\"rizzini\" }";
 		String method = "POST";
 		String url = "http://www.andrea.rizzini.com/simple_service";
