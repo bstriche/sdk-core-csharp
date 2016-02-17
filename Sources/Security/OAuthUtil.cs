@@ -8,9 +8,14 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Security;
 using System.Web;
-namespace Mastercard.SDK
+
+
+namespace MasterCard.SDK.Security
 {
-	public class OAuthUtil
+	/// <summary>
+	/// O auth util, which generates the Oauth signature for a request.
+	/// </summary>
+	internal class OAuthUtil
 	{
 		private static readonly string VALID_CHAR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		private static readonly string[] URIRFC3986CHARSTOESCAPE = new[] { "!", "*", "'", "(", ")" };

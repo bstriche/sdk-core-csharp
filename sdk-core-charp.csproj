@@ -11,14 +11,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
     <PlatformTarget>x86</PlatformTarget>
-    <DocumentationFile>bin\Debug\Mastercard-Core-CSharp.xml</DocumentationFile>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
@@ -38,22 +38,45 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="nunit.framework">
       <HintPath>packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\MasterCardApiConfig.cs" />
-    <Compile Include="Sources\OAuthParameters.cs" />
-    <Compile Include="Sources\OAuthUtil.cs" />
     <Compile Include="Test\BaseTest.cs" />
+    <Compile Include="Sources\ApiController.cs" />
+    <Compile Include="Sources\Constants.cs" />
+    <Compile Include="Sources\Security\AuthenticationInterface.cs" />
+    <Compile Include="Sources\Security\OAuthAuthentication.cs" />
+    <Compile Include="Sources\Exceptions\ApiCommunicationException.cs" />
+    <Compile Include="Sources\Exceptions\ApiException.cs" />
+    <Compile Include="Sources\Exceptions\AuthenticationException.cs" />
+    <Compile Include="Sources\Exceptions\InvalidRequestException.cs" />
+    <Compile Include="Sources\Exceptions\NotAllowedException.cs" />
+    <Compile Include="Sources\Exceptions\ObjectNotFoundException.cs" />
+    <Compile Include="Sources\Exceptions\SystemException.cs" />
+    <Compile Include="Sources\Model\BaseMap.cs" />
+    <Compile Include="Sources\Model\BaseObject.cs" />
+    <Compile Include="Sources\Model\ResourceList.cs" />
+    <Compile Include="Sources\Security\OAuthParameters.cs" />
+    <Compile Include="Sources\Security\OAuthUtil.cs" />
+    <Compile Include="Test\BaseMapTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Sources\" />
     <Folder Include="Test\" />
+    <Folder Include="Sources\Security\" />
+    <Folder Include="Sources\Exceptions\" />
+    <Folder Include="Sources\Model\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

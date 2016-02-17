@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Mastercard.SDK
+namespace MasterCard.SDK.Security
 {
 
-	public class OAuthParameters
+	internal class OAuthParameters
 	{
 
 		public static readonly String OAUTH_BODY_HASH_KEY = "oauth_body_hash";
@@ -26,7 +26,7 @@ namespace Mastercard.SDK
 
 		protected SortedDictionary<String, String> baseParameters;
 
-		public OAuthParameters ()
+		internal OAuthParameters ()
 		{
 			this.baseParameters = new SortedDictionary<String,String>();
 		}
