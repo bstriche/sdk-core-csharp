@@ -28,11 +28,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using MasterCard.SDK.Core.Security;
-using MasterCard.SDK.Core.Exceptions;
+using MasterCard.Core.Security;
+using MasterCard.Core.Exceptions;
 using System.Reflection;
 
-namespace MasterCard.SDK.Core.Model
+namespace MasterCard.Core.Model
 {
 
 	public abstract class BaseObject : BaseMap

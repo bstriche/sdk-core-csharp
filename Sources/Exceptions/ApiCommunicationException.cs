@@ -27,7 +27,7 @@
 
 using System;
 
-namespace MasterCard.SDK.Core.Exceptions
+namespace MasterCard.Core.Exceptions
 {
 
 	/// <summary>

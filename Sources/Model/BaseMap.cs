@@ -34,7 +34,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 
-namespace MasterCard.SDK.Core.Model
+namespace MasterCard.Core.Model
 {
 
 
@@ -168,7 +168,7 @@ namespace MasterCard.SDK.Core.Model
 
 
 		/// <summary>
-		/// Gets or sets the <see cref="MasterCard.SDK.Core.Model.BaseMap`2"/> with the specified key.
+		/// Gets or sets the <see cref="MasterCard.Core.Model.BaseMap`2"/> with the specified key.
 		/// </summary>
 		/// <param name="key">Key.</param>
 		public Object this [String key] {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-namespace MasterCard.SDK.Core.Security
+namespace MasterCard.Core.Security
 {
 	
 	[TestFixture]

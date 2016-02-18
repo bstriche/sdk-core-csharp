@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using MasterCard.SDK.Core.Model;
+using MasterCard.Core.Model;
 
 
 namespace sdklocationscsharp

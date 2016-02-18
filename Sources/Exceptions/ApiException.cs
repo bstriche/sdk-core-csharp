@@ -29,7 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MasterCard.SDK.Core.Exceptions
+namespace MasterCard.Core.Exceptions
 {
 
 

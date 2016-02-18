@@ -32,10 +32,10 @@ using System.Text;
 using System.Net;
 using System.Web;
 using RestSharp;
-using MasterCard.SDK.Core.Model;
-using MasterCard.SDK.Core.Security;
+using MasterCard.Core.Model;
+using MasterCard.Core.Security;
 
-namespace MasterCard.SDK
+namespace MasterCard
 {
 
 	public class ApiController
@@ -116,7 +116,7 @@ namespace MasterCard.SDK
 				response = httpClient.Execute(request);
 
 			} catch (Exception e) {
-				throw new MasterCard.SDK.Core.Exceptions.ApiCommunicationException (e.Message, e);
+				throw new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
 			} 
 
 			if (response.ErrorException == null) {
@@ -130,17 +130,17 @@ namespace MasterCard.SDK
 						int status = (int) response.StatusCode;
 
 						if (status == (int) HttpStatusCode.BadRequest) {
-							throw new MasterCard.SDK.Core.Exceptions.InvalidRequestException (status, responseObj);
+							throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
 						} else if (status == (int)  HttpStatusCode.Unauthorized) {
-							throw new MasterCard.SDK.Core.Exceptions.AuthenticationException (status, responseObj);
+							throw new MasterCard.Core.Exceptions.AuthenticationException (status, responseObj);
 						} else if (status == (int)  HttpStatusCode.NotFound) {
-							throw new MasterCard.SDK.Core.Exceptions.ObjectNotFoundException (status, responseObj);
+							throw new MasterCard.Core.Exceptions.ObjectNotFoundException (status, responseObj);
 						} else if (status == (int)  HttpStatusCode.MethodNotAllowed) {
-							throw new MasterCard.SDK.Core.Exceptions.NotAllowedException (status, responseObj);
+							throw new MasterCard.Core.Exceptions.NotAllowedException (status, responseObj);
 						} else if (status < (int)  HttpStatusCode.InternalServerError) {
-							throw new MasterCard.SDK.Core.Exceptions.InvalidRequestException (status, responseObj);
+							throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
 						} else {
-							throw new MasterCard.SDK.Core.Exceptions.SystemException (status, responseObj);
+							throw new MasterCard.Core.Exceptions.SystemException (status, responseObj);
 						}
 					}
 				}

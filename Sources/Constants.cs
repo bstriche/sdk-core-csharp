@@ -25,7 +25,7 @@
  *
  */
 
-namespace MasterCard.SDK
+namespace MasterCard
 {
 
 	/// <summary>

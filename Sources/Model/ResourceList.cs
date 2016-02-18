@@ -27,7 +27,7 @@
 
 using System.Collections.Generic;
 
-namespace MasterCard.SDK.Core.Model
+namespace MasterCard.Core.Model
 {
 
 	/// <summary>
