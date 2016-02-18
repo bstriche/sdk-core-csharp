@@ -1,15 +1,68 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="bin/Release/Mastercard-Core-CSharp.dll" total="3" failures="0" not-run="0" date="2016-02-16" time="10:26:09">
+<test-results name="bin/Release/Mastercard-Core-CSharp.dll" total="17" failures="0" not-run="3" date="2016-02-18" time="09:24:42">
   <environment nunit-version="2.4.8.0" clr-version="4.0.30319.17020" os-version="Unix 15.2.0.0" platform="Unix" cwd="/Users/andrearizzini/Workspace/sdk-core-charp" machine-name="admins-MacBook-Pro-8.local" user="andrearizzini" user-domain="admins-MacBook-Pro-8.local" />
   <culture-info current-culture="en-IE" current-uiculture="en-IE" />
-  <test-suite name="bin/Release/Mastercard-Core-CSharp.dll" success="True" time="0.208" asserts="0">
+  <test-suite name="bin/Release/Mastercard-Core-CSharp.dll" success="True" time="0.149" asserts="0">
     <results>
-      <test-suite name="BaseTest" success="True" time="0.202" asserts="0">
+      <test-suite name="MasterCard" success="True" time="0.013" asserts="0">
         <results>
-          <test-case name="BaseTest.TestBase64" executed="True" success="True" time="0.059" asserts="1" />
-          <test-case name="BaseTest.TestGenerateSignature" executed="True" success="True" time="0.127" asserts="2" />
-          <test-case name="BaseTest.TestSHA1" executed="True" success="True" time="0.010" asserts="1" />
+          <test-suite name="SDK" success="True" time="0.012" asserts="0">
+            <results>
+              <test-suite name="Core" success="True" time="0.012" asserts="0">
+                <results>
+                  <test-suite name="Security" success="True" time="0.011" asserts="0">
+                    <results>
+                      <test-suite name="BaseTest" success="True" time="0.001" asserts="0">
+                        <results>
+                          <test-case name="MasterCard.SDK.Core.Security.BaseTest.TestBase64" executed="False">
+                            <reason>
+                              <message><![CDATA[Fixture class is not public]]></message>
+                            </reason>
+                          </test-case>
+                          <test-case name="MasterCard.SDK.Core.Security.BaseTest.TestGenerateSignature" executed="False">
+                            <reason>
+                              <message><![CDATA[Fixture class is not public]]></message>
+                            </reason>
+                          </test-case>
+                          <test-case name="MasterCard.SDK.Core.Security.BaseTest.TestSHA1" executed="False">
+                            <reason>
+                              <message><![CDATA[Fixture class is not public]]></message>
+                            </reason>
+                          </test-case>
+                        </results>
+                      </test-suite>
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite name="sdklocationscsharp" success="True" time="0.130" asserts="0">
+        <results>
+          <test-suite name="BaseMapTest" success="True" time="0.129" asserts="0">
+            <results>
+              <test-case name="sdklocationscsharp.BaseMapTest.TestAdd" executed="True" success="True" time="0.035" asserts="4" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestAdd4List" executed="True" success="True" time="0.000" asserts="2" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestAddAll" executed="True" success="True" time="0.002" asserts="6" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestAddAllAsConstructor" executed="True" success="True" time="0.000" asserts="6" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestAddIndexed" executed="True" success="True" time="0.004" asserts="13" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestAddIndexedWithOffset" executed="True" success="True" time="0.002" asserts="1" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestConstructorBaseMap" executed="True" success="True" time="0.001" asserts="26" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestConstructorDictionary" executed="True" success="True" time="0.002" asserts="13" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestConverValueToMap" executed="True" success="True" time="0.000" asserts="1" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestJson" executed="True" success="True" time="0.057" asserts="6" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestJson2" executed="True" success="True" time="0.018" asserts="3" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestMultipleAdd" executed="True" success="True" time="0.000" asserts="10" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestMultipleAdd4Deep" executed="True" success="True" time="0.000" asserts="9" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestNestedAdd" executed="True" success="True" time="0.000" asserts="7" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestRemve" executed="True" success="True" time="0.001" asserts="6" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestReplace" executed="True" success="True" time="0.000" asserts="10" />
+              <test-case name="sdklocationscsharp.BaseMapTest.TestReplaceIndexed" executed="True" success="True" time="0.000" asserts="7" />
+            </results>
+          </test-suite>
         </results>
       </test-suite>
     </results>

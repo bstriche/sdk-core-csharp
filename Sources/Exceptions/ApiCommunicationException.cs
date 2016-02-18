@@ -1,7 +1,5 @@
-﻿using System;
-
-/*
- * Copyright 2015 MasterCard International.
+﻿/*
+ * Copyright 2016 MasterCard International.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
  * permitted provided that the following conditions are met:
@@ -27,7 +25,9 @@
  *
  */
 
-namespace MasterCard.SDK.Exceptions
+using System;
+
+namespace MasterCard.SDK.Core.Exceptions
 {
 
 	/// <summary>

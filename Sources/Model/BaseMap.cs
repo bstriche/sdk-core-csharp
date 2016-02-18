@@ -1,15 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
-
-
-/*
- * Copyright 2015 MasterCard International.
+﻿/*
+ * Copyright 2016 MasterCard International.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
  * permitted provided that the following conditions are met:
@@ -35,8 +25,16 @@ using System.Text.RegularExpressions;
  *
  */
 
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
-namespace MasterCard.SDK.Model
+namespace MasterCard.SDK.Core.Model
 {
 
 
@@ -139,6 +137,11 @@ namespace MasterCard.SDK.Model
 			__storage.Add (key, value);
 		}
 
+		protected internal void UpdateFromBaseMap(BaseMap baseMapToSet)
+		{
+			__storage = baseMapToSet.__storage;
+		}
+
 		public BaseMap Clone()
 		{
 			return new BaseMap (__storage);
@@ -165,7 +168,7 @@ namespace MasterCard.SDK.Model
 
 
 		/// <summary>
-		/// Gets or sets the <see cref="MasterCard.SDK.Model.BaseMap`2"/> with the specified key.
+		/// Gets or sets the <see cref="MasterCard.SDK.Core.Model.BaseMap`2"/> with the specified key.
 		/// </summary>
 		/// <param name="key">Key.</param>
 		public Object this [String key] {

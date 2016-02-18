@@ -10,7 +10,7 @@ using System.Security;
 using System.Web;
 
 
-namespace MasterCard.SDK.Security
+namespace MasterCard.SDK.Core.Security
 {
 	/// <summary>
 	/// O auth util, which generates the Oauth signature for a request.

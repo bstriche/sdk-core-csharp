@@ -1,38 +1,38 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using MasterCard.SDK.Security;
-
-/*
- * Copyright 2015 MasterCard International.
+﻿/*
+ * Copyright 2016 MasterCard International.
  *
- * Redistribution and use in source and binary forms, with or without modification, are
+ * Redistribution and use in source and binary forms, with or without modification, are 
  * permitted provided that the following conditions are met:
  *
- * Redistributions of source code must retain the above copyright notice, this list of
+ * Redistributions of source code must retain the above copyright notice, this list of 
  * conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice, this list of
- * conditions and the following disclaimer in the documentation and/or other materials
+ * Redistributions in binary form must reproduce the above copyright notice, this list of 
+ * conditions and the following disclaimer in the documentation and/or other materials 
  * provided with the distribution.
- * Neither the name of the MasterCard International Incorporated nor the names of its
- * contributors may be used to endorse or promote products derived from this software
+ * Neither the name of the MasterCard International Incorporated nor the names of its 
+ * contributors may be used to endorse or promote products derived from this software 
  * without specific prior written permission.
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT 
+ * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
- * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
  * SUCH DAMAGE.
  *
  */
-using MasterCard.SDK.Exceptions;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using MasterCard.SDK.Core.Security;
+using MasterCard.SDK.Core.Exceptions;
 using System.Reflection;
 
-namespace MasterCard.SDK.Model
+namespace MasterCard.SDK.Core.Model
 {
 
 	public abstract class BaseObject : BaseMap
@@ -58,16 +58,9 @@ namespace MasterCard.SDK.Model
 		/// </summary>
 		/// <returns>The object.</returns>
 		/// <param name="value">Value.</param>
-		protected internal static BaseObject findObject (BaseObject value)
+		protected internal static BaseObject findObject (BaseObject inputObject)
 		{
-			ApiController apiController = new ApiController (value.BasePath);
-
-			IDictionary<String, Object> response = apiController.execute (value.ObjectType, "show", value);
-
-			Type typeObject = MethodBase.GetCurrentMethod().DeclaringType;
-			BaseObject returnObject = (BaseObject) Activator.CreateInstance(typeObject, response);
-
-			return returnObject;
+			return execute ("show", inputObject);
 		}
 
 
@@ -117,12 +110,7 @@ namespace MasterCard.SDK.Model
 		protected internal static BaseObject createObject (BaseObject inputObject)
 		{
 
-			ApiController apiController = new ApiController (inputObject.BasePath);
-
-			IDictionary<String, Object> response = apiController.execute (inputObject.ObjectType, "create", inputObject);
-
-			Type typeObject = inputObject.GetType();
-			return (BaseObject) Activator.CreateInstance(typeObject, response);
+			return execute ("create", inputObject);
 
 		}
 
@@ -134,12 +122,7 @@ namespace MasterCard.SDK.Model
 		protected internal virtual BaseObject updateObject (BaseObject inputObject)
 		{
 
-			ApiController apiController = new ApiController (inputObject.BasePath);
-
-			IDictionary<String, Object> response = apiController.execute (inputObject.ObjectType, "update", inputObject);
-
-			Type typeObject = inputObject.GetType();
-			return (BaseObject) Activator.CreateInstance(typeObject, response);
+			return execute ("update", inputObject);
 
 		}
 
@@ -152,11 +135,23 @@ namespace MasterCard.SDK.Model
 		protected internal virtual BaseObject deleteObject (BaseObject inputObject)
 		{
 
-			ApiController apiController = new ApiController (inputObject.BasePath);
-			IDictionary<String,Object> response = apiController.execute (ObjectType, "delete", inputObject);
+			return execute ("delete", inputObject);
+		}
 
-			Type typeObject = inputObject.GetType();
-			return (BaseObject) Activator.CreateInstance(typeObject, response);
+
+		/// <summary>
+		/// Execute the specified action and inputObject.
+		/// </summary>
+		/// <param name="action">Action.</param>
+		/// <param name="inputObject">Input object.</param>
+		private static BaseObject execute(String action, BaseObject inputObject) {
+			ApiController apiController = new ApiController (inputObject.BasePath);
+			IDictionary<String,Object> response = apiController.execute (inputObject.ObjectType, action, inputObject);
+
+			if (response != null)
+				inputObject.AddAll (response);
+
+			return inputObject;
 		}
 
 

@@ -30,7 +30,7 @@ using RestSharp;
 using MasterCard.SDK;
 using System.Linq;
 
-namespace MasterCard.SDK.Security
+namespace MasterCard.SDK.Core.Security
 {
 
 	public class OAuthAuthentication : AuthenticationInterface

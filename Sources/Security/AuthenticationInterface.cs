@@ -2,7 +2,7 @@
 using RestSharp;
 
 
-namespace MasterCard.SDK.Security
+namespace MasterCard.SDK.Core.Security
 {
 	public interface AuthenticationInterface
 	{

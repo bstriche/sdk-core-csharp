@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
-using System.Web;
-using RestSharp;
-using MasterCard.SDK.Model;
-using MasterCard.SDK.Security;
-
-/*
- * Copyright 2015 MasterCard International.
+﻿/*
+ * Copyright 2016 MasterCard International.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
  * permitted provided that the following conditions are met:
@@ -34,6 +24,16 @@ using MasterCard.SDK.Security;
  * SUCH DAMAGE.
  *
  */
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using System.Net;
+using System.Web;
+using RestSharp;
+using MasterCard.SDK.Core.Model;
+using MasterCard.SDK.Core.Security;
 
 namespace MasterCard.SDK
 {
@@ -116,7 +116,7 @@ namespace MasterCard.SDK
 				response = httpClient.Execute(request);
 
 			} catch (Exception e) {
-				throw new MasterCard.SDK.Exceptions.ApiCommunicationException (e.Message, e);
+				throw new MasterCard.SDK.Core.Exceptions.ApiCommunicationException (e.Message, e);
 			} 
 
 			if (response.ErrorException == null) {
@@ -130,17 +130,17 @@ namespace MasterCard.SDK
 						int status = (int) response.StatusCode;
 
 						if (status == (int) HttpStatusCode.BadRequest) {
-							throw new MasterCard.SDK.Exceptions.InvalidRequestException (status, responseObj);
+							throw new MasterCard.SDK.Core.Exceptions.InvalidRequestException (status, responseObj);
 						} else if (status == (int)  HttpStatusCode.Unauthorized) {
-							throw new MasterCard.SDK.Exceptions.AuthenticationException (status, responseObj);
+							throw new MasterCard.SDK.Core.Exceptions.AuthenticationException (status, responseObj);
 						} else if (status == (int)  HttpStatusCode.NotFound) {
-							throw new MasterCard.SDK.Exceptions.ObjectNotFoundException (status, responseObj);
+							throw new MasterCard.SDK.Core.Exceptions.ObjectNotFoundException (status, responseObj);
 						} else if (status == (int)  HttpStatusCode.MethodNotAllowed) {
-							throw new MasterCard.SDK.Exceptions.NotAllowedException (status, responseObj);
+							throw new MasterCard.SDK.Core.Exceptions.NotAllowedException (status, responseObj);
 						} else if (status < (int)  HttpStatusCode.InternalServerError) {
-							throw new MasterCard.SDK.Exceptions.InvalidRequestException (status, responseObj);
+							throw new MasterCard.SDK.Core.Exceptions.InvalidRequestException (status, responseObj);
 						} else {
-							throw new MasterCard.SDK.Exceptions.SystemException (status, responseObj);
+							throw new MasterCard.SDK.Core.Exceptions.SystemException (status, responseObj);
 						}
 					}
 				}
