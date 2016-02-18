@@ -24,7 +24,35 @@ namespace sdklocationscsharp
 		}
 
 
+		[Test ()]
+		public void TestAddWithConstructor(){
+			BaseMap map = new BaseMap ("key1", "value1");
 
+			Assert.AreEqual (1, map.Count);
+			Assert.IsTrue(map.ContainsKey("key1"));
+			Assert.AreEqual ("value1", map ["key1"]);
+
+			//test negative
+			Assert.IsFalse(map.ContainsKey("key2"));
+
+		}
+
+		[Test ()]
+		public void TestNestedAdd(){
+			BaseMap map = new BaseMap ();
+			map.Add("key1.key2", "value1");
+
+			Assert.AreEqual (1, map.Count);
+			Assert.IsTrue(map.ContainsKey("key1"));
+			Assert.IsTrue(map.ContainsKey("key1.key2"));
+			Assert.AreEqual ("value1", map ["key1.key2"]);
+			Assert.AreNotSame(1, ((Dictionary<String,Object>) map["key1"]).Count);
+
+			//test negative
+			Assert.IsFalse(map.ContainsKey("key2"));
+			Assert.IsFalse (map.ContainsKey ("key2.key1"));
+
+		}
 
 
 
@@ -47,23 +75,6 @@ namespace sdklocationscsharp
 
 		}
 
-
-		[Test ()]
-		public void TestNestedAdd(){
-			BaseMap map = new BaseMap ();
-			map.Add("key1.key2", "value1");
-
-			Assert.AreEqual (1, map.Count);
-			Assert.IsTrue(map.ContainsKey("key1"));
-			Assert.IsTrue(map.ContainsKey("key1.key2"));
-			Assert.AreEqual ("value1", map ["key1.key2"]);
-			Assert.AreNotSame(1, ((Dictionary<String,Object>) map["key1"]).Count);
-
-			//test negative
-			Assert.IsFalse(map.ContainsKey("key2"));
-			Assert.IsFalse (map.ContainsKey ("key2.key1"));
-
-		}
 
 		[Test ()]
 		public void TestReplace(){
@@ -92,13 +103,11 @@ namespace sdklocationscsharp
 			Assert.AreEqual ("value2", map ["key1.key2"]);
 			// check if the first level map contains only one value
 			Assert.AreNotSame(1, ((Dictionary<String,Object>) map["key1"]).Count);
-
-
 		}
 
 
 		[Test ()]
-		public void TestMultipleAdd(){
+		public void TesNestedAdd(){
 			BaseMap map = new BaseMap ();
 			map.Add("key1.key1", "value1");
 
@@ -130,7 +139,7 @@ namespace sdklocationscsharp
 
 
 		[Test ()]
-		public void TestConverValueToMap()	{
+		public void TestConvertValueToMap()	{
 			BaseMap map = new BaseMap ();
 			map.Add("level1", "value1");
 			Assert.Throws<ArgumentException> (()=> { map.Add ("level1.level2", "level2");} );

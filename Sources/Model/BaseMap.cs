@@ -26,7 +26,6 @@
  */
 
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -129,7 +128,7 @@ namespace MasterCard.Core.Model
 
 		/// <summary>
 		/// Constructs a map with an initial mapping of keyPath to value. </summary>
-		/// <param name="keyPath"> key path with which the specified value is to be associated. </param>
+		/// <param name = "key">key path with which the specified value is to be associated.</param>
 		/// <param name="value"> value to be associated with the specified key path. </param>
 		public BaseMap (String key, Object value)
 		{
@@ -184,8 +183,6 @@ namespace MasterCard.Core.Model
 
 		/// <summary>
 		/// Associates the specified value to the specified key path. </summary>
-		/// <param name="keyPath"> key path to which the specified value is to be associated. </param>
-		/// <param name="value"> the value which is to be associated with the specified key path. </param>
 		/// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
 		/// <exception cref="IndexOutOfBoundsException"> if using an array index in the key path is out of bounds. </exception>
 		public void AddAll (IDictionary<string, object> data)
@@ -239,7 +236,7 @@ namespace MasterCard.Core.Model
 		/// <summary>
 		/// Associates the specified value to the specified key path and returns a reference to
 		/// this map. </summary>
-		/// <param name="keyPath"> key path to which the specified value is to be associated. </param>
+		/// <param name="key"> key path to which the specified value is to be associated. </param>
 		/// <param name="value"> the value which is to be associated with the specified key path. </param>
 		/// <returns> this map </returns>
 		/// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
@@ -435,7 +432,7 @@ namespace MasterCard.Core.Model
 		/// <returns>The destination map.</returns>
 		/// <param name="property">Property.</param>
 		/// <param name="destinationObject">Destination object.</param>
-		private IDictionary<string, object> getDestinationMap (string property, IDictionary<string, object> destinationObject)
+		private static IDictionary<string, object> getDestinationMap (string property, IDictionary<string, object> destinationObject)
 		{
 
 			Match m = arrayIndexPattern.Match (property);
@@ -459,7 +456,7 @@ namespace MasterCard.Core.Model
 		/// <param name="destinationObject">Destination object.</param>
 		/// <param name="propName">Property name.</param>
 		/// <param name="index">Index.</param>
-		private IDictionary<String, Object> findOrAddToList (IDictionary<String, Object> destinationObject, string propName, int? index)
+		private static IDictionary<String, Object> findOrAddToList (IDictionary<String, Object> destinationObject, string propName, int? index)
 		{
 			//
 
@@ -503,7 +500,7 @@ namespace MasterCard.Core.Model
 		/// <returns>The property map from.</returns>
 		/// <param name="property">Property.</param>
 		/// <param name="object">Object.</param>
-		private IDictionary<String, Object> getPropertyMapFrom (string property, IDictionary<String, Object> @object)
+		private static IDictionary<String, Object> getPropertyMapFrom (string property, IDictionary<String, Object> @object)
 		{
 			// create a new map at the key specified if it doesnt already exist
 			if (!@object.ContainsKey (property)) {
@@ -616,7 +613,7 @@ namespace MasterCard.Core.Model
 		/// <param name="item">Item.</param>
 		bool ICollection<KeyValuePair<string, object>>.Contains (KeyValuePair<string, object> item)
 		{
-			throw new NotImplementedException ();
+			return __storage.ContainsKey (item.Key);
 		}
 
 		/// <summary>

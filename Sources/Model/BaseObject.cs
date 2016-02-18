@@ -57,7 +57,7 @@ namespace MasterCard.Core.Model
 		/// Finds the object.
 		/// </summary>
 		/// <returns>The object.</returns>
-		/// <param name="value">Value.</param>
+		/// <param name = "inputObject"></param>
 		protected internal static BaseObject findObject (BaseObject inputObject)
 		{
 			return execute ("show", inputObject);
@@ -106,7 +106,7 @@ namespace MasterCard.Core.Model
 		/// Creates the object.
 		/// </summary>
 		/// <returns>The object.</returns>
-		/// <param name="paymentsObject">Payments object.</param>
+		/// <param name="inputObject">Payments object.</param>
 		protected internal static BaseObject createObject (BaseObject inputObject)
 		{
 
@@ -118,7 +118,7 @@ namespace MasterCard.Core.Model
 		/// Updates the object.
 		/// </summary>
 		/// <returns>The object.</returns>
-		/// <param name="paymentsObject">Payments object.</param>
+		/// <param name="inputObject">Payments object.</param>
 		protected internal virtual BaseObject updateObject (BaseObject inputObject)
 		{
 
@@ -131,7 +131,7 @@ namespace MasterCard.Core.Model
 		/// Deletes the object.
 		/// </summary>
 		/// <returns>The object.</returns>
-		/// <param name="paymentsObject">Payments object.</param>
+		/// <param name="inputObject">Payments object.</param>
 		protected internal virtual BaseObject deleteObject (BaseObject inputObject)
 		{
 

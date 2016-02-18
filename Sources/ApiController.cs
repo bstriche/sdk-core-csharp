@@ -306,8 +306,7 @@ namespace MasterCard
 
 			switch (action) {
 			case ApiController.ACTION.create:
-				//TODO: this needs to be a create // post
-				request = new RestRequest (uri, Method.PUT);
+				request = new RestRequest (uri, Method.POST);
 				request.AddJsonBody (objectMap);
 				break;
 			case ApiController.ACTION.delete:
