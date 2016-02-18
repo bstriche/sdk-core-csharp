@@ -171,7 +171,7 @@ namespace MasterCard.Core.Security
 		public static String GenerateSignature(String URL, String method, String body)
 		{
 			OAuthParameters oAuthParameters = new OAuthParameters();
-			oAuthParameters.setOAuthConsumerKey(MasterCardApiConfig.getClientId());
+			oAuthParameters.setOAuthConsumerKey(ApiConfig.getClientId());
 			oAuthParameters.setOAuthNonce(OAuthUtil.GetNonce());
 			oAuthParameters.setOAuthTimestamp(OAuthUtil.GetTimestamp());
 			oAuthParameters.setOAuthSignatureMethod("RSA-SHA1");
@@ -184,7 +184,7 @@ namespace MasterCard.Core.Security
 
 
 			String baseString = OAuthUtil.GetBaseString(URL, method, oAuthParameters.getBaseParameters());
-			String signature = RsaSign(baseString, MasterCardApiConfig.getPrivateKey());
+			String signature = RsaSign(baseString, ApiConfig.getPrivateKey());
 			oAuthParameters.setOAuthSignature(signature);
 
 			StringBuilder builder = new StringBuilder();

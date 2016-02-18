@@ -34,7 +34,7 @@ namespace MasterCard
 	/// <summary>
 	/// Master card API config.
 	/// </summary>
-	public class MasterCardApiConfig
+	public class ApiConfig
 	{
 		private static String CLIENT_ID;
 		private static Boolean SANDBOX = true;
@@ -48,7 +48,7 @@ namespace MasterCard
 		/// <param name="password">Password.</param>
 		public static void setP12(String filePath, String password){
 			X509Certificate2 cert = new X509Certificate2(filePath, password);
-			MasterCardApiConfig.PRIVATE_KEY = cert.PrivateKey;
+			ApiConfig.PRIVATE_KEY = cert.PrivateKey;
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace MasterCard
 		/// </summary>
 		/// <returns>The client identifier.</returns>
 		public static String getClientId() {
-			return MasterCardApiConfig.CLIENT_ID;
+			return ApiConfig.CLIENT_ID;
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace MasterCard
 		/// </summary>
 		/// <param name="clientId">Client identifier.</param>
 		public static void setClientId(String clientId) {
-			MasterCardApiConfig.CLIENT_ID = clientId;
+			ApiConfig.CLIENT_ID = clientId;
 		}
 
 
@@ -81,7 +81,7 @@ namespace MasterCard
 		/// </summary>
 		/// <param name="debug">If set to <c>true</c> debug.</param>
 		public static void setDebug(Boolean debug) {
-			MasterCardApiConfig.DEBUG = debug;
+			ApiConfig.DEBUG = debug;
 		}
 
 		/// <summary>
@@ -89,7 +89,7 @@ namespace MasterCard
 		/// </summary>
 		/// <returns><c>true</c>, if debug was ised, <c>false</c> otherwise.</returns>
 		public static Boolean isDebug() {
-			return MasterCardApiConfig.DEBUG;
+			return ApiConfig.DEBUG;
 		}
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace MasterCard
 		/// </summary>
 		/// <param name="debug">If set to <c>true</c> debug.</param>
 		public static void setSandbox(Boolean debug) {
-			MasterCardApiConfig.SANDBOX = debug;
+			ApiConfig.SANDBOX = debug;
 		}
 
 		/// <summary>
@@ -105,7 +105,7 @@ namespace MasterCard
 		/// </summary>
 		/// <returns><c>true</c>, if sandbox was ised, <c>false</c> otherwise.</returns>
 		public static Boolean isSandbox() {
-			return MasterCardApiConfig.SANDBOX;
+			return ApiConfig.SANDBOX;
 		}
 	}
 

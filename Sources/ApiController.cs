@@ -71,8 +71,7 @@ namespace MasterCard
 			String baseUrl =  Constants.API_BASE_LIVE_URL;
 
 			//ApiConfig.sandbox
-			if (true) {
-
+			if (ApiConfig.isSandbox()) {
 				baseUrl = Constants.API_BASE_SANDBOX_URL;
 			}
 			this.apiPath = baseUrl + basePath;
@@ -112,7 +111,9 @@ namespace MasterCard
 
 				var httpClient = new RestClient(host);
 				RestRequest request = getRequest (uri, act, baseObject);
+
 				new OAuthAuthentication().sign( uri, request);
+
 				response = httpClient.Execute(request);
 
 			} catch (Exception e) {
@@ -346,18 +347,6 @@ namespace MasterCard
 
 		}
 
-
-
-
-		/// <summary>
-		/// Ises the live public key.
-		/// </summary>
-		/// <returns><c>true</c>, if live public key was ised, <c>false</c> otherwise.</returns>
-		private bool isLivePublicKey ()
-		{
-			//TODO
-			return true;
-		}
 
 	}
 

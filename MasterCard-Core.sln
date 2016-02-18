@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sdk-core-charp", "sdk-core-charp.csproj", "{068705F0-69F9-4B26-A18E-17B0C6D13B24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterCard-Core", "MasterCard-Core.csproj", "{068705F0-69F9-4B26-A18E-17B0C6D13B24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
