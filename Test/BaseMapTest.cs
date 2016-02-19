@@ -4,7 +4,7 @@ using NUnit.Framework;
 using MasterCard.Core.Model;
 
 
-namespace sdklocationscsharp
+namespace MasterCard.Test
 {
 	[TestFixture ()]
 	public class BaseMapTest
@@ -400,7 +400,7 @@ namespace sdklocationscsharp
 
 			String tmpDict = "{\n  \"mapName\": \"name\",\n  \"list\": [\n    {\n      \"itemId\": 1,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    },\n    {\n      \"itemId\": 2,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    },\n    {\n      \"itemId\": 3,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    }\n  ]\n}";
 
-			IDictionary<String,Object> dict = BaseMap.DeserializeDeep(tmpDict);
+			IDictionary<String,Object> dict = BaseMap.AsDictionary(tmpDict);
 			Assert.IsTrue (dict.ContainsKey ("mapName"));
 			Assert.IsTrue (dict.ContainsKey ("list"));
 

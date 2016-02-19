@@ -122,7 +122,7 @@ namespace MasterCard.Core.Model
 		public BaseMap (string jsonMapString)
 		{
 			__storage = new Dictionary<String, Object> ();
-			AddAll (BaseMap.DeserializeDeep(jsonMapString));
+			AddAll (BaseMap.AsDictionary(jsonMapString));
 		}
 
 
@@ -222,7 +222,7 @@ namespace MasterCard.Core.Model
 			// map ( eg map.put("a[2]", 123);
 
 			if (destinationObject == __storage) {
-					__storage.Add (keyPath, value);
+				__storage.Add (keyPath, value);
 			} else if (value is IDictionary) { // if putting a map, call put all
 				destinationObject.Clear ();
 				BaseMap newMap = new BaseMap ((Dictionary<String,Object>) value);
@@ -273,7 +273,7 @@ namespace MasterCard.Core.Model
 					}
 
 					//IList l =  ((IList) o);
-					IList<IDictionary<String, Object>> l = (IList<IDictionary<String, Object>>)o;
+					IList l = (IList)o;
 
 					int? index = l.Count - 1; //get last item if none specified
 					if (!"".Equals (m.Groups[2].ToString())) {
@@ -400,7 +400,9 @@ namespace MasterCard.Core.Model
 					if (!(o is IList)) {
 						throw new System.ArgumentException ("Property '" + thisKey + "' is not an array");
 					}
-					IList<IDictionary<String, Object>> l = (IList<IDictionary<String, Object>>)o;
+
+					IList l = (IList)  o;
+
 
 					int? index = l.Count - 1; //get last item if none specified
 
@@ -521,10 +523,15 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The deep.</returns>
 		/// <param name="json">Json.</param>
-		public static IDictionary<String,Object> DeserializeDeep(String json)
+		public static IDictionary<String,Object> AsDictionary(String json)
 		{
-			return JsonConvert.DeserializeObject<IDictionary<string, object>>(
-				json, new JsonConverter[] {new CustomDictionaryConverter()});
+			try {
+				return JsonConvert.DeserializeObject<IDictionary<string, object>>(
+					json, new JsonConverter[] {new CustomDictionaryConverter()});
+			} catch (Exception) {
+				List<Dictionary<String,Object>> intermediaryResult = JsonConvert.DeserializeObject<List<Dictionary<String,Object>>> (json);
+				return new Dictionary<String,Object>() { { "list", intermediaryResult} };
+			}
 		}
 
 
@@ -623,7 +630,7 @@ namespace MasterCard.Core.Model
 		/// <param name="arrayIndex">Array index.</param>
 		void ICollection<KeyValuePair<string, object>>.CopyTo (KeyValuePair<string, object>[] array, int arrayIndex)
 		{
-			throw new NotImplementedException ();
+			((ICollection<KeyValuePair<string, object>>)__storage).CopyTo (array, arrayIndex);
 		}
 
 		/// <summary>
@@ -632,7 +639,7 @@ namespace MasterCard.Core.Model
 		/// <param name="item">Item.</param>
 		bool ICollection<KeyValuePair<string, object>>.Remove (KeyValuePair<string, object> item)
 		{
-			throw new NotImplementedException ();
+			return ((ICollection<KeyValuePair<string, object>>)__storage).Remove (item);
 		}
 
 		/// <summary>
@@ -641,7 +648,7 @@ namespace MasterCard.Core.Model
 		/// <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
 		bool ICollection<KeyValuePair<string, object>>.IsReadOnly {
 			get {
-				throw new NotImplementedException ();
+				return ((ICollection<KeyValuePair<string, object>>)__storage).IsReadOnly;
 			}
 		}
 

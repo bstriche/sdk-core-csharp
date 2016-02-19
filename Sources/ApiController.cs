@@ -42,6 +42,7 @@ namespace MasterCard
 	{
 
 		private String apiPath;
+		private IRestClient restClient;
 
 		private enum ACTION
 		{
@@ -75,6 +76,21 @@ namespace MasterCard
 				baseUrl = Constants.API_BASE_SANDBOX_URL;
 			}
 			this.apiPath = baseUrl + basePath;
+
+			Uri uri = new Uri (this.apiPath);
+			String host = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
+			restClient = new RestClient(host);
+		}
+
+
+
+		/// <summary>
+		/// Sets the rest client.
+		/// </summary>
+		/// <param name="restClient">Rest client.</param>
+		public void SetRestClient(IRestClient restClient)
+		{
+			this.restClient = restClient;
 		}
 
 
@@ -87,45 +103,33 @@ namespace MasterCard
 		public virtual IDictionary<String, Object> execute (string type, string action, BaseObject baseObject)
 		{
 
-			checkState ();
-
 			ACTION act = getAction (action);
 			Uri uri = getURI (type, act, baseObject);
 
 
-			int port = uri.Port;
-			string scheme = uri.Scheme;
-			if (port == (int) PORTS.UNKNOWN) {
-				port = (int) PORTS.HTTP;
-				if (scheme.Equals (PORTS.HTTPS)) {
-					port = (int) PORTS.HTTPS;
-				}
+			IRestResponse response;
+			IRestRequest request;
+
+			try 
+			{
+				request = getRequest (uri, act, baseObject);
+				new OAuthAuthentication().sign( uri, request);
+			} catch (Exception e) {
+				throw new MasterCard.Core.Exceptions.ApiException (e.Message, e);
 			}
 
-			String host = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
-
-
-			IRestResponse response;
-
 			try {
-
-				var httpClient = new RestClient(host);
-				RestRequest request = getRequest (uri, act, baseObject);
-				new OAuthAuthentication().sign( uri, request);
-
-				response = httpClient.Execute(request);
-
+				response = restClient.Execute(request);
 			} catch (Exception e) {
 				throw new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
 			} 
 
 			if (response.ErrorException == null) {
+				if (response.Content != null) {
+					IDictionary<String,Object> responseObj = BaseMap.AsDictionary(response.Content);
 
-				IDictionary<String, Object> responseObj = BaseMap.DeserializeDeep(response.Content);
-
-				if (responseObj is IDictionary) {
 					if (response.StatusCode < HttpStatusCode.Ambiguous) {
-						return (IDictionary<String, Object>) responseObj;
+						return responseObj;
 					} else {
 						int status = (int) response.StatusCode;
 
@@ -156,6 +160,15 @@ namespace MasterCard
 		/// </summary>
 		private void checkState ()
 		{
+
+			if (ApiConfig.getClientId () == null) {
+				throw new System.InvalidOperationException ("No ApiConfig.ClientID has been configured");
+			}
+
+			if (ApiConfig.getPrivateKey() == null) {
+				throw new System.InvalidOperationException ("No ApiConfig.PrivateKey has been configured");
+			}
+
 			try {
 				new Uri (Constants.API_BASE_LIVE_URL);
 			} catch (UriFormatException e) {
