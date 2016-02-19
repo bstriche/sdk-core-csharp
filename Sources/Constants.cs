@@ -31,7 +31,7 @@ namespace MasterCard
 	/// <summary>
 	/// Constants.
 	/// </summary>
-	public sealed class Constants
+	public static class Constants
 	{
 		/// <summary>
 		/// The VERSIO.

@@ -111,7 +111,6 @@ namespace MasterCard
 
 				var httpClient = new RestClient(host);
 				RestRequest request = getRequest (uri, act, baseObject);
-
 				new OAuthAuthentication().sign( uri, request);
 
 				response = httpClient.Execute(request);

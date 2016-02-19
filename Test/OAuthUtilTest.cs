@@ -7,7 +7,7 @@ namespace MasterCard.Core.Security
 {
 	
 	[TestFixture]
-	class BaseTest
+	class OAuthUtilTest
 	{
 
 		[SetUp]

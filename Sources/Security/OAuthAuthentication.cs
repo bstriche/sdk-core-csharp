@@ -27,7 +27,6 @@
 
 using System;
 using RestSharp;
-using MasterCard;
 using System.Linq;
 
 namespace MasterCard.Core.Security
@@ -37,7 +36,7 @@ namespace MasterCard.Core.Security
 	{
 		public void sign(Uri uri, IRestRequest request) {
 			String uriString = uri.ToString ();
-			String bodyString = (String) request.Parameters.Where (p => p.Type == ParameterType.RequestBody).FirstOrDefault ().Value;
+			String bodyString = (String) request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody).Value;
 			String methodString = request.Method.ToString();
 
 			String signature = OAuthUtil.GenerateSignature (uriString, methodString, bodyString);

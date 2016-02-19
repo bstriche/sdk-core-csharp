@@ -77,8 +77,6 @@ namespace MasterCard.Core.Exceptions
 		///                   is expected to contain <code>String</code> values for the keys
 		///                   <code>"code"</code> and <code>"message"</code>. </param>
 		///  <seealso cref=  String,Objectexception.ApiException </seealso>
-//JAVA TO C# CONVERTER TODO TASK: Java wildcard generics are not converted to .NET:
-//ORIGINAL LINE: public NotAllowedException(int status, java.util.Map<? extends String, ? extends Object> errorData)
 		public NotAllowedException(int status, IDictionary<String,Object> errorData) : base(status, errorData)
 		{
 		}

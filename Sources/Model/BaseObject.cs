@@ -28,9 +28,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using MasterCard.Core.Security;
-using MasterCard.Core.Exceptions;
-using System.Reflection;
 
 namespace MasterCard.Core.Model
 {
