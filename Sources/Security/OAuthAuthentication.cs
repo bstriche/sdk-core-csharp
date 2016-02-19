@@ -36,9 +36,15 @@ namespace MasterCard.Core.Security
 	{
 		public void sign(Uri uri, IRestRequest request) {
 			String uriString = uri.ToString ();
-			String bodyString = (String) request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody).Value;
 			String methodString = request.Method.ToString();
+			//String bodyString = (String) request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody).Value;
 
+			String bodyString = null;
+			Parameter bodyParam = request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody);
+			if (bodyParam != null) {
+				bodyString = bodyParam.Value.ToString ();
+			}
+				
 			String signature = OAuthUtil.GenerateSignature (uriString, methodString, bodyString);
 			request.AddHeader ("Authorization", signature);
 		}

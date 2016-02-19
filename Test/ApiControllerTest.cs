@@ -204,6 +204,25 @@ namespace MasterCard.Test
 				controller.execute ("test1", "create", new TestBaseObject (responseMap));
 			}, "Something went wrong");
 		}
+
+
+		[Test]
+		public void Test200ShowById ()
+		{
+
+			BaseMap requestMap = new BaseMap ("{\n\"id\":\"1\"\n}");
+			BaseMap responseMap = new BaseMap ("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
+			TestBaseObject testBaseObject = new TestBaseObject ();
+			ApiController controller = new ApiController (testBaseObject.BasePath);
+
+			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
+
+			IDictionary<String,Object> result = controller.execute ("test1", "show", new TestBaseObject (requestMap));
+			BaseMap responseMapFromResponse = new BaseMap (result);
+
+			Assert.AreEqual("true", responseMapFromResponse["Account.Status"]);
+			Assert.AreEqual("STOLEN", responseMapFromResponse["Account.Reason"]);
+		}
 	}
 }
 
