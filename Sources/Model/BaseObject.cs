@@ -141,7 +141,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <param name="action">Action.</param>
 		/// <param name="inputObject">Input object.</param>
-		private static BaseObject execute(String action, BaseObject inputObject) {
+		static BaseObject execute(String action, BaseObject inputObject) {
 			ApiController apiController = new ApiController (inputObject.BasePath);
 			IDictionary<String,Object> response = apiController.execute (inputObject.ObjectType, action, inputObject);
 

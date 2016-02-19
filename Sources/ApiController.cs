@@ -41,10 +41,10 @@ namespace MasterCard
 	public class ApiController
 	{
 
-		private String apiPath;
-		private IRestClient restClient;
+		String apiPath;
+		IRestClient restClient;
 
-		private enum ACTION
+		enum ACTION
 		{
 			show,
 			list,
@@ -53,7 +53,7 @@ namespace MasterCard
 			delete
 		}
 
-		private enum PORTS
+		enum PORTS
 		{
 			HTTP = 80,
 			HTTPS = 443,
@@ -66,7 +66,7 @@ namespace MasterCard
 			checkState ();
 
 			if (basePath == null || basePath.Trim().Length < 0) {
-				throw new System.InvalidOperationException("BasePath cannot be empty");
+				throw new InvalidOperationException("BasePath cannot be empty");
 			}
 
 			String baseUrl =  Constants.API_BASE_LIVE_URL;
@@ -75,7 +75,7 @@ namespace MasterCard
 			if (ApiConfig.isSandbox()) {
 				baseUrl = Constants.API_BASE_SANDBOX_URL;
 			}
-			this.apiPath = baseUrl + basePath;
+			apiPath = baseUrl + basePath;
 
 			Uri uri = new Uri (this.apiPath);
 			String host = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
@@ -206,7 +206,7 @@ namespace MasterCard
 		/// </summary>
 		/// <returns>The URL encoded string.</returns>
 		/// <param name="stringToEncode">String to encode.</param>
-		private string getURLEncodedString (object stringToEncode)
+		string getURLEncodedString (object stringToEncode)
 		{
 			return HttpUtility.UrlEncode (stringToEncode.ToString (), Encoding.UTF8);
 		}
@@ -219,7 +219,7 @@ namespace MasterCard
 		/// <param name="type">Type.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="objectMap">Object map.</param>
-		private Uri getURI (string type, ACTION action, BaseObject objectMap)
+		Uri getURI (string type, ACTION action, BaseObject objectMap)
 		{
 			Uri uri;
 
@@ -311,7 +311,7 @@ namespace MasterCard
 		/// <param name="uri">URI.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="objectMap">Object map.</param>
-		private RestRequest getRequest (Uri uri, ACTION action, BaseMap objectMap)
+		RestRequest getRequest (Uri uri, ACTION action, BaseMap objectMap)
 		{
 
 			RestRequest request = null;
@@ -348,7 +348,7 @@ namespace MasterCard
 		/// </summary>
 		/// <returns>The action.</returns>
 		/// <param name="action">Action.</param>
-		private ACTION getAction (string action)
+		ACTION getAction (string action)
 		{
 			try {
 				return (ACTION) Enum.Parse (typeof(ACTION), action);

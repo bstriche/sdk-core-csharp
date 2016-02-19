@@ -34,7 +34,7 @@ namespace MasterCard
 	/// <summary>
 	/// Master card API config.
 	/// </summary>
-	public class ApiConfig
+	public static class ApiConfig
 	{
 		private static String CLIENT_ID;
 		private static Boolean SANDBOX = true;

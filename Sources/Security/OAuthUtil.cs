@@ -11,13 +11,13 @@ namespace MasterCard.Core.Security
 	/// <summary>
 	/// O auth util, which generates the Oauth signature for a request.
 	/// </summary>
-	internal class OAuthUtil
+	internal static class OAuthUtil
 	{
-		private static readonly string VALID_CHAR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		private static readonly string[] URIRFC3986CHARSTOESCAPE = new[] { "!", "*", "'", "(", ")" };
+		static readonly string VALID_CHAR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		static readonly string[] URIRFC3986CHARSTOESCAPE = new[] { "!", "*", "'", "(", ")" };
 
-		private static Random random = new Random();
-		private static UTF8Encoding encoder = new UTF8Encoding();
+		static Random random = new Random();
+		static UTF8Encoding encoder = new UTF8Encoding();
 
 		/// <summary>
 		/// Generates a 17 character Nonce
@@ -38,7 +38,7 @@ namespace MasterCard.Core.Security
 		/// Generates a timestamp
 		/// </summary>
 		/// <returns>A string representing the timestamp in milliseconds in GMT</returns>
-		private static String GetTimestamp()
+		static String GetTimestamp()
 		{
 			long ticks = DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks;
 			ticks /= 10000000; //Convert windows ticks to seconds
@@ -57,7 +57,7 @@ namespace MasterCard.Core.Security
 		/// Normalized the request URL by truncading any parts which are not part of the base url, i.e. the request parameters.
 		/// </summary>
 		/// <returns>A string representing normalised request url</returns>
-		private static String normalizeUrl(String requestUrl) {
+		static String normalizeUrl(String requestUrl) {
 			Uri myUri = new Uri(requestUrl);
 			return String.Format("{0}{1}{2}{3}", myUri.Scheme,  Uri.SchemeDelimiter, myUri.Authority, myUri.AbsolutePath);
 		}
@@ -68,7 +68,7 @@ namespace MasterCard.Core.Security
 		/// Normalized the request parameters by generating a string which represent all the url request parameters and oauth request parameters.
 		/// </summary>
 		/// <returns>A string representing the normalized parameters</returns>
-		private static String normalizeParameters(String requestUrl, SortedDictionary<String, String> requestParameters) {
+		static String normalizeParameters(String requestUrl, SortedDictionary<String, String> requestParameters) {
 
 			if (requestUrl.IndexOf ('?') > 0) {
 				
@@ -81,7 +81,7 @@ namespace MasterCard.Core.Security
 				}
 			}
 
-			StringBuilder paramString1 = new StringBuilder();
+			var paramString1 = new StringBuilder();
 
 			foreach(KeyValuePair<string, string> entry in requestParameters)
 			{
