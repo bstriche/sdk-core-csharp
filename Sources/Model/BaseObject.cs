@@ -55,9 +55,9 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The object.</returns>
 		/// <param name = "inputObject"></param>
-		protected internal static BaseObject findObject (BaseObject inputObject)
+		protected internal static T readObject<T> (T inputObject) where T : BaseObject
 		{
-			return execute ("show", inputObject);
+			return execute ("read", inputObject);
 		}
 
 
@@ -68,14 +68,14 @@ namespace MasterCard.Core.Model
 		/// <param name="template">Template.</param>
 		/// <param name="criteria">Criteria.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		protected internal static ResourceList<T> listObjects<T> (T template, BaseObject criteria) where T : BaseObject
+		protected internal static ResourceList<T> listObjects<T> (T criteria) where T : BaseObject
 		{
 
 			ResourceList<T> listResults = new ResourceList<T> ();
 
-			ApiController apiController = new ApiController (template.BasePath);
+			ApiController apiController = new ApiController (criteria.BasePath);
 
-			IDictionary<String, Object> response = apiController.execute (template.ObjectType, "list", criteria);
+			IDictionary<String, Object> response = apiController.execute (criteria.ObjectType, "list", criteria);
 			listResults.AddAll (response);
 
 
@@ -86,7 +86,7 @@ namespace MasterCard.Core.Model
 				val = new List<T> (((IList)rawList).Count);
 				foreach (object o in (IList) rawList) {
 					if (o is IDictionary) {
-						T item = (T)template.Clone ();
+						T item = (T)Activator.CreateInstance (criteria.GetType (), null);
 						item.AddAll ((IDictionary<String, Object>)o);
 						val.Add (item);
 					}
@@ -104,7 +104,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The object.</returns>
 		/// <param name="inputObject">Payments object.</param>
-		protected internal static BaseObject createObject (BaseObject inputObject)
+		protected internal static T createObject<T> (T inputObject) where T : BaseObject
 		{
 
 			return execute ("create", inputObject);
@@ -116,7 +116,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The object.</returns>
 		/// <param name="inputObject">Payments object.</param>
-		protected internal virtual BaseObject updateObject (BaseObject inputObject)
+		protected internal virtual T updateObject<T> (T inputObject) where T : BaseObject
 		{
 
 			return execute ("update", inputObject);
@@ -129,7 +129,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The object.</returns>
 		/// <param name="inputObject">Payments object.</param>
-		protected internal virtual BaseObject deleteObject (BaseObject inputObject)
+		protected internal virtual T deleteObject<T> (T inputObject) where T : BaseObject
 		{
 
 			return execute ("delete", inputObject);
@@ -141,7 +141,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <param name="action">Action.</param>
 		/// <param name="inputObject">Input object.</param>
-		static BaseObject execute(String action, BaseObject inputObject) {
+		static T execute<T>(String action, T inputObject) where T : BaseObject {
 			ApiController apiController = new ApiController (inputObject.BasePath);
 			IDictionary<String,Object> response = apiController.execute (inputObject.ObjectType, action, inputObject);
 

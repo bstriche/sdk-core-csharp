@@ -46,7 +46,7 @@ namespace MasterCard
 
 		enum ACTION
 		{
-			show,
+			read,
 			list,
 			update,
 			create,
@@ -233,14 +233,16 @@ namespace MasterCard
 			switch (action) {
 			case ApiController.ACTION.create:
 				break;
-			case ApiController.ACTION.show:
+			case ApiController.ACTION.read:
 			case ApiController.ACTION.update:
 			case ApiController.ACTION.delete:
 				if (!objectMap.ContainsKey ("id")) {
-					throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
+					//arizzini: lostandfound uses PUT with no ID, so removing this check
+					//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
+				} else {
+					s.Append ("/" + (parameters++));
+					objectList.Add (getURLEncodedString (objectMap ["id"]));
 				}
-				s.Append ("/"+(parameters++));
-				objectList.Add (getURLEncodedString (objectMap ["id"]));
 				break;
 
 			case ApiController.ACTION.list:
@@ -328,7 +330,7 @@ namespace MasterCard
 				request = new RestRequest (uri, Method.PUT);
 				request.AddJsonBody (objectMap);
 				break;
-			case ApiController.ACTION.show:
+			case ApiController.ACTION.read:
 				request = new RestRequest (uri, Method.GET);
 				break;
 			case ApiController.ACTION.list:

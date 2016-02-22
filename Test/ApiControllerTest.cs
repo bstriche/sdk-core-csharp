@@ -217,7 +217,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("test1", "show", new TestBaseObject (requestMap));
+			IDictionary<String,Object> result = controller.execute ("test1", "read", new TestBaseObject (requestMap));
 			BaseMap responseMapFromResponse = new BaseMap (result);
 
 			Assert.AreEqual("true", responseMapFromResponse["Account.Status"]);
