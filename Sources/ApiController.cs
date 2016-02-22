@@ -105,6 +105,7 @@ namespace MasterCard
 
 			ACTION act = getAction (action);
 			Uri uri = getURI (type, act, baseObject);
+			Console.WriteLine ("request-uri: " + uri);
 
 
 			IRestResponse response;
@@ -227,8 +228,21 @@ namespace MasterCard
 			StringBuilder s = new StringBuilder ("{"+(parameters++)+"}/{"+(parameters++)+"}");
 
 			List<object> objectList = new List<object> ();
-			objectList.Add (apiPath.Replace ("/$", ""));
-			objectList.Add (type.Replace ("/$", ""));
+			//arizzini: SAFETY CHECK -- need to strip out any / to the end of the path
+			if (apiPath.Length > 1 && apiPath.EndsWith ("/")) {
+				objectList.Add (apiPath.Substring (0, apiPath.Length - 1));
+			} else  {
+				objectList.Add (apiPath);
+			}
+
+			//arizzini: SAFETY CHECK --  need to strip ou any {id} from the original swagger gen
+			type = type.Replace ("{id}", "");
+			if (type.EndsWith ("/")) {
+				objectList.Add (type.Substring (0, type.Length - 1));
+			} else {
+				objectList.Add (type);
+			}
+
 
 			switch (action) {
 			case ApiController.ACTION.create:
@@ -236,17 +250,15 @@ namespace MasterCard
 			case ApiController.ACTION.read:
 			case ApiController.ACTION.update:
 			case ApiController.ACTION.delete:
-				if (!objectMap.ContainsKey ("id")) {
+				if (objectMap.ContainsKey ("id")) {
 					//arizzini: lostandfound uses PUT with no ID, so removing this check
 					//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
-				} else {
 					s.Append ("/" + (parameters++));
 					objectList.Add (getURLEncodedString (objectMap ["id"]));
 				}
 				break;
-
 			case ApiController.ACTION.list:
-				if (objectMap != null) {
+				if (objectMap != null && objectMap.Count > 0) {
 					if (objectMap.ContainsKey ("max")) {
 						s = appendToQueryString (s, "max="+(parameters++));
 						objectList.Add (getURLEncodedString (objectMap ["max"]));

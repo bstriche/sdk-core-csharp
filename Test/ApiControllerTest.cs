@@ -76,10 +76,6 @@ namespace MasterCard.Test
 		}
 
 
-		[SetUp]
-
-
-		
 		[Test]
 		public void Test200WithMap ()
 		{
@@ -152,9 +148,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.NotAllowedException> ( ()=> {
-				controller.execute ("test1", "create", new TestBaseObject (responseMap));
-			}, "Method not Allowed");
+			Assert.Throws<MasterCard.Core.Exceptions.NotAllowedException> (() => controller.execute ("test1", "create", new TestBaseObject (responseMap)), "Method not Allowed");
 		}
 
 
@@ -168,9 +162,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.InvalidRequestException> ( ()=> {
-				controller.execute ("test1", "create", new TestBaseObject (responseMap));
-			}, "The supplied field: 'date' is of an unsupported format");
+			Assert.Throws<MasterCard.Core.Exceptions.InvalidRequestException> (() => controller.execute ("test1", "create", new TestBaseObject (responseMap)), "The supplied field: 'date' is of an unsupported format");
 		}
 
 
@@ -184,9 +176,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.AuthenticationException> ( ()=> {
-				controller.execute ("test1", "create", new TestBaseObject (responseMap));
-			}, "Oauth customer key invalid");
+			Assert.Throws<MasterCard.Core.Exceptions.AuthenticationException> (() => controller.execute ("test1", "create", new TestBaseObject (responseMap)), "Oauth customer key invalid");
 		}
 
 
@@ -200,9 +190,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.SystemException> ( ()=> {
-				controller.execute ("test1", "create", new TestBaseObject (responseMap));
-			}, "Something went wrong");
+			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.execute ("test1", "create", new TestBaseObject (responseMap)), "Something went wrong");
 		}
 
 
