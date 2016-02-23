@@ -253,7 +253,7 @@ namespace MasterCard
 				if (objectMap.ContainsKey ("id")) {
 					//arizzini: lostandfound uses PUT with no ID, so removing this check
 					//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
-					s.Append ("/" + (parameters++));
+					s.Append ("/{"+(parameters++)+"}");
 					objectList.Add (getURLEncodedString (objectMap ["id"]));
 				}
 				break;

@@ -68,34 +68,10 @@ namespace MasterCard.Core.Model
 		/// <param name="template">Template.</param>
 		/// <param name="criteria">Criteria.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		protected internal static ResourceList<T> listObjects<T> (T criteria) where T : BaseObject
+		protected internal static T listObjects<T> (T inputObject) where T : BaseObject
 		{
 
-			ResourceList<T> listResults = new ResourceList<T> ();
-
-			ApiController apiController = new ApiController (criteria.BasePath);
-
-			IDictionary<String, Object> response = apiController.execute (criteria.ObjectType, "list", criteria);
-			listResults.AddAll (response);
-
-
-			IList<T> val = null;
-			if (listResults.ContainsKey ("list")) {
-				IList<IDictionary<string, object>> rawList = (IList<IDictionary<string, object>>)listResults.Get ("list");
-
-				val = new List<T> (((IList)rawList).Count);
-				foreach (object o in (IList) rawList) {
-					if (o is IDictionary) {
-						T item = (T)Activator.CreateInstance (criteria.GetType (), null);
-						item.AddAll ((IDictionary<String, Object>)o);
-						val.Add (item);
-					}
-				}
-			} else {
-				val = new List<T> ();
-			}
-			listResults.Add ("list", val);
-			return listResults;
+			return execute ("list", inputObject);
 
 		}
 
@@ -145,9 +121,14 @@ namespace MasterCard.Core.Model
 			ApiController apiController = new ApiController (inputObject.BasePath);
 			IDictionary<String,Object> response = apiController.execute (inputObject.ObjectType, action, inputObject);
 
-			if (response != null)
+			if (response != null && inputObject.Count == 0) {
 				inputObject.AddAll (response);
-
+			} else {
+				inputObject = (T) Activator.CreateInstance (inputObject.GetType (), null);
+				inputObject.AddAll (response);
+					
+			}
+		
 			return inputObject;
 		}
 

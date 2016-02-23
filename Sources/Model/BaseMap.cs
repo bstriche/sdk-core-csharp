@@ -146,15 +146,6 @@ namespace MasterCard.Core.Model
 			return new BaseMap (__storage);
 		}
 
-
-		/// <summary>
-		/// Removes all keys and values from the
-		/// </summary>
-		public void Clean ()
-		{
-			__storage.Clear ();
-		}
-
 		/// <summary>
 		/// Gets the count.
 		/// </summary>
@@ -163,6 +154,13 @@ namespace MasterCard.Core.Model
 			get {
 				return __storage.Count;
 			}
+		}
+
+		/// <summary>
+		/// Clear this instance.
+		/// </summary>
+		public void Clear() {
+			__storage.Clear ();
 		}
 
 
