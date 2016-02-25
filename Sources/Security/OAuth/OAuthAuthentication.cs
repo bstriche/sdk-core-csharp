@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2016 MasterCard International.
+ * Copyright 2015 MasterCard International.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
  * permitted provided that the following conditions are met:
@@ -25,28 +25,54 @@
  *
  */
 
-namespace MasterCard
+using System;
+using RestSharp;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
+namespace MasterCard.Core.Security
 {
 
-	/// <summary>
-	/// Constants.
-	/// </summary>
-	public static class Constants
+	public class OAuthAuthentication : AuthenticationInterface
 	{
-		/// <summary>
-		/// The VERSIO.
-		/// </summary>
-		public const string VERSION = "1.0.0";
 
-		/// <summary>
-		/// The AP i BAS e LIV e UR.
-		/// </summary>
-		public const string API_BASE_LIVE_URL = "https://api.mastercard.com";
+		private readonly AsymmetricAlgorithm privateKey;
+		private readonly String clientId;
 
-		/// <summary>
-		/// The AP i BAS e SANDBO x UR.
-		/// </summary>
-		public const string API_BASE_SANDBOX_URL = "https://sandbox.api.mastercard.com";
+		public AsymmetricAlgorithm PrivateKey {
+			get {
+				return privateKey;
+			}
+		}
+
+		public String ClientId {
+			get {
+				return clientId;
+			}
+		}
+
+		public OAuthAuthentication(String clientId, String filePath, String alias, String password)
+		{
+			X509Certificate2 cert = new X509Certificate2(filePath, password);
+			privateKey = cert.PrivateKey;
+			this.clientId = clientId;
+		}
+
+		public void sign(Uri uri, IRestRequest request) {
+			String uriString = uri.ToString ();
+			String methodString = request.Method.ToString();
+			//String bodyString = (String) request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody).Value;
+
+			String bodyString = null;
+			Parameter bodyParam = request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody);
+			if (bodyParam != null) {
+				bodyString = bodyParam.Value.ToString ();
+			}
+				
+			String signature = OAuthUtil.GenerateSignature (uriString, methodString, bodyString, clientId, privateKey);
+			request.AddHeader ("Authorization", signature);
+		}
 	}
 
 }

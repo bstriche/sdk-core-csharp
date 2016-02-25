@@ -7,6 +7,7 @@ using System.Net;
 using MasterCard.Core.Model;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using MasterCard.Core.Security;
 
 namespace MasterCard.Test
 {
@@ -17,8 +18,8 @@ namespace MasterCard.Test
 		[SetUp]
 		public void setup ()
 		{
-			ApiConfig.setP12 ("../../Test/prod_key.p12", "password");
-			ApiConfig.setClientId ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d");
+			var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", "../../Test/prod_key.p12", "alias", "password");
+			ApiConfig.setAuthentication (authentication);
 		}
 
 

@@ -69,11 +69,11 @@ namespace MasterCard
 				throw new InvalidOperationException("BasePath cannot be empty");
 			}
 
-			String baseUrl =  Constants.API_BASE_LIVE_URL;
+			String baseUrl =  ApiConfig.API_BASE_LIVE_URL;
 
 			//ApiConfig.sandbox
 			if (ApiConfig.isSandbox()) {
-				baseUrl = Constants.API_BASE_SANDBOX_URL;
+				baseUrl = ApiConfig.API_BASE_SANDBOX_URL;
 			}
 			apiPath = baseUrl + basePath;
 
@@ -114,7 +114,8 @@ namespace MasterCard
 			try 
 			{
 				request = getRequest (uri, act, baseObject);
-				new OAuthAuthentication().sign( uri, request);
+
+
 			} catch (Exception e) {
 				throw new MasterCard.Core.Exceptions.ApiException (e.Message, e);
 			}
@@ -162,22 +163,18 @@ namespace MasterCard
 		private void checkState ()
 		{
 
-			if (ApiConfig.getClientId () == null) {
-				throw new System.InvalidOperationException ("No ApiConfig.ClientID has been configured");
-			}
-
-			if (ApiConfig.getPrivateKey() == null) {
-				throw new System.InvalidOperationException ("No ApiConfig.PrivateKey has been configured");
+			if (ApiConfig.getAuthentication() == null) {
+				throw new System.InvalidOperationException ("No ApiConfig.authentication has been configured");
 			}
 
 			try {
-				new Uri (Constants.API_BASE_LIVE_URL);
+				new Uri (ApiConfig.API_BASE_LIVE_URL);
 			} catch (UriFormatException e) {
 				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_LIVE_URL", e);
 			}
 
 			try {
-				new Uri (Constants.API_BASE_SANDBOX_URL);
+				new Uri (ApiConfig.API_BASE_SANDBOX_URL);
 			} catch (UriFormatException e) {
 				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_SANDBOX_URL", e);
 			}
@@ -352,7 +349,9 @@ namespace MasterCard
 
 			request.AddHeader ("Accept", "application/json");
 			request.AddHeader ("Content-Type", "application/json");
-			request.AddHeader ("User-Agent", "Java-SDK/" + Constants.VERSION);
+			request.AddHeader ("User-Agent", "Java-SDK/" + ApiConfig.VERSION);
+
+			ApiConfig.getAuthentication().sign(uri, request);
 
 			return request;
 		}

@@ -28,6 +28,7 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
+using MasterCard.Core.Security;
 
 namespace MasterCard
 {
@@ -36,44 +37,24 @@ namespace MasterCard
 	/// </summary>
 	public static class ApiConfig
 	{
-		private static String CLIENT_ID;
 		private static Boolean SANDBOX = true;
 		private static Boolean DEBUG = false;
-		private static AsymmetricAlgorithm PRIVATE_KEY;
+		private static AuthenticationInterface authentication;
 
 		/// <summary>
-		/// Sets the p12.
+		/// The VERSIO.
 		/// </summary>
-		/// <param name="filePath">File path.</param>
-		/// <param name="password">Password.</param>
-		public static void setP12(String filePath, String password){
-			X509Certificate2 cert = new X509Certificate2(filePath, password);
-			ApiConfig.PRIVATE_KEY = cert.PrivateKey;
-		}
+		public const string VERSION = "1.0.0";
 
 		/// <summary>
-		/// Gets the client identifier.
+		/// The AP i BAS e LIV e UR.
 		/// </summary>
-		/// <returns>The client identifier.</returns>
-		public static String getClientId() {
-			return ApiConfig.CLIENT_ID;
-		}
+		public const string API_BASE_LIVE_URL = "https://api.mastercard.com";
 
 		/// <summary>
-		/// Gets the private key.
+		/// The AP i BAS e SANDBO x UR.
 		/// </summary>
-		/// <returns>The private key.</returns>
-		public static AsymmetricAlgorithm getPrivateKey() {
-			return PRIVATE_KEY;
-		}
-
-		/// <summary>
-		/// Sets the client identifier.
-		/// </summary>
-		/// <param name="clientId">Client identifier.</param>
-		public static void setClientId(String clientId) {
-			ApiConfig.CLIENT_ID = clientId;
-		}
+		public const string API_BASE_SANDBOX_URL = "https://sandbox.api.mastercard.com";
 
 
 		/// <summary>
@@ -100,6 +81,24 @@ namespace MasterCard
 			ApiConfig.SANDBOX = debug;
 		}
 
+	
+		/// <summary>
+		/// Gets the authentication.
+		/// </summary>
+		/// <returns>The authentication.</returns>
+		public static AuthenticationInterface getAuthentication() {
+			return ApiConfig.authentication;
+		}
+
+
+		/// <summary>
+		/// Sets the authentication.
+		/// </summary>
+		/// <param name="authentication">Authentication.</param>
+		public static void setAuthentication(AuthenticationInterface authentication) {
+			ApiConfig.authentication = authentication;
+		}
+
 		/// <summary>
 		/// Ises the sandbox.
 		/// </summary>
@@ -107,6 +106,7 @@ namespace MasterCard
 		public static Boolean isSandbox() {
 			return ApiConfig.SANDBOX;
 		}
+
 	}
 
 }
