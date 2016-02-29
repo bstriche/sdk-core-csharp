@@ -71,8 +71,6 @@
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthUtil.cs" />
     <Compile Include="Sources\MasterCard\Core\ApiConfig.cs" />
     <Compile Include="Sources\MasterCard\Core\ApiController.cs" />
-    <Compile Include="Sources\MasterCard\Api\LostStolen\AccountInquiry.cs" />
-    <Compile Include="Test\AccountInquiryTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
