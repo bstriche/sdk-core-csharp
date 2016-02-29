@@ -26,11 +26,9 @@
  */
 
 using System;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography;
 using MasterCard.Core.Security;
 
-namespace MasterCard
+namespace MasterCard.Core
 {
 	/// <summary>
 	/// Master card API config.

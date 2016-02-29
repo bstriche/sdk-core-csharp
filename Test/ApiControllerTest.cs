@@ -8,6 +8,7 @@ using MasterCard.Core.Model;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using MasterCard.Core.Security;
+using MasterCard.Core;
 
 namespace MasterCard.Test
 {

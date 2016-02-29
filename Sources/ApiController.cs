@@ -33,9 +33,8 @@ using System.Net;
 using System.Web;
 using RestSharp;
 using MasterCard.Core.Model;
-using MasterCard.Core.Security;
 
-namespace MasterCard
+namespace MasterCard.Core
 {
 
 	public class ApiController
@@ -105,7 +104,7 @@ namespace MasterCard
 
 			ACTION act = getAction (action);
 			Uri uri = getURI (type, act, baseObject);
-			Console.WriteLine ("request-uri: " + uri);
+			//Console.WriteLine ("request-uri: " + uri);
 
 
 			IRestResponse response;
