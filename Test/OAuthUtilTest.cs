@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using MasterCard.Core;
+using MasterCard.Core.Security.OAuth;
 
-namespace MasterCard.Core.Security
+
+namespace MasterCard.Test
 {
 	
 	[TestFixture]

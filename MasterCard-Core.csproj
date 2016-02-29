@@ -53,33 +53,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sources\ApiController.cs" />
-    <Compile Include="Sources\Exceptions\ApiCommunicationException.cs" />
-    <Compile Include="Sources\Exceptions\ApiException.cs" />
-    <Compile Include="Sources\Exceptions\AuthenticationException.cs" />
-    <Compile Include="Sources\Exceptions\InvalidRequestException.cs" />
-    <Compile Include="Sources\Exceptions\NotAllowedException.cs" />
-    <Compile Include="Sources\Exceptions\ObjectNotFoundException.cs" />
-    <Compile Include="Sources\Exceptions\SystemException.cs" />
-    <Compile Include="Sources\Model\BaseMap.cs" />
-    <Compile Include="Sources\Model\BaseObject.cs" />
     <Compile Include="Test\BaseMapTest.cs" />
-    <Compile Include="Sources\ApiConfig.cs" />
     <Compile Include="Test\OAuthUtilTest.cs" />
     <Compile Include="Test\ApiControllerTest.cs" />
-    <Compile Include="Sources\Security\OAuth\OAuthAuthentication.cs" />
-    <Compile Include="Sources\Security\OAuth\OAuthParameters.cs" />
-    <Compile Include="Sources\Security\OAuth\OAuthUtil.cs" />
-    <Compile Include="Sources\Security\AuthenticationInterface.cs" />
+    <Compile Include="Sources\MasterCard\Core\Exceptions\ApiCommunicationException.cs" />
+    <Compile Include="Sources\MasterCard\Core\Exceptions\ApiException.cs" />
+    <Compile Include="Sources\MasterCard\Core\Exceptions\AuthenticationException.cs" />
+    <Compile Include="Sources\MasterCard\Core\Exceptions\InvalidRequestException.cs" />
+    <Compile Include="Sources\MasterCard\Core\Exceptions\NotAllowedException.cs" />
+    <Compile Include="Sources\MasterCard\Core\Exceptions\ObjectNotFoundException.cs" />
+    <Compile Include="Sources\MasterCard\Core\Exceptions\SystemException.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\BaseMap.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\BaseObject.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\AuthenticationInterface.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthAuthentication.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthParameters.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthUtil.cs" />
+    <Compile Include="Sources\MasterCard\Core\ApiConfig.cs" />
+    <Compile Include="Sources\MasterCard\Core\ApiController.cs" />
+    <Compile Include="Sources\MasterCard\Api\LostStolen\AccountInquiry.cs" />
+    <Compile Include="Test\AccountInquiryTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Sources\" />
     <Folder Include="Test\" />
-    <Folder Include="Sources\Security\" />
-    <Folder Include="Sources\Exceptions\" />
-    <Folder Include="Sources\Model\" />
-    <Folder Include="Sources\Security\OAuth\" />
+    <Folder Include="Sources\MasterCard\" />
+    <Folder Include="Sources\MasterCard\Core\" />
+    <Folder Include="Sources\MasterCard\Core\Exceptions\" />
+    <Folder Include="Sources\MasterCard\Core\Model\" />
+    <Folder Include="Sources\MasterCard\Core\Security\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,7 +6,7 @@ using System.Text;
 using System.Web;
 
 
-namespace MasterCard.Core.Security
+namespace MasterCard.Core.Security.OAuth
 {
 	/// <summary>
 	/// O auth util, which generates the Oauth signature for a request.

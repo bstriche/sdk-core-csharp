@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MasterCard.Core.Security
+namespace MasterCard.Core.Security.OAuth
 {
 
 	internal class OAuthParameters

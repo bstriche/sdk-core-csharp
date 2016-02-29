@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Net;
+using System.Collections.Generic;
 using NUnit.Framework;
+using Newtonsoft.Json;
 using RestSharp;
 using Moq;
-using System.Net;
 
-using MasterCard.Core.Model;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using MasterCard.Core.Security;
+
 using MasterCard.Core;
+using MasterCard.Core.Model;
+using MasterCard.Core.Security.OAuth;
 
 namespace MasterCard.Test
 {

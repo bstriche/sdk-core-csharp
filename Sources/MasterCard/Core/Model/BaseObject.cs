@@ -124,9 +124,8 @@ namespace MasterCard.Core.Model
 			if (response != null && inputObject.Count == 0) {
 				inputObject.AddAll (response);
 			} else {
-				inputObject = (T) Activator.CreateInstance (inputObject.GetType (), null);
+				inputObject = (T) Activator.CreateInstance (inputObject.GetType ());
 				inputObject.AddAll (response);
-					
 			}
 		
 			return inputObject;

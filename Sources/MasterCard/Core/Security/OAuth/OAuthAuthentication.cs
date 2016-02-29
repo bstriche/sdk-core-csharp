@@ -31,7 +31,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace MasterCard.Core.Security
+namespace MasterCard.Core.Security.OAuth
 {
 
 	public class OAuthAuthentication : AuthenticationInterface
