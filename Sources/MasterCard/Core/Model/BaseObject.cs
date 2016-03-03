@@ -35,8 +35,8 @@ namespace MasterCard.Core.Model
 	public abstract class BaseObject : RequestMap
 	{
 
-		public static readonly String ObjectType;
-		public static readonly String BasePath;
+		public const String ObjectType = null;
+		public const String BasePath = null;
 
 		protected BaseObject() : base()
 		{
@@ -49,15 +49,10 @@ namespace MasterCard.Core.Model
 		{
 		}
 
-		public String GetBasePath()
-		{
-			return BasePath;
-		}
+		public abstract String GetBasePath();
 
-		public String GetObjectType()
-		{
-			return ObjectType;
-		}
+
+		public abstract String GetObjectType();
 
 
 		/// <summary>

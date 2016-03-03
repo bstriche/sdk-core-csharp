@@ -30,6 +30,8 @@ namespace MasterCard.Test
 		/// </summary>
 		public class TestBaseObject : BaseObject
 		{
+			new public const String BasePath =  "/testurl" ;
+			new public const String ObjectType = "test-base-object";
 
 			public TestBaseObject(RequestMap bm) : base(bm)
 			{
@@ -39,9 +41,15 @@ namespace MasterCard.Test
 			{
 			}
 
-			new public static readonly String BasePath =  "/testurl" ;
-			new public static readonly String ObjectType = "test-base-object";
+			public override string GetBasePath ()
+			{
+				return BasePath;
+			}
 
+			public override string GetObjectType ()
+			{
+				return ObjectType;
+			}
 		}
 
 		/// <summary>
