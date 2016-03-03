@@ -81,7 +81,7 @@ namespace MasterCard.Core.Model
 	/// 
 	/// </para>
 	/// </summary>
-	public class BaseMap : IDictionary<String, Object>
+	public class RequestMap : IDictionary<String, Object>
 	{
 
 
@@ -93,7 +93,7 @@ namespace MasterCard.Core.Model
 		/// <summary>
 		/// Constructs an empty map with the default capacity and load factor.
 		/// </summary>
-		public BaseMap ()
+		public RequestMap ()
 		{
 			__storage = new Dictionary<String, Object> ();
 		}
@@ -102,7 +102,7 @@ namespace MasterCard.Core.Model
 		/// <summary>
 		/// Constructs an empty map with the default capacity and load factor.
 		/// </summary>
-		public BaseMap (BaseMap bm)
+		public RequestMap (RequestMap bm)
 		{
 			__storage = bm.__storage;
 		}
@@ -110,7 +110,7 @@ namespace MasterCard.Core.Model
 		/// <summary>
 		/// Constructs a map with the same mappings as in the specifed map. </summary>
 		/// <param name="map"> the map whose mappings are to be placed in this map </param>
-		public BaseMap (IDictionary<String, Object> map)
+		public RequestMap (IDictionary<String, Object> map)
 		{
 			__storage = new Dictionary<String, Object> ();
 			AddAll (map);
@@ -119,10 +119,10 @@ namespace MasterCard.Core.Model
 		/// <summary>
 		/// Consturcts a map based of the speficied JSON string. </summary>
 		/// <param name="jsonMapString"> the JSON string used to construct the map </param>
-		public BaseMap (string jsonMapString)
+		public RequestMap (string jsonMapString)
 		{
 			__storage = new Dictionary<String, Object> ();
-			AddAll (BaseMap.AsDictionary(jsonMapString));
+			AddAll (RequestMap.AsDictionary(jsonMapString));
 		}
 
 
@@ -130,20 +130,20 @@ namespace MasterCard.Core.Model
 		/// Constructs a map with an initial mapping of keyPath to value. </summary>
 		/// <param name = "key">key path with which the specified value is to be associated.</param>
 		/// <param name="value"> value to be associated with the specified key path. </param>
-		public BaseMap (String key, Object value)
+		public RequestMap (String key, Object value)
 		{
 			__storage = new Dictionary<String, Object> ();
 			__storage.Add (key, value);
 		}
 
-		protected internal void UpdateFromBaseMap(BaseMap baseMapToSet)
+		protected internal void UpdateFromBaseMap(RequestMap baseMapToSet)
 		{
 			__storage = baseMapToSet.__storage;
 		}
 
-		public BaseMap Clone()
+		public RequestMap Clone()
 		{
-			return new BaseMap (__storage);
+			return new RequestMap (__storage);
 		}
 
 		/// <summary>
@@ -223,7 +223,7 @@ namespace MasterCard.Core.Model
 				__storage.Add (keyPath, value);
 			} else if (value is IDictionary) { // if putting a map, call put all
 				destinationObject.Clear ();
-				BaseMap newMap = new BaseMap ((Dictionary<String,Object>) value);
+				RequestMap newMap = new RequestMap ((Dictionary<String,Object>) value);
 				destinationObject [properties [properties.Length - 1]] = newMap;
 			} else {
 			 	destinationObject [properties [properties.Length - 1]] = value;
@@ -239,7 +239,7 @@ namespace MasterCard.Core.Model
 		/// <returns> this map </returns>
 		/// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
 		/// <exception cref="IndexOutOfBoundsException"> if using an array index in the key path is out of bounds. </exception>
-		public virtual BaseMap Set (string key, object value)
+		public virtual RequestMap Set (string key, object value)
 		{
 			Add (key, value);
 			return this;

@@ -32,21 +32,31 @@ using System.Collections.Generic;
 namespace MasterCard.Core.Model
 {
 
-	public abstract class BaseObject : BaseMap
+	public abstract class BaseObject : RequestMap
 	{
-		protected internal abstract string ObjectType { get; }
-		protected internal abstract String BasePath { get; }
 
+		public static readonly String ObjectType;
+		public static readonly String BasePath;
 
 		protected BaseObject() : base()
 		{
 		}
 
-		protected BaseObject(BaseMap bm) : base(bm) {
+		protected BaseObject(RequestMap bm) : base(bm) {
 		}
 
 		protected BaseObject (IDictionary<String, Object> map) : base(map)
 		{
+		}
+
+		public String GetBasePath()
+		{
+			return BasePath;
+		}
+
+		public String GetObjectType()
+		{
+			return ObjectType;
 		}
 
 
@@ -118,8 +128,8 @@ namespace MasterCard.Core.Model
 		/// <param name="action">Action.</param>
 		/// <param name="inputObject">Input object.</param>
 		static T execute<T>(String action, T inputObject) where T : BaseObject {
-			ApiController apiController = new ApiController (inputObject.BasePath);
-			IDictionary<String,Object> response = apiController.execute (inputObject.ObjectType, action, inputObject);
+			ApiController apiController = new ApiController (inputObject.GetBasePath());
+			IDictionary<String,Object> response = apiController.execute (inputObject.GetObjectType(), action, inputObject);
 
 			if (response != null && inputObject.Count == 0) {
 				inputObject.AddAll (response);

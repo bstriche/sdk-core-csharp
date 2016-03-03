@@ -31,7 +31,7 @@ namespace MasterCard.Test
 		public class TestBaseObject : BaseObject
 		{
 
-			public TestBaseObject(BaseMap bm) : base(bm)
+			public TestBaseObject(RequestMap bm) : base(bm)
 			{
 			}
 
@@ -39,22 +39,8 @@ namespace MasterCard.Test
 			{
 			}
 
-
-			protected internal override string BasePath
-			{
-				get
-				{
-					return "/testurl";
-				}
-			}
-
-			protected internal override string ObjectType
-			{
-				get
-				{
-					return "test-base-object";
-				}
-			}
+			new public static readonly String BasePath =  "/testurl" ;
+			new public static readonly String ObjectType = "test-base-object";
 
 		}
 
@@ -64,7 +50,7 @@ namespace MasterCard.Test
 		/// <returns>The client.</returns>
 		/// <param name="responseCode">Response code.</param>
 		/// <param name="responseMap">Response map.</param>
-		public IRestClient mockClient(HttpStatusCode responseCode, BaseMap responseMap) {
+		public IRestClient mockClient(HttpStatusCode responseCode, RequestMap responseMap) {
 
 			var restClient = new Mock<IRestClient>();
 
@@ -83,14 +69,13 @@ namespace MasterCard.Test
 		public void Test200WithMap ()
 		{
 
-			BaseMap responseMap = new BaseMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
 			IDictionary<String,Object> result = controller.execute ("test1", "create", new TestBaseObject (responseMap));
-			BaseMap responseMapFromResponse = new BaseMap (result);
+			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("user"));
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("user.name"));
@@ -105,14 +90,13 @@ namespace MasterCard.Test
 		public void Test200WithList ()
 		{
 
-			BaseMap responseMap = new BaseMap ("[ { \"name\":\"andrea\", \"surname\":\"rizzini\" } ]");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap responseMap = new RequestMap ("[ { \"name\":\"andrea\", \"surname\":\"rizzini\" } ]");
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
 			IDictionary<String,Object> result = controller.execute ("test1", "create", new TestBaseObject ());
-			BaseMap responseMapFromResponse = new BaseMap (result);
+			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("list"));
 			Assert.AreEqual (typeof(List<Dictionary<String,Object>>), responseMapFromResponse ["list"].GetType () );
@@ -128,9 +112,8 @@ namespace MasterCard.Test
 		public void Test204 ()
 		{
 
-			BaseMap responseMap = new BaseMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, null));
 
@@ -145,9 +128,8 @@ namespace MasterCard.Test
 		public void Test405_NotAllowedException ()
 		{
 
-			BaseMap responseMap = new BaseMap ("{\"Errors\":{\"Error\":{\"Source\":\"System\",\"ReasonCode\":\"METHOD_NOT_ALLOWED\",\"Description\":\"Method not Allowed\",\"Recoverable\":\"false\"}}}");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":{\"Source\":\"System\",\"ReasonCode\":\"METHOD_NOT_ALLOWED\",\"Description\":\"Method not Allowed\",\"Recoverable\":\"false\"}}}");
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
@@ -159,9 +141,9 @@ namespace MasterCard.Test
 		public void Test40O_InvalidRequestException ()
 		{
 
-			BaseMap responseMap = new BaseMap ("{\"Errors\":{\"Error\":[{\"Source\":\"Validation\",\"ReasonCode\":\"INVALID_TYPE\",\"Description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"Validation\",\"ReasonCode\":\"INVALID_TYPE\",\"Description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
+
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
@@ -173,9 +155,8 @@ namespace MasterCard.Test
 		public void Test401_AuthenticationException ()
 		{
 
-			BaseMap responseMap = new BaseMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Oauth customer key invalid\",\"Recoverable\":false,\"Details\":null}]}}");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Oauth customer key invalid\",\"Recoverable\":false,\"Details\":null}]}}");
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
@@ -187,9 +168,8 @@ namespace MasterCard.Test
 		public void Test500_InvalidRequestException ()
 		{
 
-			BaseMap responseMap = new BaseMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Something went wrong\",\"Recoverable\":false,\"Details\":null}]}}");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Something went wrong\",\"Recoverable\":false,\"Details\":null}]}}");
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
@@ -201,15 +181,14 @@ namespace MasterCard.Test
 		public void Test200ShowById ()
 		{
 
-			BaseMap requestMap = new BaseMap ("{\n\"id\":\"1\"\n}");
-			BaseMap responseMap = new BaseMap ("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
-			TestBaseObject testBaseObject = new TestBaseObject ();
-			ApiController controller = new ApiController (testBaseObject.BasePath);
+			RequestMap requestMap = new RequestMap ("{\n\"id\":\"1\"\n}");
+			RequestMap responseMap = new RequestMap ("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
+			ApiController controller = new ApiController (TestBaseObject.BasePath);
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
 			IDictionary<String,Object> result = controller.execute ("test1", "read", new TestBaseObject (requestMap));
-			BaseMap responseMapFromResponse = new BaseMap (result);
+			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.AreEqual("true", responseMapFromResponse["Account.Status"]);
 			Assert.AreEqual("STOLEN", responseMapFromResponse["Account.Reason"]);

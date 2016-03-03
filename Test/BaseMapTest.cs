@@ -11,7 +11,7 @@ namespace MasterCard.Test
 	{
 		[Test ()]
 		public void TestAdd(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("key1", "value1");
 
 			Assert.AreEqual (1, map.Count);
@@ -26,7 +26,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestAddWithConstructor(){
-			BaseMap map = new BaseMap ("key1", "value1");
+			RequestMap map = new RequestMap ("key1", "value1");
 
 			Assert.AreEqual (1, map.Count);
 			Assert.IsTrue(map.ContainsKey("key1"));
@@ -39,7 +39,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestNestedAdd(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("key1.key2", "value1");
 
 			Assert.AreEqual (1, map.Count);
@@ -58,7 +58,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestRemve(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("key1", "value1");
 
 			Assert.AreEqual (1, map.Count);
@@ -78,7 +78,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestReplace(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("key1.key2", "value1");
 
 			Assert.AreEqual (1, map.Count);
@@ -108,7 +108,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TesNestedAdd(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("key1.key1", "value1");
 
 			Assert.AreEqual (1, map.Count);
@@ -140,7 +140,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestConvertValueToMap()	{
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("level1", "value1");
 			Assert.Throws<ArgumentException> (()=> { map.Add ("level1.level2", "level2");} );
 
@@ -149,7 +149,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestMultipleAdd4Deep(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("key1.key2.key3.key4", "value1");
 
 			Assert.AreEqual (1, map.Count);
@@ -171,7 +171,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestAdd4List(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("key1", new List<String>() { "value1", "value2", "value3" });
 
 			Assert.IsTrue(map.ContainsKey("key1"));
@@ -183,7 +183,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestAddIndexed(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("map[].name", "name1");
 			map.Add("map[].name", "name2");
 			map.Add("map[].name", "name3");
@@ -221,7 +221,7 @@ namespace MasterCard.Test
 			testDictionary.Add ("list", new List<String>() {"one", "one", "one"});
 			testDictionary.Add ("map", new Dictionary<String, String>() { {"0","one"}, { "1","one"}, {"2","one"}});
 
-			BaseMap map = new BaseMap (testDictionary);
+			RequestMap map = new RequestMap (testDictionary);
 
 			Assert.AreEqual (6, map.Count);
 			Assert.IsTrue(map.ContainsKey("boolean"));
@@ -242,7 +242,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestConstructorBaseMap(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("map[].name", "name1");
 			map.Add("map[].name", "name2");
 			map.Add("map[].name", "name3");
@@ -267,7 +267,7 @@ namespace MasterCard.Test
 			Assert.AreNotSame(1, ((Dictionary<String,Object>) map ["map[1]"]).Count);
 			Assert.AreNotSame(1, ((Dictionary<String,Object>) map ["map[2]"]).Count);
 
-			BaseMap newMap = new BaseMap (map);
+			RequestMap newMap = new RequestMap (map);
 
 			Assert.AreEqual (1, newMap.Count);
 
@@ -296,7 +296,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestReplaceIndexed(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 			map.Add("map[].name", "name1");
 
 			Assert.AreEqual (1, map.Count);
@@ -323,7 +323,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestAddIndexedWithOffset(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 
 
 
@@ -336,7 +336,7 @@ namespace MasterCard.Test
 
 		[Test ()]
 		public void TestAddAll(){
-			BaseMap map = new BaseMap ();
+			RequestMap map = new RequestMap ();
 
 			Dictionary<String, Object> tmpDict = new Dictionary<String,Object> ();
 			tmpDict.Add ("user.name", "andrea");
@@ -363,7 +363,7 @@ namespace MasterCard.Test
 			tmpDict.Add ("user.name", "andrea");
 			tmpDict.Add ("user.surname", "rizzini");
 
-			BaseMap map = new BaseMap (tmpDict);
+			RequestMap map = new RequestMap (tmpDict);
 
 			Assert.AreEqual (1, map.Count);
 
@@ -382,7 +382,7 @@ namespace MasterCard.Test
 
 			String tmpDict = " { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }";
 
-			BaseMap map = new BaseMap (tmpDict);
+			RequestMap map = new RequestMap (tmpDict);
 
 			Assert.AreEqual (1, map.Count);
 
@@ -400,7 +400,7 @@ namespace MasterCard.Test
 
 			String tmpDict = "{\n  \"mapName\": \"name\",\n  \"list\": [\n    {\n      \"itemId\": 1,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    },\n    {\n      \"itemId\": 2,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    },\n    {\n      \"itemId\": 3,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    }\n  ]\n}";
 
-			IDictionary<String,Object> dict = BaseMap.AsDictionary(tmpDict);
+			IDictionary<String,Object> dict = RequestMap.AsDictionary(tmpDict);
 			Assert.IsTrue (dict.ContainsKey ("mapName"));
 			Assert.IsTrue (dict.ContainsKey ("list"));
 

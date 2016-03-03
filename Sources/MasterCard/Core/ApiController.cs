@@ -40,7 +40,7 @@ namespace MasterCard.Core
 	public class ApiController
 	{
 
-		String apiPath;
+		String baseApiUrl;
 		IRestClient restClient;
 
 		enum ACTION
@@ -74,9 +74,9 @@ namespace MasterCard.Core
 			if (ApiConfig.isSandbox()) {
 				baseUrl = ApiConfig.API_BASE_SANDBOX_URL;
 			}
-			apiPath = baseUrl + basePath;
+			baseApiUrl = baseUrl + basePath;
 
-			Uri uri = new Uri (this.apiPath);
+			Uri uri = new Uri (this.baseApiUrl);
 			String host = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
 			restClient = new RestClient(host);
 		}
@@ -127,7 +127,7 @@ namespace MasterCard.Core
 
 			if (response.ErrorException == null) {
 				if (response.Content != null) {
-					IDictionary<String,Object> responseObj = BaseMap.AsDictionary(response.Content);
+					IDictionary<String,Object> responseObj = RequestMap.AsDictionary(response.Content);
 
 					if (response.StatusCode < HttpStatusCode.Ambiguous) {
 						return responseObj;
@@ -135,6 +135,8 @@ namespace MasterCard.Core
 						int status = (int) response.StatusCode;
 
 						if (status == (int) HttpStatusCode.BadRequest) {
+							throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
+						} else if (status == (int) HttpStatusCode.Redirect) {
 							throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
 						} else if (status == (int)  HttpStatusCode.Unauthorized) {
 							throw new MasterCard.Core.Exceptions.AuthenticationException (status, responseObj);
@@ -225,10 +227,10 @@ namespace MasterCard.Core
 
 			List<object> objectList = new List<object> ();
 			//arizzini: SAFETY CHECK -- need to strip out any / to the end of the path
-			if (apiPath.Length > 1 && apiPath.EndsWith ("/")) {
-				objectList.Add (apiPath.Substring (0, apiPath.Length - 1));
+			if (baseApiUrl.Length > 1 && baseApiUrl.EndsWith ("/")) {
+				objectList.Add (baseApiUrl.Substring (0, baseApiUrl.Length - 1));
 			} else  {
-				objectList.Add (apiPath);
+				objectList.Add (baseApiUrl);
 			}
 
 			//arizzini: SAFETY CHECK --  need to strip ou any {id} from the original swagger gen
@@ -321,7 +323,7 @@ namespace MasterCard.Core
 		/// <param name="uri">URI.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="objectMap">Object map.</param>
-		RestRequest getRequest (Uri uri, ACTION action, BaseMap objectMap)
+		RestRequest getRequest (Uri uri, ACTION action, RequestMap objectMap)
 		{
 
 			RestRequest request = null;
