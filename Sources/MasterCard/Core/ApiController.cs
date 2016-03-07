@@ -40,25 +40,9 @@ namespace MasterCard.Core
 	public class ApiController
 	{
 
-		String baseApiUrl;
+		String fullUrl;
+		String baseUrl;
 		IRestClient restClient;
-
-		enum ACTION
-		{
-			read,
-			list,
-			update,
-			create,
-			delete
-		}
-
-		enum PORTS
-		{
-			HTTP = 80,
-			HTTPS = 443,
-			UNKNOWN = -1
-		}
-
 
 		public ApiController(String basePath) {
 
@@ -68,17 +52,17 @@ namespace MasterCard.Core
 				throw new InvalidOperationException("BasePath cannot be empty");
 			}
 
-			String baseUrl =  ApiConfig.API_BASE_LIVE_URL;
+			baseUrl =  ApiConfig.API_BASE_LIVE_URL;
 
 			//ApiConfig.sandbox
 			if (ApiConfig.isSandbox()) {
 				baseUrl = ApiConfig.API_BASE_SANDBOX_URL;
 			}
-			baseApiUrl = baseUrl + basePath;
+			fullUrl = baseUrl + basePath;
 
-			Uri uri = new Uri (this.baseApiUrl);
-			String host = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
-			restClient = new RestClient(host);
+			Uri uri = new Uri (this.fullUrl);
+			baseUrl = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
+			restClient = new RestClient(baseUrl);
 		}
 
 
@@ -89,6 +73,7 @@ namespace MasterCard.Core
 		/// <param name="restClient">Rest client.</param>
 		public void SetRestClient(IRestClient restClient)
 		{
+			restClient.BaseUrl = new Uri(baseUrl);
 			this.restClient = restClient;
 		}
 
@@ -102,17 +87,14 @@ namespace MasterCard.Core
 		public virtual IDictionary<String, Object> execute (string type, string action, BaseObject baseObject)
 		{
 
-			ACTION act = getAction (action);
-			Uri uri = getURI (type, act, baseObject);
-			//Console.WriteLine ("request-uri: " + uri);
-
+			Uri uri = getURL (type, action, baseObject);
 
 			IRestResponse response;
 			IRestRequest request;
 
 			try 
 			{
-				request = getRequest (uri, act, baseObject);
+				request = getRequest (uri, action, baseObject);
 
 
 			} catch (Exception e) {
@@ -218,7 +200,7 @@ namespace MasterCard.Core
 		/// <param name="type">Type.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="objectMap">Object map.</param>
-		Uri getURI (string type, ACTION action, BaseObject objectMap)
+		Uri getURL (string type, string action, BaseObject objectMap)
 		{
 			Uri uri;
 
@@ -227,10 +209,10 @@ namespace MasterCard.Core
 
 			List<object> objectList = new List<object> ();
 			//arizzini: SAFETY CHECK -- need to strip out any / to the end of the path
-			if (baseApiUrl.Length > 1 && baseApiUrl.EndsWith ("/")) {
-				objectList.Add (baseApiUrl.Substring (0, baseApiUrl.Length - 1));
+			if (fullUrl.Length > 1 && fullUrl.EndsWith ("/")) {
+				objectList.Add (fullUrl.Substring (0, fullUrl.Length - 1));
 			} else  {
-				objectList.Add (baseApiUrl);
+				objectList.Add (fullUrl);
 			}
 
 			//arizzini: SAFETY CHECK --  need to strip ou any {id} from the original swagger gen
@@ -243,66 +225,65 @@ namespace MasterCard.Core
 
 
 			switch (action) {
-			case ApiController.ACTION.create:
-				break;
-			case ApiController.ACTION.read:
-			case ApiController.ACTION.update:
-			case ApiController.ACTION.delete:
-				if (objectMap.ContainsKey ("id")) {
-					//arizzini: lostandfound uses PUT with no ID, so removing this check
-					//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
-					s.Append ("/{"+(parameters++)+"}");
-					objectList.Add (getURLEncodedString (objectMap ["id"]));
-				}
-				break;
-			case ApiController.ACTION.list:
-				if (objectMap != null && objectMap.Count > 0) {
-					if (objectMap.ContainsKey ("max")) {
-						s = appendToQueryString (s, "max="+(parameters++));
-						objectList.Add (getURLEncodedString (objectMap ["max"]));
+				case "create":
+					break;
+				case "read":
+				case "update":
+				case "delete":
+					if (objectMap.ContainsKey ("id")) {
+						//arizzini: lostandfound uses PUT with no ID, so removing this check
+						//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
+						s.Append ("/{"+(parameters++)+"}");
+						objectList.Add (getURLEncodedString (objectMap ["id"]));
 					}
+					break;
+				case "list":
+					if (objectMap != null && objectMap.Count > 0) {
+						if (objectMap.ContainsKey ("max")) {
+							s = appendToQueryString (s, "max="+(parameters++));
+							objectList.Add (getURLEncodedString (objectMap ["max"]));
+						}
 
-					if (objectMap.ContainsKey ("offset")) {
-						s = appendToQueryString (s, "offset="+(parameters++));
-						objectList.Add (getURLEncodedString (objectMap ["offset"]));
-					}
+						if (objectMap.ContainsKey ("offset")) {
+							s = appendToQueryString (s, "offset="+(parameters++));
+							objectList.Add (getURLEncodedString (objectMap ["offset"]));
+						}
 
-					if (objectMap.ContainsKey ("sorting")) {
-						if (objectMap ["sorting"] is IDictionary) {
-							IDictionary<string, object> sorting = (IDictionary<string, object>)objectMap ["sorting"];
-							IEnumerator it = sorting.GetEnumerator ();
-							while (it.MoveNext ()) {
-								DictionaryEntry entry = (DictionaryEntry)it.Current;
-								s = appendToQueryString (s, "sorting["+(parameters++)+"]="+(parameters++));
-								objectList.Add (getURLEncodedString (entry.Key.ToString ()));
-								objectList.Add (getURLEncodedString (entry.Value.ToString ()));
+						if (objectMap.ContainsKey ("sorting")) {
+							if (objectMap ["sorting"] is IDictionary) {
+								IDictionary<string, object> sorting = (IDictionary<string, object>)objectMap ["sorting"];
+								IEnumerator it = sorting.GetEnumerator ();
+								while (it.MoveNext ()) {
+									DictionaryEntry entry = (DictionaryEntry)it.Current;
+									s = appendToQueryString (s, "sorting["+(parameters++)+"]="+(parameters++));
+									objectList.Add (getURLEncodedString (entry.Key.ToString ()));
+									objectList.Add (getURLEncodedString (entry.Value.ToString ()));
+								}
 							}
 						}
-					}
 
-					if (objectMap.ContainsKey ("filter")) {
-						if (objectMap ["filter"] is IDictionary) {
-							IDictionary<string, object> filter = (IDictionary<string, object>)objectMap ["filter"];
-							IEnumerator it = filter.GetEnumerator ();
-							while (it.MoveNext ()) {
-								DictionaryEntry entry = (DictionaryEntry)it.Current;
-								s = appendToQueryString (s, "filter["+(parameters++)+"]="+(parameters++));
-								objectList.Add (getURLEncodedString (entry.Key.ToString ()));
-								objectList.Add (getURLEncodedString (entry.Value.ToString ()));
+						if (objectMap.ContainsKey ("filter")) {
+							if (objectMap ["filter"] is IDictionary) {
+								IDictionary<string, object> filter = (IDictionary<string, object>)objectMap ["filter"];
+								IEnumerator it = filter.GetEnumerator ();
+								while (it.MoveNext ()) {
+									DictionaryEntry entry = (DictionaryEntry)it.Current;
+									s = appendToQueryString (s, "filter["+(parameters++)+"]="+(parameters++));
+									objectList.Add (getURLEncodedString (entry.Key.ToString ()));
+									objectList.Add (getURLEncodedString (entry.Value.ToString ()));
+								}
 							}
 						}
-					}
 
-					IEnumerator enumerator = objectMap.GetEnumerator ();
-					while (enumerator.MoveNext ()) {
-						DictionaryEntry entry = (DictionaryEntry)enumerator.Current;
-						s = appendToQueryString (s, (parameters++)+"="+(parameters++));
-						objectList.Add (getURLEncodedString (entry.Key.ToString ()));
-						objectList.Add (getURLEncodedString (entry.Value.ToString ()));
+						IEnumerator enumerator = objectMap.GetEnumerator ();
+						while (enumerator.MoveNext ()) {
+							DictionaryEntry entry = (DictionaryEntry)enumerator.Current;
+							s = appendToQueryString (s, (parameters++)+"="+(parameters++));
+							objectList.Add (getURLEncodedString (entry.Key.ToString ()));
+							objectList.Add (getURLEncodedString (entry.Value.ToString ()));
+						}
 					}
-				}
-
-				break;
+					break;
 			}
 
 			s = appendToQueryString (s, "Format=JSON");
@@ -323,27 +304,27 @@ namespace MasterCard.Core
 		/// <param name="uri">URI.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="objectMap">Object map.</param>
-		RestRequest getRequest (Uri uri, ACTION action, RequestMap objectMap)
+		RestRequest getRequest (Uri uri, String action, RequestMap objectMap)
 		{
 
 			RestRequest request = null;
 
 			switch (action) {
-			case ApiController.ACTION.create:
+			case "create":
 				request = new RestRequest (uri, Method.POST);
 				request.AddJsonBody (objectMap);
 				break;
-			case ApiController.ACTION.delete:
+			case "delete":
 				request = new RestRequest (uri, Method.DELETE);
 				break;
-			case ApiController.ACTION.update:
+			case "update":
 				request = new RestRequest (uri, Method.PUT);
 				request.AddJsonBody (objectMap);
 				break;
-			case ApiController.ACTION.read:
+			case "read":
 				request = new RestRequest (uri, Method.GET);
 				break;
-			case ApiController.ACTION.list:
+			case "list":
 				request = new RestRequest (uri, Method.GET);
 				break;
 			}
@@ -352,25 +333,11 @@ namespace MasterCard.Core
 			request.AddHeader ("Content-Type", "application/json");
 			request.AddHeader ("User-Agent", "Java-SDK/" + ApiConfig.VERSION);
 
-			ApiConfig.getAuthentication().sign(uri, request);
+			ApiConfig.getAuthentication().SignRequest(uri, request);
 
 			return request;
 		}
 
-		/// <summary>
-		/// Gets the action.
-		/// </summary>
-		/// <returns>The action.</returns>
-		/// <param name="action">Action.</param>
-		ACTION getAction (string action)
-		{
-			try {
-				return (ACTION) Enum.Parse (typeof(ACTION), action);
-			} catch (ArgumentException e) {
-				throw new System.InvalidOperationException ("Invalid action supplied: " + action, e);
-			}
-
-		}
 
 
 	}

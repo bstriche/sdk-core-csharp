@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
-using System.Text;
 using System.Web;
+using System.Text;
 
 
 namespace MasterCard.Core.Security.OAuth
@@ -13,11 +13,11 @@ namespace MasterCard.Core.Security.OAuth
 	/// </summary>
 	internal static class OAuthUtil
 	{
-		static readonly string VALID_CHAR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		static readonly string[] URIRFC3986CHARSTOESCAPE = new[] { "!", "*", "'", "(", ")" };
+		
 
 		static Random random = new Random();
-		static UTF8Encoding encoder = new UTF8Encoding();
+		static readonly string VALID_CHAR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 
 		/// <summary>
 		/// Generates a 17 character Nonce
@@ -50,53 +50,8 @@ namespace MasterCard.Core.Security.OAuth
 		/// </summary>
 		/// <returns>A string representing the OAuth SignatureBaseString</returns>
 		public static String GetBaseString(String requestUrl, String httpMethod, SortedDictionary<String, String> baseParameters) {
-			return UriEncode(httpMethod.ToUpper()) + "&" + UriEncode(normalizeUrl(requestUrl)) + "&" + UriEncode(normalizeParameters(requestUrl, baseParameters));
+			return Util.UriEncode(httpMethod.ToUpper()) + "&" + Util.UriEncode(Util.NormalizeUrl(requestUrl)) + "&" + Util.UriEncode(Util.NormalizeParameters(requestUrl, baseParameters));
 		}
-
-		/// <summary>
-		/// Normalized the request URL by truncading any parts which are not part of the base url, i.e. the request parameters.
-		/// </summary>
-		/// <returns>A string representing normalised request url</returns>
-		static String normalizeUrl(String requestUrl) {
-			Uri myUri = new Uri(requestUrl);
-			return String.Format("{0}{1}{2}{3}", myUri.Scheme,  Uri.SchemeDelimiter, myUri.Authority, myUri.AbsolutePath);
-		}
-
-
-
-		/// <summary>
-		/// Normalized the request parameters by generating a string which represent all the url request parameters and oauth request parameters.
-		/// </summary>
-		/// <returns>A string representing the normalized parameters</returns>
-		static String normalizeParameters(String requestUrl, SortedDictionary<String, String> requestParameters) {
-
-			if (requestUrl.IndexOf ('?') > 0) {
-				
-				NameValueCollection nameValueCollecion = HttpUtility.ParseQueryString (requestUrl.Substring (requestUrl.IndexOf ('?')));
-
-				foreach (String key in nameValueCollecion) {
-					foreach (String value in nameValueCollecion.GetValues(key)) {
-						requestParameters.Add (key, value);
-					}
-				}
-			}
-
-			var paramString1 = new StringBuilder();
-
-			foreach(KeyValuePair<string, string> entry in requestParameters)
-			{
-				// do something with entry.Value or entry.Key
-				if (paramString1.Length > 0) {
-					paramString1.Append ("&");
-				}
-				paramString1.Append(UriEncode((String)entry.Key)).Append("=").Append(UriEncode((String)entry.Value));
-			}
-
-			return paramString1.ToString();
-		}
-
-
-
 
 		/// <summary>
 		/// Method to signthe signature base string. 
@@ -104,57 +59,12 @@ namespace MasterCard.Core.Security.OAuth
 		/// <param name="baseString"></param>
 		/// <param name="KeyStore"></param>
 		/// <returns></returns>
-		public static string RsaSign(string baseString, AsymmetricAlgorithm KeyStore)
+		public static string RsaSign(string baseString)
 		{
-			byte[] baseStringBytes = encoder.GetBytes(baseString);
-
-			RSACryptoServiceProvider csp = (RSACryptoServiceProvider)KeyStore;
-			// Hash the data
-			SHA1 sha1= new SHA1CryptoServiceProvider();
-			byte[] hash = sha1.ComputeHash(baseStringBytes);
-
-			// Sign the hash
-			byte[] SignedHashValue = csp.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
-			return Convert.ToBase64String(SignedHashValue);
+			return ApiConfig.getAuthentication ().SignMessage (baseString);
 		}
 
 
-		/// <summary>
-		/// This method encodes the string using convention UriRfc3986CharsToEscape
-		/// </summary>
-		/// <param name="stringToEncode"></param>
-		/// <returns></returns>
-		private static String UriEncode(String stringToEncode) {
-			StringBuilder escaped = new StringBuilder(Uri.EscapeDataString(stringToEncode));
-			for (int i = 0; i < URIRFC3986CHARSTOESCAPE.Length; i++)
-			{
-				escaped.Replace(URIRFC3986CHARSTOESCAPE[i], Uri.HexEscape(URIRFC3986CHARSTOESCAPE[i][0]));
-			}
-			return escaped.ToString();
-		}
-
-
-		/// <summary>
-		/// This method encodes a string using a SHA1 algorithm
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		public static byte[] Sha1Encode(String input)
-		{
-			SHA1 sha1= new SHA1CryptoServiceProvider();
-			byte[] inputBytes = encoder.GetBytes (input);
-			byte[] hashBytes = sha1.ComputeHash(inputBytes);
-			return hashBytes;
-		}
-
-		/// <summary>
-		/// This method encodes the string using BASE64 encoding
-		/// </summary>
-		/// <param name="textBytes"></param>
-		/// <returns></returns>
-		public static string Base64Encode(byte[] textBytes) {
-			return System.Convert.ToBase64String(textBytes);
-		}
 
 
 		/// <summary>
@@ -173,14 +83,16 @@ namespace MasterCard.Core.Security.OAuth
 			oAuthParameters.setOAuthSignatureMethod("RSA-SHA1");
 		
 
-			if (body != null && body.Length > 0) {
-				String encodedHash = Base64Encode(Sha1Encode(body));
-				oAuthParameters.setOAuthBodyHash(encodedHash);
+			if (!string.IsNullOrEmpty (body)) {
+				Console.WriteLine (body);
+				String encodedHash = Util.Base64Encode (Util.Sha1Encode (body));
+				Console.WriteLine (encodedHash);
+				oAuthParameters.setOAuthBodyHash (encodedHash);
 			}
 
 
 			String baseString = OAuthUtil.GetBaseString(URL, method, oAuthParameters.getBaseParameters());
-			String signature = RsaSign(baseString, privateKey);
+			String signature = RsaSign(baseString);
 			oAuthParameters.setOAuthSignature(signature);
 
 			StringBuilder builder = new StringBuilder();
@@ -191,8 +103,10 @@ namespace MasterCard.Core.Security.OAuth
 				} else {
 					builder.Append (",");
 				}
-				builder.Append (entry.Key).Append ("=\"").Append (UriEncode (entry.Value)).Append ("\"");
+				builder.Append (Util.UriEncode(entry.Key)).Append ("=\"").Append (Util.UriEncode (entry.Value)).Append ("\"");
 			}
+
+			Console.WriteLine(builder.ToString());
 			return builder.ToString();
 		}
 			

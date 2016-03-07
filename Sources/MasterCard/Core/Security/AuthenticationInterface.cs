@@ -6,9 +6,8 @@ namespace MasterCard.Core.Security
 {
 	public interface AuthenticationInterface
 	{
-
-		void sign(Uri uri, IRestRequest request);
-
+		void SignRequest(Uri uri, IRestRequest request);
+		String SignMessage(String message);
 	}
 }
 
