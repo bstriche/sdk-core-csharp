@@ -50,12 +50,6 @@ namespace MasterCard.Test
 			Assert.AreEqual ("CQJfOX6Yebd7KPPsG7cRopzt+4/QB+GiMQhgcFMw+ew2bWtBLj+t8i6mSe26eEVurxzF4mp0uvjXZzz8Ik5YLjP1byr0v+wsMmAQbWUTj4dO7k8W2+a4AISmKFfbSEUaDgBpPyCl72cL29+hoTNo/usD0EYpaX6P1Vo+EYLbZjK3ZJRtDSd8VZnjxKInUoNI8VvJuGgZ3u7nh5caXvVk6RlCbgwdVEKAv/BsfLSQEgc0/DCCKhX2ZnNOqJJ3FRS6s4bAbqYbui5ouWN5SGkcRaYPt7Fi8oTu561oNZ02HlAWL9m0fp8MK6ZDGQjkeC+zWeo/o0Gbc+/kKGPdOrCNFA==", signature);
 			oAuthParameters.setOAuthSignature (signature);
 
-			foreach (KeyValuePair<String, String> kvp in oAuthParameters.getBaseParameters ())
-			{
-				//textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-				Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, Util.uriRfc3986(kvp.Value));
-			}
-
 		}
 
 
