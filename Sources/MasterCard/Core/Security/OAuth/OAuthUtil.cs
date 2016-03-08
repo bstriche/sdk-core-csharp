@@ -50,7 +50,7 @@ namespace MasterCard.Core.Security.OAuth
 		/// </summary>
 		/// <returns>A string representing the OAuth SignatureBaseString</returns>
 		public static String GetBaseString(String requestUrl, String httpMethod, SortedDictionary<String, String> baseParameters) {
-			return Util.UriEncode(httpMethod.ToUpper()) + "&" + Util.UriEncode(Util.NormalizeUrl(requestUrl)) + "&" + Util.UriEncode(Util.NormalizeParameters(requestUrl, baseParameters));
+			return Util.uriRfc3986(httpMethod.ToUpper()) + "&" + Util.uriRfc3986(Util.NormalizeUrl(requestUrl)) + "&" + Util.uriRfc3986(Util.NormalizeParameters(requestUrl, baseParameters));
 		}
 
 		/// <summary>
@@ -84,9 +84,7 @@ namespace MasterCard.Core.Security.OAuth
 		
 
 			if (!string.IsNullOrEmpty (body)) {
-				Console.WriteLine (body);
 				String encodedHash = Util.Base64Encode (Util.Sha1Encode (body));
-				Console.WriteLine (encodedHash);
 				oAuthParameters.setOAuthBodyHash (encodedHash);
 			}
 
@@ -103,10 +101,9 @@ namespace MasterCard.Core.Security.OAuth
 				} else {
 					builder.Append (",");
 				}
-				builder.Append (Util.UriEncode(entry.Key)).Append ("=\"").Append (Util.UriEncode (entry.Value)).Append ("\"");
+				builder.Append ((entry.Key)).Append ("=\"").Append (Util.uriRfc3986 (entry.Value)).Append ("\"");
 			}
-
-			Console.WriteLine(builder.ToString());
+				
 			return builder.ToString();
 		}
 			

@@ -3,6 +3,7 @@ using System.Text;
 using NUnit.Framework;
 using MasterCard.Core;
 using MasterCard.Core.Security.OAuth;
+
 using System.Collections.Generic;
 
 
@@ -52,7 +53,7 @@ namespace MasterCard.Test
 			foreach (KeyValuePair<String, String> kvp in oAuthParameters.getBaseParameters ())
 			{
 				//textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-				Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+				Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, Util.uriRfc3986(kvp.Value));
 			}
 
 		}
@@ -69,4 +70,6 @@ namespace MasterCard.Test
 		}
 
 	}
+
+
 }

@@ -71,6 +71,8 @@
     <Compile Include="Sources\MasterCard\Core\ApiConfig.cs" />
     <Compile Include="Sources\MasterCard\Core\ApiController.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
+    <Compile Include="Test\UtilTest.cs" />
+    <Compile Include="Sources\MasterCard\Core\Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
