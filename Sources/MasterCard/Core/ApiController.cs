@@ -41,27 +41,21 @@ namespace MasterCard.Core
 	{
 
 		String fullUrl;
-		String baseUrl;
 		IRestClient restClient;
 
-		public ApiController(String basePath) {
+		public ApiController() {
 
 			checkState ();
 
-			if (basePath == null || basePath.Trim().Length < 0) {
-				throw new InvalidOperationException("BasePath cannot be empty");
-			}
-
-			baseUrl =  ApiConfig.API_BASE_LIVE_URL;
+			fullUrl =  ApiConfig.API_BASE_LIVE_URL;
 
 			//ApiConfig.sandbox
 			if (ApiConfig.isSandbox()) {
-				baseUrl = ApiConfig.API_BASE_SANDBOX_URL;
+				fullUrl = ApiConfig.API_BASE_SANDBOX_URL;
 			}
-			fullUrl = baseUrl + basePath;
 
 			Uri uri = new Uri (this.fullUrl);
-			baseUrl = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
+			String baseUrl = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
 			restClient = new RestClient(baseUrl);
 		}
 
@@ -73,7 +67,7 @@ namespace MasterCard.Core
 		/// <param name="restClient">Rest client.</param>
 		public void SetRestClient(IRestClient restClient)
 		{
-			restClient.BaseUrl = new Uri(baseUrl);
+			restClient.BaseUrl =  new Uri (this.fullUrl);
 			this.restClient = restClient;
 		}
 
@@ -81,13 +75,13 @@ namespace MasterCard.Core
 		/// <summary>
 		/// Execute the specified type, action and baseObject.
 		/// </summary>
-		/// <param name="type">Type.</param>
+		/// <param name="resourcePath">Type.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="baseObject">Base object.</param>
-		public virtual IDictionary<String, Object> execute (string type, string action, BaseObject baseObject)
+		public virtual IDictionary<String, Object> execute (string action, string resourcePath, BaseObject baseObject)
 		{
 
-			Uri uri = getURL (type, action, baseObject);
+			Uri uri = getURL (action, resourcePath, baseObject);
 
 			IRestResponse response;
 			IRestRequest request;
@@ -197,10 +191,10 @@ namespace MasterCard.Core
 		/// Gets the UR.
 		/// </summary>
 		/// <returns>The UR.</returns>
-		/// <param name="type">Type.</param>
 		/// <param name="action">Action.</param>
+		/// <param name="resourcePath">Type.</param>
 		/// <param name="objectMap">Object map.</param>
-		Uri getURL (string type, string action, BaseObject objectMap)
+		Uri getURL (string action, string resourcePath, BaseObject objectMap)
 		{
 			Uri uri;
 
@@ -216,17 +210,15 @@ namespace MasterCard.Core
 			}
 
 			//arizzini: SAFETY CHECK --  need to strip ou any {id} from the original swagger gen
-			type = type.Replace ("{id}", "");
-			if (type.EndsWith ("/")) {
-				objectList.Add (type.Substring (0, type.Length - 1));
+			resourcePath = resourcePath.Replace ("{id}", "");
+			if (resourcePath.EndsWith ("/")) {
+				objectList.Add (resourcePath.Substring (0, resourcePath.Length - 1));
 			} else {
-				objectList.Add (type);
+				objectList.Add (resourcePath);
 			}
 
 
 			switch (action) {
-				case "create":
-					break;
 				case "read":
 				case "update":
 				case "delete":
@@ -283,6 +275,8 @@ namespace MasterCard.Core
 							objectList.Add (getURLEncodedString (entry.Value.ToString ()));
 						}
 					}
+					break;
+				default: 
 					break;
 			}
 

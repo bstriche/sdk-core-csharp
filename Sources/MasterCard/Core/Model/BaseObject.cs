@@ -49,10 +49,7 @@ namespace MasterCard.Core.Model
 		{
 		}
 
-		public abstract String GetBasePath();
-
-
-		public abstract String GetObjectType();
+		public abstract String GetResourcePath(String action);
 
 
 		/// <summary>
@@ -70,8 +67,7 @@ namespace MasterCard.Core.Model
 		/// Lists the objects.
 		/// </summary>
 		/// <returns>The objects.</returns>
-		/// <param name="template">Template.</param>
-		/// <param name="criteria">Criteria.</param>
+		/// <param name="inputObject"></param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		protected internal static T listObjects<T> (T inputObject) where T : BaseObject
 		{
@@ -123,8 +119,8 @@ namespace MasterCard.Core.Model
 		/// <param name="action">Action.</param>
 		/// <param name="inputObject">Input object.</param>
 		static T execute<T>(String action, T inputObject) where T : BaseObject {
-			ApiController apiController = new ApiController (inputObject.GetBasePath());
-			IDictionary<String,Object> response = apiController.execute (inputObject.GetObjectType(), action, inputObject);
+			ApiController apiController = new ApiController ();
+			IDictionary<String,Object> response = apiController.execute (inputObject.GetResourcePath(action), action, inputObject);
 
 			if (response != null && inputObject.Count == 0) {
 				inputObject.AddAll (response);
