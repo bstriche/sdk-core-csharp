@@ -17,11 +17,18 @@ namespace MasterCard.Test
 		{
 
 			var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", "../../Test/prod_key.p12", "alias", "password");
-			ApiConfig.setLocalhost ();
+
 			ApiConfig.setAuthentication (authentication);
 			ApiConfig.setSandbox (true);
 
+
+			#if DEBUG
+			ApiConfig.setLocalhost ();
+			#endif
+
 		}
+
+		#if DEBUG
 
 		[Test]
 		public void testActionReadPostEqual200()
@@ -194,6 +201,8 @@ namespace MasterCard.Test
 
 
 		}
+
+		#endif
 
 	}
 }
