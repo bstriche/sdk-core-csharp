@@ -47,11 +47,11 @@ namespace MasterCard.Core
 
 			checkState ();
 
-			fullUrl =  ApiConfig.API_BASE_LIVE_URL;
+			fullUrl =  ApiConfig.getLiveUrl();
 
 			//ApiConfig.sandbox
 			if (ApiConfig.isSandbox()) {
-				fullUrl = ApiConfig.API_BASE_SANDBOX_URL;
+				fullUrl = ApiConfig.getSandboxUrl();
 			}
 
 			Uri uri = new Uri (this.fullUrl);
@@ -73,22 +73,24 @@ namespace MasterCard.Core
 
 
 		/// <summary>
-		/// Execute the specified type, action and baseObject.
+		/// Execute the specified action, resourcePath and baseObject.
 		/// </summary>
-		/// <param name="resourcePath">Type.</param>
 		/// <param name="action">Action.</param>
-		/// <param name="baseObject">Base object.</param>
-		public virtual IDictionary<String, Object> execute (string action, string resourcePath, BaseObject baseObject)
+		/// <param name="resourcePath">Resource path.</param>
+		/// <param name="requestMap">Request Map.</param>
+		/// <param name="headerList">Header List.</param>
+		public virtual IDictionary<String, Object> execute (string action, string resourcePath, BaseObject requestMap, List<string> headerList)
 		{
-
-			Uri uri = getURL (action, resourcePath, baseObject);
-
 			IRestResponse response;
 			IRestRequest request;
 
 			try 
 			{
-				request = getRequest (uri, action, baseObject);
+				IDictionary<String,Object> paramterMap = requestMap.Clone();
+				IDictionary<String,Object> headerMap = Util.SubMap(paramterMap, headerList);
+
+				Uri uri = getURL (action, resourcePath, paramterMap);
+				request = getRequest (uri, action, paramterMap, headerMap);
 
 
 			} catch (Exception e) {
@@ -101,36 +103,80 @@ namespace MasterCard.Core
 				throw new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
 			} 
 
-			if (response.ErrorException == null) {
-				if (response.Content != null) {
-					IDictionary<String,Object> responseObj = RequestMap.AsDictionary(response.Content);
+			if (response.ErrorException == null && response.Content != null) {
+				IDictionary<String,Object> responseObj = null;
 
-					if (response.StatusCode < HttpStatusCode.Ambiguous) {
-						return responseObj;
-					} else {
-						int status = (int) response.StatusCode;
-
-						if (status == (int) HttpStatusCode.BadRequest) {
-							throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
-						} else if (status == (int) HttpStatusCode.Redirect) {
-							throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
-						} else if (status == (int)  HttpStatusCode.Unauthorized) {
-							throw new MasterCard.Core.Exceptions.AuthenticationException (status, responseObj);
-						} else if (status == (int)  HttpStatusCode.NotFound) {
-							throw new MasterCard.Core.Exceptions.ObjectNotFoundException (status, responseObj);
-						} else if (status == (int)  HttpStatusCode.MethodNotAllowed) {
-							throw new MasterCard.Core.Exceptions.NotAllowedException (status, responseObj);
-						} else if (status < (int)  HttpStatusCode.InternalServerError) {
-							throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
-						} else {
-							throw new MasterCard.Core.Exceptions.SystemException (status, responseObj);
-						}
+				if (response.Content.StartsWith ("{") || response.Content.StartsWith ("[") || response.ContentType == "application/json") {
+					try {
+						responseObj = RequestMap.AsDictionary (response.Content);
+					} catch (Exception) {
+						throw new MasterCard.Core.Exceptions.SystemException ("Error: parsing JSON response", response.Content);
 					}
+				} 
+				 
+				if (response.StatusCode < HttpStatusCode.Ambiguous) {
+					return responseObj;
+				} else {
+					throwException (responseObj, response);
+					return null;
 				}
+			} else {
+				throw new MasterCard.Core.Exceptions.SystemException (response.ErrorMessage, response.ErrorException);
 			}
 
-			return null;
+		}
 
+
+		/// <summary>
+		/// Throws the exception.
+		/// </summary>
+		/// <param name="responseObj">Response object.</param>
+		/// <param name="response">Response.</param>
+		private static void throwException(IDictionary<String,Object> responseObj, IRestResponse response) {
+			int status = (int)response.StatusCode;
+			if (status == (int)HttpStatusCode.BadRequest) {
+				if (responseObj != null) {
+					throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
+				} else {
+					throw new MasterCard.Core.Exceptions.InvalidRequestException (status.ToString(), response.Content);
+				}
+			} else if (status == (int)HttpStatusCode.Redirect) {
+				if (responseObj != null) {
+					throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
+				} else {
+					throw new MasterCard.Core.Exceptions.InvalidRequestException (status.ToString(), response.Content);
+				}
+			} else if (status == (int)HttpStatusCode.Unauthorized) {
+				if (responseObj != null) {
+					throw new MasterCard.Core.Exceptions.AuthenticationException (status, responseObj);
+				} else {
+					throw new MasterCard.Core.Exceptions.AuthenticationException (status.ToString(), response.Content);
+				}
+			} else if (status == (int)HttpStatusCode.NotFound) {
+				if (responseObj != null) {
+					throw new MasterCard.Core.Exceptions.ObjectNotFoundException (status, responseObj);
+				} else {
+					throw new MasterCard.Core.Exceptions.ObjectNotFoundException (status.ToString(), response.Content);
+				}
+			} else if (status == (int)HttpStatusCode.MethodNotAllowed) {
+				if (responseObj != null) {
+					throw new MasterCard.Core.Exceptions.NotAllowedException (status, responseObj);
+				} else {
+					throw new MasterCard.Core.Exceptions.NotAllowedException (status.ToString(), response.Content);
+				}
+			} else if (status < (int)HttpStatusCode.InternalServerError) {
+				if (responseObj != null) {
+					throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
+				} else {
+					throw new MasterCard.Core.Exceptions.InvalidRequestException (status.ToString(), response.Content);
+				}
+			} else {
+				if (responseObj != null) {
+					throw new MasterCard.Core.Exceptions.SystemException (status, responseObj);
+				} else {
+					throw new MasterCard.Core.Exceptions.SystemException (status.ToString(), response.Content);
+				}
+			}
 		}
 
 
@@ -145,15 +191,17 @@ namespace MasterCard.Core
 			}
 
 			try {
-				new Uri (ApiConfig.API_BASE_LIVE_URL);
+				new Uri (ApiConfig.getLiveUrl());
 			} catch (UriFormatException e) {
 				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_LIVE_URL", e);
 			}
 
 			try {
-				new Uri (ApiConfig.API_BASE_SANDBOX_URL);
+				new Uri (ApiConfig.getSandboxUrl());
 			} catch (UriFormatException e) {
 				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_SANDBOX_URL", e);
+
+
 			}
 		}
 
@@ -193,84 +241,35 @@ namespace MasterCard.Core
 		/// <returns>The UR.</returns>
 		/// <param name="action">Action.</param>
 		/// <param name="resourcePath">Type.</param>
-		/// <param name="objectMap">Object map.</param>
-		Uri getURL (string action, string resourcePath, BaseObject objectMap)
+		/// <param name="inputMap">Input map.</param>
+		Uri getURL (string action, string resourcePath, IDictionary<String, Object> inputMap)
 		{
 			Uri uri;
 
+			String path = this.fullUrl + resourcePath;
+			String resolvedPath = Util.GetPathWithReplacedPath (path, inputMap);
+
 			int parameters = 0;
-			StringBuilder s = new StringBuilder ("{"+(parameters++)+"}/{"+(parameters++)+"}");
-
 			List<object> objectList = new List<object> ();
-			//arizzini: SAFETY CHECK -- need to strip out any / to the end of the path
-			if (fullUrl.Length > 1 && fullUrl.EndsWith ("/")) {
-				objectList.Add (fullUrl.Substring (0, fullUrl.Length - 1));
-			} else  {
-				objectList.Add (fullUrl);
-			}
-
-			//arizzini: SAFETY CHECK --  need to strip ou any {id} from the original swagger gen
-			resourcePath = resourcePath.Replace ("{id}", "");
-			if (resourcePath.EndsWith ("/")) {
-				objectList.Add (resourcePath.Substring (0, resourcePath.Length - 1));
-			} else {
-				objectList.Add (resourcePath);
-			}
+			StringBuilder s = new StringBuilder ("{"+(parameters++)+"}");
+			objectList.Add (resolvedPath);
 
 
 			switch (action) {
 				case "read":
 				case "update":
 				case "delete":
-					if (objectMap.ContainsKey ("id")) {
+					if (inputMap.ContainsKey ("id")) {
 						//arizzini: lostandfound uses PUT with no ID, so removing this check
 						//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
 						s.Append ("/{"+(parameters++)+"}");
-						objectList.Add (getURLEncodedString (objectMap ["id"]));
+						objectList.Add (getURLEncodedString (inputMap ["id"]));
 					}
 					break;
 				case "list":
-					if (objectMap != null && objectMap.Count > 0) {
-						if (objectMap.ContainsKey ("max")) {
-							s = appendToQueryString (s, "max="+(parameters++));
-							objectList.Add (getURLEncodedString (objectMap ["max"]));
-						}
-
-						if (objectMap.ContainsKey ("offset")) {
-							s = appendToQueryString (s, "offset="+(parameters++));
-							objectList.Add (getURLEncodedString (objectMap ["offset"]));
-						}
-
-						if (objectMap.ContainsKey ("sorting")) {
-							if (objectMap ["sorting"] is IDictionary) {
-								IDictionary<string, object> sorting = (IDictionary<string, object>)objectMap ["sorting"];
-								IEnumerator it = sorting.GetEnumerator ();
-								while (it.MoveNext ()) {
-									DictionaryEntry entry = (DictionaryEntry)it.Current;
-									s = appendToQueryString (s, "sorting["+(parameters++)+"]="+(parameters++));
-									objectList.Add (getURLEncodedString (entry.Key.ToString ()));
-									objectList.Add (getURLEncodedString (entry.Value.ToString ()));
-								}
-							}
-						}
-
-						if (objectMap.ContainsKey ("filter")) {
-							if (objectMap ["filter"] is IDictionary) {
-								IDictionary<string, object> filter = (IDictionary<string, object>)objectMap ["filter"];
-								IEnumerator it = filter.GetEnumerator ();
-								while (it.MoveNext ()) {
-									DictionaryEntry entry = (DictionaryEntry)it.Current;
-									s = appendToQueryString (s, "filter["+(parameters++)+"]="+(parameters++));
-									objectList.Add (getURLEncodedString (entry.Key.ToString ()));
-									objectList.Add (getURLEncodedString (entry.Value.ToString ()));
-								}
-							}
-						}
-
-						IEnumerator enumerator = objectMap.GetEnumerator ();
-						while (enumerator.MoveNext ()) {
-							DictionaryEntry entry = (DictionaryEntry)enumerator.Current;
-							s = appendToQueryString (s, (parameters++)+"="+(parameters++));
+					if (inputMap != null && inputMap.Count > 0) {
+						foreach (KeyValuePair<String,Object> entry in inputMap) {
+							s = appendToQueryString (s, (parameters++) + "=" + (parameters++));
 							objectList.Add (getURLEncodedString (entry.Key.ToString ()));
 							objectList.Add (getURLEncodedString (entry.Value.ToString ()));
 						}
@@ -298,7 +297,7 @@ namespace MasterCard.Core
 		/// <param name="uri">URI.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="objectMap">Object map.</param>
-		RestRequest getRequest (Uri uri, String action, RequestMap objectMap)
+		RestRequest getRequest (Uri uri, String action, IDictionary<String,Object> inputMap, IDictionary<String,Object> headerMap)
 		{
 
 			RestRequest request = null;
@@ -306,14 +305,14 @@ namespace MasterCard.Core
 			switch (action) {
 			case "create":
 				request = new RestRequest (uri, Method.POST);
-				request.AddJsonBody (objectMap);
+				request.AddJsonBody (inputMap);
 				break;
 			case "delete":
 				request = new RestRequest (uri, Method.DELETE);
 				break;
 			case "update":
 				request = new RestRequest (uri, Method.PUT);
-				request.AddJsonBody (objectMap);
+				request.AddJsonBody (inputMap);
 				break;
 			case "read":
 				request = new RestRequest (uri, Method.GET);
@@ -325,7 +324,12 @@ namespace MasterCard.Core
 
 			request.AddHeader ("Accept", "application/json");
 			request.AddHeader ("Content-Type", "application/json");
-			request.AddHeader ("User-Agent", "Java-SDK/" + ApiConfig.VERSION);
+			request.AddHeader ("User-Agent", "Java-SDK/" + ApiConfig.getVersion());
+
+			//arizzini: adding the header paramter support.
+			foreach (KeyValuePair<string, object> entry in headerMap) {
+				request.AddHeader (entry.Key, entry.Value.ToString());
+			}
 
 			ApiConfig.getAuthentication().SignRequest(uri, request);
 

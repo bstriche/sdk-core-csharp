@@ -35,9 +35,6 @@ namespace MasterCard.Core.Model
 	public abstract class BaseObject : RequestMap
 	{
 
-		public const String ObjectType = null;
-		public const String BasePath = null;
-
 		protected BaseObject() : base()
 		{
 		}
@@ -49,7 +46,9 @@ namespace MasterCard.Core.Model
 		{
 		}
 
-		public abstract String GetResourcePath(String action);
+		public abstract string GetResourcePath(string action);
+
+		public abstract List<string> GetHeaderParams (string action);
 
 
 		/// <summary>
@@ -57,7 +56,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The object.</returns>
 		/// <param name = "inputObject"></param>
-		protected internal static T readObject<T> (T inputObject) where T : BaseObject
+		protected internal static T readObject<T> (T inputObject) where T : BaseObject 
 		{
 			return execute ("read", inputObject);
 		}
@@ -69,11 +68,10 @@ namespace MasterCard.Core.Model
 		/// <returns>The objects.</returns>
 		/// <param name="inputObject"></param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		protected internal static T listObjects<T> (T inputObject) where T : BaseObject
+		protected internal static ResourceList<T> listObjects<T> (T inputObject) where T : BaseObject
 		{
-
-			return execute ("list", inputObject);
-
+			T tmpObjectWithList =  execute ("list", inputObject);
+			return new ResourceList<T> (tmpObjectWithList);
 		}
 
 		/// <summary>
@@ -83,9 +81,7 @@ namespace MasterCard.Core.Model
 		/// <param name="inputObject">Payments object.</param>
 		protected internal static T createObject<T> (T inputObject) where T : BaseObject
 		{
-
 			return execute ("create", inputObject);
-
 		}
 
 		/// <summary>
@@ -95,9 +91,7 @@ namespace MasterCard.Core.Model
 		/// <param name="inputObject">Payments object.</param>
 		protected internal virtual T updateObject<T> (T inputObject) where T : BaseObject
 		{
-
 			return execute ("update", inputObject);
-
 		}
 
 
@@ -108,7 +102,6 @@ namespace MasterCard.Core.Model
 		/// <param name="inputObject">Payments object.</param>
 		protected internal virtual T deleteObject<T> (T inputObject) where T : BaseObject
 		{
-
 			return execute ("delete", inputObject);
 		}
 
@@ -120,7 +113,7 @@ namespace MasterCard.Core.Model
 		/// <param name="inputObject">Input object.</param>
 		static T execute<T>(String action, T inputObject) where T : BaseObject {
 			ApiController apiController = new ApiController ();
-			IDictionary<String,Object> response = apiController.execute (inputObject.GetResourcePath(action), action, inputObject);
+			IDictionary<String,Object> response = apiController.execute (action, inputObject.GetResourcePath(action), inputObject, inputObject.GetHeaderParams(action));
 
 			if (response != null && inputObject.Count == 0) {
 				inputObject.AddAll (response);
@@ -128,7 +121,6 @@ namespace MasterCard.Core.Model
 				inputObject = (T) Activator.CreateInstance (inputObject.GetType ());
 				inputObject.AddAll (response);
 			}
-		
 			return inputObject;
 		}
 

@@ -46,7 +46,7 @@ namespace MasterCard.Core.Exceptions
 		/// <summary>
 		///  Constructs an <code>ApiCommunicationException</code> with the specified detail message. </summary>
 		///  <param name="s"> the detail message. </param>
-		public ApiCommunicationException(string s) : base(s)
+		public ApiCommunicationException(string message) : base(message)
 		{
 		}
 
@@ -55,7 +55,7 @@ namespace MasterCard.Core.Exceptions
 		///  and cause. </summary>
 		///  <param name="s"> the detail message. </param>
 		///  <param name="cause"> the detail message. </param>
-		public ApiCommunicationException(string s, Exception cause) : base(s, cause)
+		public ApiCommunicationException(string message, Exception cause) : base(message, cause)
 		{
 		}
 

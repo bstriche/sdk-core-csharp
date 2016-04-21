@@ -39,10 +39,10 @@ namespace MasterCard.Core.Exceptions
 	public class ApiException : Exception
 	{
 
-		private string source;
-		private string reasonCode;
-		private string recoverable;
-		private string description;
+		protected String source;
+		protected String reasonCode;
+		protected String recoverable;
+		protected String description;
 
 
 		private IDictionary<String, Object> errorData;
@@ -57,8 +57,19 @@ namespace MasterCard.Core.Exceptions
 		/// <summary>
 		///  Constructs an <code>ApiException</code> with the specified detail message. </summary>
 		///  <param name="s"> the detail message. </param>
-		public ApiException(string s) : base(s)
+		public ApiException(string message) : base(message)
 		{
+		}
+
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MasterCard.Core.Exceptions.ApiException"/> class.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="description">Description.</param>
+		public ApiException(string message, string description) : base(message)
+		{
+			this.description = description;
 		}
 
 		/// <summary>
@@ -66,7 +77,7 @@ namespace MasterCard.Core.Exceptions
 		///  and cause. </summary>
 		///  <param name="s"> the detail message. </param>
 		///  <param name="cause"> the detail message. </param>
-		public ApiException(string s, Exception cause) : base(s, cause)
+		public ApiException(string message, Exception cause) : base(message, cause)
 		{
 		}
 

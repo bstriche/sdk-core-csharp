@@ -48,8 +48,18 @@ namespace MasterCard.Core.Exceptions
 		/// <summary>
 		///  Constructs a <code>SystemException</code> with the specified detail message. </summary>
 		///  <param name="s"> the detail message. </param>
-		public SystemException(string s) : base(s)
+		public SystemException(string message) : base(message)
 		{
+		}
+
+		/// <summary>
+		/// Initializes a new Exception class.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="description">Description.</param>
+		public SystemException(string message, string description) : base(message)
+		{
+			this.description = description;
 		}
 
 		/// <summary>
@@ -57,7 +67,7 @@ namespace MasterCard.Core.Exceptions
 		///  and cause. </summary>
 		///  <param name="s"> the detail message. </param>
 		///  <param name="cause"> the detail message. </param>
-		public SystemException(string s, Exception cause) : base(s, cause)
+		public SystemException(string message, Exception cause) : base(message, cause)
 		{
 		}
 

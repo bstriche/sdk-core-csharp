@@ -47,8 +47,18 @@ namespace MasterCard.Core.Exceptions
 		/// <summary>
 		///  Constructs an <code>NotAllowedException</code> with the specified detail message. </summary>
 		///  <param name="s"> the detail message. </param>
-		public NotAllowedException(string s) : base(s)
+		public NotAllowedException(string message) : base(message)
 		{
+		}
+
+		/// <summary>
+		/// Initializes a new Exception class.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="description">Description.</param>
+		public NotAllowedException(string message, string description) : base(message)
+		{
+			this.description = description;
 		}
 
 		/// <summary>
@@ -56,7 +66,7 @@ namespace MasterCard.Core.Exceptions
 		///  and cause. </summary>
 		///  <param name="s"> the detail message. </param>
 		///  <param name="cause"> the detail message. </param>
-		public NotAllowedException(string s, Exception cause) : base(s, cause)
+		public NotAllowedException(string message, Exception cause) : base(message, cause)
 		{
 		}
 
