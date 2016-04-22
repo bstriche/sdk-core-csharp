@@ -115,7 +115,8 @@ namespace MasterCard.Core.Model
 			ApiController apiController = new ApiController ();
 			IDictionary<String,Object> response = apiController.execute (action, inputObject.GetResourcePath(action), inputObject, inputObject.GetHeaderParams(action));
 
-			if (response != null && inputObject.Count == 0) {
+			if (response != null) {
+				inputObject.Clear ();
 				inputObject.AddAll (response);
 			} else {
 				inputObject = (T) Activator.CreateInstance (inputObject.GetType ());

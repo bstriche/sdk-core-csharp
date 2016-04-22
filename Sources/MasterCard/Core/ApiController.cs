@@ -247,7 +247,7 @@ namespace MasterCard.Core
 			Uri uri;
 
 			String path = this.fullUrl + resourcePath;
-			String resolvedPath = Util.GetPathWithReplacedPath (path, inputMap);
+			String resolvedPath = Util.GetReplacedPath (path, inputMap);
 
 			int parameters = 0;
 			List<object> objectList = new List<object> ();

@@ -72,7 +72,14 @@ namespace MasterCard.Core
 			return subMap;
 		}
 
-		public static string GetPathWithReplacedPath(String path, IDictionary<String, Object> inputMap) {
+
+		/// <summary>
+		/// Gets the replaced path.
+		/// </summary>
+		/// <returns>The replaced path.</returns>
+		/// <param name="path">Path which contains {variable_id}</param>
+		/// <param name="inputMap">Input map which contains the key and value for {variable_id}</param>
+		public static string GetReplacedPath(String path, IDictionary<String, Object> inputMap) {
 
 			String result = (String) path.Clone ();
 

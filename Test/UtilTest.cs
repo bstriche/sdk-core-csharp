@@ -99,7 +99,7 @@ namespace MasterCard.Test
 
 			String path = "begin/nome/{name}/cognome/{surname}/end";
 
-			String resolvedPath = Util.GetPathWithReplacedPath (path, inputMap);
+			String resolvedPath = Util.GetReplacedPath (path, inputMap);
 
 			Assert.AreEqual ("begin/nome/andrea/cognome/rizzini/end", resolvedPath);
 
