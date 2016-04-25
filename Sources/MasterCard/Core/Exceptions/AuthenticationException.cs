@@ -47,8 +47,19 @@ namespace MasterCard.Core.Exceptions
 		/// <summary>
 		///  Constructs an <code>AuthenticationException</code> with the specified detail message. </summary>
 		///  <param name="s"> the detail message. </param>
-		public AuthenticationException(string s) : base(s)
+		public AuthenticationException(string message) : base(message)
 		{
+		}
+
+
+		/// <summary>
+		/// Initializes a new Exception class.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		/// <param name="description">Description.</param>
+		public AuthenticationException(string message, string description) : base(message)
+		{
+			this.description = description;
 		}
 
 		/// <summary>
@@ -56,7 +67,7 @@ namespace MasterCard.Core.Exceptions
 		///  and cause. </summary>
 		///  <param name="s"> the detail message. </param>
 		///  <param name="cause"> the detail message. </param>
-		public AuthenticationException(string s, Exception cause) : base(s, cause)
+		public AuthenticationException(string message, Exception cause) : base(message, cause)
 		{
 		}
 
@@ -76,8 +87,7 @@ namespace MasterCard.Core.Exceptions
 		///                   a map containing the detailed error data for the key <code>"key"</code>.  This map in turn
 		///                   is expected to contain <code>String</code> values for the keys
 		///                   <code>"code"</code> and <code>"message"</code>. </param>
-		///  <seealso cref=  String,Objectexception.ApiException </seealso>
-		public AuthenticationException(int status, IDictionary<String,Object> errorData)
+		public AuthenticationException(int status, IDictionary<String,Object> errorData): base(status, errorData)
 		{
 			
 		}

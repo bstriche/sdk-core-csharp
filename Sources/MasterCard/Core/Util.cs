@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace MasterCard.Core
 {
@@ -48,6 +49,64 @@ namespace MasterCard.Core
 		public static String NormalizeUrl(String requestUrl) {
 			Uri myUri = new Uri(requestUrl);
 			return String.Format("{0}{1}{2}{3}", myUri.Scheme,  Uri.SchemeDelimiter, myUri.Authority, myUri.AbsolutePath);
+		}
+
+
+		/// <summary>
+		/// Returns a sub map by selecting the map items contained in the inList
+		/// </summary>
+		/// <returns>The map.</returns>
+		/// <param name="inputMap">Input map. </param>
+		/// <param name="inList">Items to select.</param>
+		public static IDictionary<String, Object> SubMap(IDictionary<String, Object> inputMap, List<String> inList) {
+
+			IDictionary<String,Object> subMap = new Dictionary<String, Object> ();
+			foreach(String key in inList)
+			{
+				if (inputMap.ContainsKey (key)) {
+					subMap.Add(key, inputMap [key]); 
+					inputMap.Remove (key);
+				}
+			}
+
+			return subMap;
+		}
+
+
+		/// <summary>
+		/// Gets the replaced path.
+		/// </summary>
+		/// <returns>The replaced path.</returns>
+		/// <param name="path">Path which contains {variable_id}</param>
+		/// <param name="inputMap">Input map which contains the key and value for {variable_id}</param>
+		public static string GetReplacedPath(String path, IDictionary<String, Object> inputMap) {
+
+			String result = (String) path.Clone ();
+
+			MatchCollection matches = Regex.Matches(path, @"{(.*?)}");
+
+			// Here we check the Match instance.
+			foreach (Match match in matches)
+			{
+				GroupCollection groups = match.Groups;
+				string key = groups[1].Value;
+				if (inputMap.ContainsKey (key)) {
+					//add to the path
+					Object value = "";
+					inputMap.TryGetValue (key, out value);
+
+					//arizzini: replacing the value in the path
+					result = result.Replace ("{" + key + "}", value.ToString ());
+
+					//arizzini: removing the value from the input map
+					inputMap.Remove (key);
+				} else {
+					throw new System.ArgumentException ("Error, path paramer: '" + key + "' expected but not found in input map");
+				}
+			}
+
+			return result;
+		
 		}
 
 

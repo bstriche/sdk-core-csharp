@@ -220,7 +220,7 @@ namespace MasterCard.Core.Model
 			// map ( eg map.put("a[2]", 123);
 
 			if (destinationObject == __storage) {
-				__storage.Add (keyPath, value);
+				__storage [keyPath] = value;
 			} else if (value is IDictionary) { // if putting a map, call put all
 				destinationObject.Clear ();
 				RequestMap newMap = new RequestMap ((Dictionary<String,Object>) value);

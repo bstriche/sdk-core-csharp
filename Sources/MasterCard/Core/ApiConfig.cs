@@ -42,18 +42,41 @@ namespace MasterCard.Core
 		/// <summary>
 		/// The VERSIO.
 		/// </summary>
-		public const string VERSION = "1.0.0";
+		private static string VERSION = "1.0.0";
 
 		/// <summary>
 		/// The AP i BAS e LIV e UR.
 		/// </summary>
-		public const string API_BASE_LIVE_URL = "https://api.mastercard.com";
+		private static string API_BASE_LIVE_URL = "https://api.mastercard.com";
 
 		/// <summary>
 		/// The AP i BAS e SANDBO x UR.
 		/// </summary>
-		public const string API_BASE_SANDBOX_URL = "https://sandbox.api.mastercard.com";
+		private static string API_BASE_SANDBOX_URL = "https://sandbox.api.mastercard.com";
 
+		/// <summary>
+		/// Gets the live URL.
+		/// </summary>
+		/// <returns>The live URL.</returns>
+		public static string getLiveUrl() {
+			return API_BASE_LIVE_URL;
+		}
+
+		/// <summary>
+		/// Gets the sandbox URL.
+		/// </summary>
+		/// <returns>The sandbox URL.</returns>
+		public static string getSandboxUrl() {
+			return API_BASE_SANDBOX_URL;
+		}
+
+		/// <summary>
+		/// Gets the version.
+		/// </summary>
+		/// <returns>The version.</returns>
+		public static string getVersion() {
+			return VERSION;
+		}
 
 		/// <summary>
 		/// Sets the debug.
@@ -104,6 +127,13 @@ namespace MasterCard.Core
 		public static Boolean isSandbox() {
 			return ApiConfig.SANDBOX;
 		}
+
+		#if DEBUG
+		public static void setLocalhost() {
+			API_BASE_SANDBOX_URL = "http://localhost:8080";
+			API_BASE_LIVE_URL = "http://localhost:8080";
+		}
+		#endif
 
 	}
 

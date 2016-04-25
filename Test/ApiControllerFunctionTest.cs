@@ -17,8 +17,6 @@ namespace MasterCard.Test
 	public class ApiControllerTest
 	{
 
-		List<String> headerList = new List<String> ();
-
 		[SetUp]
 		public void setup ()
 		{
@@ -26,6 +24,29 @@ namespace MasterCard.Test
 			ApiConfig.setAuthentication (authentication);
 		}
 
+
+		/// <summary>
+		/// Test base object.
+		/// </summary>
+		public class TestBaseObject : BaseObject
+		{
+			public TestBaseObject(RequestMap bm) : base(bm)
+			{
+			}
+
+			public TestBaseObject() : base()
+			{
+			}
+
+			public override string GetResourcePath (String action)
+			{
+				return "/testurl/test-base-object";
+			}
+
+			public override List<string> GetHeaderParams(string action) {
+				return new List<String> {  };
+			}
+		}
 
 		/// <summary>
 		/// Mocks the client.
@@ -45,7 +66,6 @@ namespace MasterCard.Test
 					});
 
 			return restClient.Object;
-
 		}
 
 
@@ -58,7 +78,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList);
+			IDictionary<String,Object> result = controller.execute ("create", "test1", new TestBaseObject (responseMap));
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("user"));
@@ -79,7 +99,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (), headerList);
+			IDictionary<String,Object> result = controller.execute ("create", "test1", new TestBaseObject ());
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("list"));
@@ -101,7 +121,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, null));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList);
+			IDictionary<String,Object> result = controller.execute ("create", "test1", new TestBaseObject (responseMap));
 
 			Assert.IsTrue (result == null);
 
@@ -117,7 +137,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.NotAllowedException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Method not Allowed");
+			Assert.Throws<MasterCard.Core.Exceptions.NotAllowedException> (() => controller.execute ("create", "test1", new TestBaseObject (responseMap)), "Method not Allowed");
 		}
 
 
@@ -131,7 +151,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.InvalidRequestException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "The supplied field: 'date' is of an unsupported format");
+			Assert.Throws<MasterCard.Core.Exceptions.InvalidRequestException> (() => controller.execute ("create", "test1", new TestBaseObject (responseMap)), "The supplied field: 'date' is of an unsupported format");
 		}
 
 
@@ -144,7 +164,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.AuthenticationException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Oauth customer key invalid");
+			Assert.Throws<MasterCard.Core.Exceptions.AuthenticationException> (() => controller.execute ("create", "test1", new TestBaseObject (responseMap)), "Oauth customer key invalid");
 		}
 
 
@@ -157,7 +177,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.execute ( "create", "/test1", new TestBaseObject (responseMap), headerList), "Something went wrong");
+			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.execute ( "create", "test1", new TestBaseObject (responseMap)), "Something went wrong");
 		}
 
 
@@ -171,7 +191,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("read", "/test1", new TestBaseObject (requestMap), headerList);
+			IDictionary<String,Object> result = controller.execute ("read", "test1", new TestBaseObject (requestMap));
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.AreEqual("true", responseMapFromResponse["Account.Status"]);

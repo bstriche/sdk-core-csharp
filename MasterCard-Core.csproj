@@ -73,6 +73,14 @@
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
     <Compile Include="Test\UtilTest.cs" />
     <Compile Include="Sources\MasterCard\Core\Util.cs" />
+    <Compile Include="Test\Functional\Post.cs" />
+    <Compile Include="Test\Functional\User.cs" />
+    <Compile Include="Test\Functional\UserPostHeader.cs" />
+    <Compile Include="Test\Functional\UserPostPath.cs" />
+    <Compile Include="Test\TestBaseObject.cs" />
+    <Compile Include="Test\TestPathBaseObject.cs" />
+    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -83,6 +91,7 @@
     <Folder Include="Sources\MasterCard\Core\Exceptions\" />
     <Folder Include="Sources\MasterCard\Core\Model\" />
     <Folder Include="Sources\MasterCard\Core\Security\" />
+    <Folder Include="Test\Functional\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

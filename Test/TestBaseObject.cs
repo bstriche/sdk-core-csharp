@@ -1,0 +1,31 @@
+﻿using System;
+using MasterCard.Core.Model;
+using System.Collections.Generic;
+
+namespace MasterCard.Test
+{
+	/// <summary>
+	/// Test base object.
+	/// </summary>
+	public class TestPathBaseObject : BaseObject
+	{
+		public TestPathBaseObject(RequestMap bm) : base(bm)
+		{
+		}
+
+		public TestPathBaseObject() : base()
+		{
+		}
+
+		public override string GetResourcePath (String action)
+		{
+			return "/group/{group_id}/user/{user_id}";
+		}
+
+		public override List<string> GetHeaderParams(string action) 
+		{
+			return new List<String> {  };
+		}
+	}
+}
+
