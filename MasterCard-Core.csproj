@@ -53,9 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test\BaseMapTest.cs" />
-    <Compile Include="Test\OAuthUtilTest.cs" />
-    <Compile Include="Test\ApiControllerTest.cs" />
     <Compile Include="Sources\MasterCard\Core\Exceptions\ApiCommunicationException.cs" />
     <Compile Include="Sources\MasterCard\Core\Exceptions\ApiException.cs" />
     <Compile Include="Sources\MasterCard\Core\Exceptions\AuthenticationException.cs" />
@@ -71,21 +68,23 @@
     <Compile Include="Sources\MasterCard\Core\ApiConfig.cs" />
     <Compile Include="Sources\MasterCard\Core\ApiController.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
-    <Compile Include="Test\UtilTest.cs" />
     <Compile Include="Sources\MasterCard\Core\Util.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
+    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" />
     <Compile Include="Test\Functional\Post.cs" />
     <Compile Include="Test\Functional\User.cs" />
     <Compile Include="Test\Functional\UserPostHeader.cs" />
     <Compile Include="Test\Functional\UserPostPath.cs" />
+    <Compile Include="Test\ApiControllerTest.cs" />
+    <Compile Include="Test\BaseMapTest.cs" />
+    <Compile Include="Test\OAuthUtilTest.cs" />
     <Compile Include="Test\TestBaseObject.cs" />
     <Compile Include="Test\TestPathBaseObject.cs" />
-    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" />
-    <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
+    <Compile Include="Test\UtilTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Sources\" />
-    <Folder Include="Test\" />
     <Folder Include="Sources\MasterCard\" />
     <Folder Include="Sources\MasterCard\Core\" />
     <Folder Include="Sources\MasterCard\Core\Exceptions\" />

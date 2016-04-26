@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using MasterCard.Core.Model;
 
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
 	[TestFixture ()]
 	public class NodeJSMockServerSpec

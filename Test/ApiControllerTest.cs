@@ -10,8 +10,9 @@ using Moq;
 using MasterCard.Core;
 using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
+using MasterCard.Core.Exceptions;
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
 	[TestFixture ()]
 	public class ApiControllerTest
@@ -117,7 +118,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.NotAllowedException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Method not Allowed");
+			Assert.Throws<NotAllowedException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Method not Allowed");
 		}
 
 
@@ -131,7 +132,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.InvalidRequestException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "The supplied field: 'date' is of an unsupported format");
+			Assert.Throws<InvalidRequestException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "The supplied field: 'date' is of an unsupported format");
 		}
 
 
@@ -144,7 +145,7 @@ namespace MasterCard.Test
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.AuthenticationException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Oauth customer key invalid");
+			Assert.Throws<AuthenticationException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Oauth customer key invalid");
 		}
 
 

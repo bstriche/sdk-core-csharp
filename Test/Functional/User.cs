@@ -33,7 +33,7 @@ using MasterCard.Core.Model;
 using MasterCard.Core.Security;
 
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
     public class User : BaseObject
     {

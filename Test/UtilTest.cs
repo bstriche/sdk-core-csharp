@@ -5,7 +5,7 @@ using System.Text;
 using MasterCard.Core;
 using System.Collections.Generic;
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
 	[TestFixture]
 	public class UtilTest

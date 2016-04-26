@@ -7,7 +7,7 @@ using MasterCard.Core.Security.OAuth;
 using System.Collections.Generic;
 
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
 	
 	[TestFixture]

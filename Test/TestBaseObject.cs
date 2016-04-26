@@ -2,7 +2,7 @@
 using MasterCard.Core.Model;
 using System.Collections.Generic;
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
 	/// <summary>
 	/// Test base object.

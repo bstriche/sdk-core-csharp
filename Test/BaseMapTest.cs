@@ -4,7 +4,7 @@ using NUnit.Framework;
 using MasterCard.Core.Model;
 
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
 	[TestFixture ()]
 	public class BaseMapTest
