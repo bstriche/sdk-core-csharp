@@ -52,6 +52,16 @@ namespace MasterCard.Core.Model
 
 
 		/// <summary>
+		/// Updates the object.
+		/// </summary>
+		/// <returns>The object.</returns>
+		/// <param name="inputObject">request object.</param>
+		protected internal virtual T queryObject<T> (T inputObject) where T : BaseObject
+		{
+			return execute ("query", inputObject);
+		}
+
+		/// <summary>
 		/// Finds the object.
 		/// </summary>
 		/// <returns>The object.</returns>
@@ -78,7 +88,7 @@ namespace MasterCard.Core.Model
 		/// Creates the object.
 		/// </summary>
 		/// <returns>The object.</returns>
-		/// <param name="inputObject">Payments object.</param>
+		/// <param name="inputObject">request object.</param>
 		protected internal static T createObject<T> (T inputObject) where T : BaseObject
 		{
 			return execute ("create", inputObject);
@@ -88,7 +98,7 @@ namespace MasterCard.Core.Model
 		/// Updates the object.
 		/// </summary>
 		/// <returns>The object.</returns>
-		/// <param name="inputObject">Payments object.</param>
+		/// <param name="inputObject">request object.</param>
 		protected internal virtual T updateObject<T> (T inputObject) where T : BaseObject
 		{
 			return execute ("update", inputObject);
@@ -99,7 +109,7 @@ namespace MasterCard.Core.Model
 		/// Deletes the object.
 		/// </summary>
 		/// <returns>The object.</returns>
-		/// <param name="inputObject">Payments object.</param>
+		/// <param name="inputObject">request object.</param>
 		protected internal virtual T deleteObject<T> (T inputObject) where T : BaseObject
 		{
 			return execute ("delete", inputObject);

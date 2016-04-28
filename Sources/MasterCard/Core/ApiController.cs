@@ -262,11 +262,21 @@ namespace MasterCard.Core
 					if (inputMap.ContainsKey ("id")) {
 						//arizzini: lostandfound uses PUT with no ID, so removing this check
 						//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
-						s.Append ("/{"+(parameters++)+"}");
+						s.Append ("/{" + (parameters++) + "}");
 						objectList.Add (getURLEncodedString (inputMap ["id"]));
 					}
 					break;
+				default: 
+					break;
+			}
+
+
+			switch(action)
+			{
+				case "read":
+				case "delete":
 				case "list":
+				case "query":
 					if (inputMap != null && inputMap.Count > 0) {
 						foreach (KeyValuePair<String,Object> entry in inputMap) {
 							s = appendToQueryString (s, (parameters++) + "=" + (parameters++));
@@ -277,6 +287,7 @@ namespace MasterCard.Core
 					break;
 				default: 
 					break;
+				
 			}
 
 			s = appendToQueryString (s, "Format=JSON");
@@ -315,9 +326,8 @@ namespace MasterCard.Core
 				request.AddJsonBody (inputMap);
 				break;
 			case "read":
-				request = new RestRequest (uri, Method.GET);
-				break;
 			case "list":
+			case "query":
 				request = new RestRequest (uri, Method.GET);
 				break;
 			}
