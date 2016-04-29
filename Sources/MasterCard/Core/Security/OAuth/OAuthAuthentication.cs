@@ -66,7 +66,7 @@ namespace MasterCard.Core.Security.OAuth
 			String methodString = request.Method.ToString();
 			//String bodyString = (String) request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody).Value;
 
-			String bodyString = null;
+			String bodyString = "";
 			Parameter bodyParam = request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody);
 			if (bodyParam != null) {
 				bodyString = bodyParam.Value.ToString ();

@@ -115,12 +115,14 @@ namespace MasterCard.Core
 		/// Normalized the request parameters by generating a string which represent all the url request parameters and oauth request parameters.
 		/// </summary>
 		/// <returns>A string representing the normalized parameters</returns>
-		public static String NormalizeParameters(String requestUrl, SortedDictionary<String, String> requestParameters) {
+		public static String NormalizeParameters(String requestUrl, SortedDictionary<String, String> oauthParameters) {
 
+			var paramString1 = new StringBuilder();
+			SortedDictionary<String, String> requestParameters = new SortedDictionary<String, String> ();
+
+			//extract request paramter from the url and sort them
 			if (requestUrl.IndexOf ('?') > 0) {
-
 				NameValueCollection nameValueCollecion = HttpUtility.ParseQueryString (requestUrl.Substring (requestUrl.IndexOf ('?')));
-
 				foreach (String key in nameValueCollecion) {
 					foreach (String value in nameValueCollecion.GetValues(key)) {
 						requestParameters.Add (key, value);
@@ -128,11 +130,18 @@ namespace MasterCard.Core
 				}
 			}
 
-			var paramString1 = new StringBuilder();
 
+			//add the sorted request paramters to the base string. 
 			foreach(KeyValuePair<string, string> entry in requestParameters)
 			{
-				// do something with entry.Value or entry.Key
+				if (paramString1.Length > 0) {
+					paramString1.Append ("&");
+				}
+				paramString1.Append(uriRfc3986((String)entry.Key)).Append("=").Append(uriRfc3986((String)entry.Value));
+			}
+
+			foreach(KeyValuePair<string, string> entry in oauthParameters)
+			{
 				if (paramString1.Length > 0) {
 					paramString1.Append ("&");
 				}

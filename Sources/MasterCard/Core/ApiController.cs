@@ -211,7 +211,7 @@ namespace MasterCard.Core
 		/// <returns>The to query string.</returns>
 		/// <param name="s">S.</param>
 		/// <param name="stringToAppend">String to append.</param>
-		private StringBuilder appendToQueryString (StringBuilder s, string stringToAppend)
+		private void appendToQueryString (StringBuilder s, string stringToAppend)
 		{
 			if (s.ToString ().IndexOf ("?") == -1) {
 				s.Append ("?");
@@ -220,8 +220,6 @@ namespace MasterCard.Core
 				s.Append ("&");
 			}
 			s.Append (stringToAppend);
-
-			return s;
 		}
 
 		/// <summary>
@@ -279,7 +277,7 @@ namespace MasterCard.Core
 				case "query":
 					if (inputMap != null && inputMap.Count > 0) {
 						foreach (KeyValuePair<String,Object> entry in inputMap) {
-							s = appendToQueryString (s, (parameters++) + "=" + (parameters++));
+							appendToQueryString (s, "{" + (parameters++) + "}" + "=" + "{" + (parameters++) + "}");
 							objectList.Add (getURLEncodedString (entry.Key.ToString ()));
 							objectList.Add (getURLEncodedString (entry.Value.ToString ()));
 						}
@@ -290,7 +288,7 @@ namespace MasterCard.Core
 				
 			}
 
-			s = appendToQueryString (s, "Format=JSON");
+			appendToQueryString (s, "Format=JSON");
 
 			try {
 				uri = new Uri (String.Format (s.ToString (), objectList.ToArray()));

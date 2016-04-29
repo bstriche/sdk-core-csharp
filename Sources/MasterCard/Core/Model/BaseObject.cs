@@ -56,7 +56,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The object.</returns>
 		/// <param name="inputObject">request object.</param>
-		protected internal virtual T queryObject<T> (T inputObject) where T : BaseObject
+		protected internal static T queryObject<T> (T inputObject) where T : BaseObject
 		{
 			return execute ("query", inputObject);
 		}

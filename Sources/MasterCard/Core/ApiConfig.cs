@@ -133,6 +133,12 @@ namespace MasterCard.Core
 			API_BASE_SANDBOX_URL = "http://localhost:8080";
 			API_BASE_LIVE_URL = "http://localhost:8080";
 		}
+
+		public static void unsetLocalhost() {
+			API_BASE_SANDBOX_URL = "https://sandbox.api.mastercard.com";
+			API_BASE_LIVE_URL = "https://api.mastercard.com";
+		}
+
 		#endif
 
 	}

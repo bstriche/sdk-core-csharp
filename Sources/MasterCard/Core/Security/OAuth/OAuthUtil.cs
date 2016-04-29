@@ -49,8 +49,8 @@ namespace MasterCard.Core.Security.OAuth
 		/// Generates BaseString which is used in the OAuth process before the signature is generated
 		/// </summary>
 		/// <returns>A string representing the OAuth SignatureBaseString</returns>
-		public static String GetBaseString(String requestUrl, String httpMethod, SortedDictionary<String, String> baseParameters) {
-			return Util.uriRfc3986(httpMethod.ToUpper()) + "&" + Util.uriRfc3986(Util.NormalizeUrl(requestUrl)) + "&" + Util.uriRfc3986(Util.NormalizeParameters(requestUrl, baseParameters));
+		public static String GetBaseString(String requestUrl, String httpMethod, SortedDictionary<String, String> oauthParameters) {
+			return Util.uriRfc3986(httpMethod.ToUpper()) + "&" + Util.uriRfc3986(Util.NormalizeUrl(requestUrl)) + "&" + Util.uriRfc3986(Util.NormalizeParameters(requestUrl, oauthParameters));
 		}
 
 		/// <summary>
@@ -81,12 +81,11 @@ namespace MasterCard.Core.Security.OAuth
 			oAuthParameters.setOAuthNonce(OAuthUtil.GetNonce());
 			oAuthParameters.setOAuthTimestamp(OAuthUtil.GetTimestamp());
 			oAuthParameters.setOAuthSignatureMethod("RSA-SHA1");
+			oAuthParameters.setOAuthVersion("1.0");
 		
 
-			if (!string.IsNullOrEmpty (body)) {
-				String encodedHash = Util.Base64Encode (Util.Sha1Encode (body));
-				oAuthParameters.setOAuthBodyHash (encodedHash);
-			}
+			String encodedHash = Util.Base64Encode (Util.Sha1Encode (body));
+			oAuthParameters.setOAuthBodyHash (encodedHash);
 
 
 			String baseString = OAuthUtil.GetBaseString(URL, method, oAuthParameters.getBaseParameters());
