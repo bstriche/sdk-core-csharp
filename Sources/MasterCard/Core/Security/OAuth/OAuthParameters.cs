@@ -19,6 +19,7 @@ namespace MasterCard.Core.Security.OAuth
 		public static readonly String OAUTH_TOKEN_KEY = "oauth_token";
 		public static readonly String OAUTH_TOKEN_SECRET_KEY = "oauth_token_secret";
 		public static readonly String OAUTH_VERIFIER_KEY = "oauth_verifier";
+		public static readonly String OAUTH_VERSION = "oauth_version";
 		public static readonly String REALM_KEY = "realm";
 		public static readonly String XOAUTH_REQUESTOR_ID_KEY = "xoauth_requestor_id";
 
@@ -58,8 +59,12 @@ namespace MasterCard.Core.Security.OAuth
 			this.put(OAUTH_BODY_HASH_KEY, bodyHash, this.baseParameters);
 		}
 
+		public void setOAuthVersion (String version) {
+			this.put(OAUTH_VERSION, version, this.baseParameters);
+		}
+
 		public SortedDictionary<String, String> getBaseParameters() {
-			return  new SortedDictionary<String,String> (this.baseParameters);
+			return new SortedDictionary<String,String> (this.baseParameters);
 		}
 
 

@@ -211,7 +211,7 @@ namespace MasterCard.Core
 		/// <returns>The to query string.</returns>
 		/// <param name="s">S.</param>
 		/// <param name="stringToAppend">String to append.</param>
-		private StringBuilder appendToQueryString (StringBuilder s, string stringToAppend)
+		private void appendToQueryString (StringBuilder s, string stringToAppend)
 		{
 			if (s.ToString ().IndexOf ("?") == -1) {
 				s.Append ("?");
@@ -220,8 +220,6 @@ namespace MasterCard.Core
 				s.Append ("&");
 			}
 			s.Append (stringToAppend);
-
-			return s;
 		}
 
 		/// <summary>
@@ -262,14 +260,24 @@ namespace MasterCard.Core
 					if (inputMap.ContainsKey ("id")) {
 						//arizzini: lostandfound uses PUT with no ID, so removing this check
 						//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
-						s.Append ("/{"+(parameters++)+"}");
+						s.Append ("/{" + (parameters++) + "}");
 						objectList.Add (getURLEncodedString (inputMap ["id"]));
 					}
 					break;
+				default: 
+					break;
+			}
+
+
+			switch(action)
+			{
+				case "read":
+				case "delete":
 				case "list":
+				case "query":
 					if (inputMap != null && inputMap.Count > 0) {
 						foreach (KeyValuePair<String,Object> entry in inputMap) {
-							s = appendToQueryString (s, (parameters++) + "=" + (parameters++));
+							appendToQueryString (s, "{" + (parameters++) + "}" + "=" + "{" + (parameters++) + "}");
 							objectList.Add (getURLEncodedString (entry.Key.ToString ()));
 							objectList.Add (getURLEncodedString (entry.Value.ToString ()));
 						}
@@ -277,9 +285,10 @@ namespace MasterCard.Core
 					break;
 				default: 
 					break;
+				
 			}
 
-			s = appendToQueryString (s, "Format=JSON");
+			appendToQueryString (s, "Format=JSON");
 
 			try {
 				uri = new Uri (String.Format (s.ToString (), objectList.ToArray()));
@@ -315,9 +324,8 @@ namespace MasterCard.Core
 				request.AddJsonBody (inputMap);
 				break;
 			case "read":
-				request = new RestRequest (uri, Method.GET);
-				break;
 			case "list":
+			case "query":
 				request = new RestRequest (uri, Method.GET);
 				break;
 			}

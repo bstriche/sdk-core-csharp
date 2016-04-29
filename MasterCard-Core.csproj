@@ -75,6 +75,8 @@
     <Compile Include="Test\Functional\User.cs" />
     <Compile Include="Test\Functional\UserPostHeader.cs" />
     <Compile Include="Test\Functional\UserPostPath.cs" />
+    <Compile Include="Test\Functional\Parameters.cs" />
+    <Compile Include="Test\Functional\ParametersTest.cs" />
     <Compile Include="Test\ApiControllerTest.cs" />
     <Compile Include="Test\BaseMapTest.cs" />
     <Compile Include="Test\OAuthUtilTest.cs" />
