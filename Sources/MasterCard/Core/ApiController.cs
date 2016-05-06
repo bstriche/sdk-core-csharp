@@ -33,12 +33,20 @@ using System.Net;
 using System.Web;
 using RestSharp;
 using MasterCard.Core.Model;
+using log4net;
+using log4net.Config;
+using System.Linq;
 
 namespace MasterCard.Core
 {
 
 	public class ApiController
 	{
+
+		private static readonly ILog log = LogManager.GetLogger(typeof(ApiController));
+		static ApiController() {
+			BasicConfigurator.Configure();
+		}
 
 		String fullUrl;
 		IRestClient restClient;
@@ -98,9 +106,23 @@ namespace MasterCard.Core
 			}
 
 			try {
+				log.Debug(">>execute(action='"+action+"', resourcePaht='"+resourcePath+"', requestMap='"+requestMap+"'");
+				log.Debug("excute(), request.Method='"+request.Method+"'");
+				log.Debug("excute(), request.QueryString=");
+				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.QueryString));
+				log.Debug("excute(), request.Header=");
+				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.HttpHeader));
+				log.Debug("excute(), request.Body=");
+				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.RequestBody));
 				response = restClient.Execute(request);
+				log.Debug("execute(), response.Header=");
+				log.Debug(response.Headers);
+				log.Debug("execute(), response.Body=");
+				log.Debug(response.Content);
 			} catch (Exception e) {
-				throw new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
+				Exception wrapper = new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
+				log.Error (wrapper.Message, wrapper);
+				throw wrapper;
 			} 
 
 			if (response.ErrorException == null && response.Content != null) {
@@ -115,13 +137,21 @@ namespace MasterCard.Core
 				} 
 				 
 				if (response.StatusCode < HttpStatusCode.Ambiguous) {
+					log.Debug ("<<execute()");
 					return responseObj;
 				} else {
-					throwException (responseObj, response);
+					try {
+						throwException (responseObj, response);
+					} catch (Exception e) {
+						log.Error (e.Message, e);
+						throw e;
+					}
 					return null;
 				}
 			} else {
-				throw new MasterCard.Core.Exceptions.SystemException (response.ErrorMessage, response.ErrorException);
+				Exception wrapper = new MasterCard.Core.Exceptions.SystemException (response.ErrorMessage, response.ErrorException);
+				log.Error (wrapper.Message, wrapper);
+				throw wrapper;
 			}
 
 		}
