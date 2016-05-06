@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if DEBUG
+
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using MasterCard.Core.Model;
@@ -450,3 +452,4 @@ namespace TestMasterCard
 
 }
 
+#endif

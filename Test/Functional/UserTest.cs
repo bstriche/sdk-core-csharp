@@ -25,6 +25,8 @@
  *
  */
 
+#if DEBUG
+
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -291,3 +293,5 @@ namespace MasterCard.Test
         
     }
 }
+
+#endif

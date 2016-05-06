@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if DEBUG
+
+
+using System;
 using NUnit.Framework;
 using System.Text;
 
@@ -119,3 +122,4 @@ namespace TestMasterCard
 	}
 }
 
+#endif

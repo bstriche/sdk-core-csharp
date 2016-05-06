@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if DEBUG
+
+using System;
 using System.Text;
 using NUnit.Framework;
 using MasterCard.Core;
@@ -67,3 +69,5 @@ namespace TestMasterCard
 
 
 }
+
+#endif

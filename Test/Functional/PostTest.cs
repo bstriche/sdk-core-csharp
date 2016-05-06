@@ -24,6 +24,7 @@
  * SUCH DAMAGE.
  *
  */
+#if DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ using MasterCard.Core;
 using MasterCard.Core.Exceptions;
 using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
+
 
 
 namespace TestMasterCard
@@ -49,17 +51,15 @@ namespace TestMasterCard
 		{
             var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", "../../Test/prod_key.p12", "alias", "password");
             ApiConfig.setAuthentication (authentication);
-			#if DEBUG
+
 			ApiConfig.setLocalhost ();
-			#endif
+			
 		}
 
         
 		[TearDown]
 		public void tearDown() {
-			#if DEBUG
 			ApiConfig.unsetLocalhost();
-			#endif
 		}
             
             
@@ -223,3 +223,4 @@ namespace TestMasterCard
         
     }
 }
+#endif

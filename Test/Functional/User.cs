@@ -25,6 +25,8 @@
  *
  */
 
+#if DEBUG
+
 using System;
 using System.Collections.Generic;
 using MasterCard.Core;
@@ -240,3 +242,4 @@ namespace TestMasterCard
 }
 
 
+#endif
