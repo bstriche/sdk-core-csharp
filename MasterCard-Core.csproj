@@ -53,6 +53,7 @@
     <Reference Include="log4net">
       <HintPath>packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,19 +74,23 @@
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Util.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
-    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" />
-    <Compile Include="Test\Functional\Post.cs" />
-    <Compile Include="Test\Functional\User.cs" />
-    <Compile Include="Test\Functional\UserPostHeader.cs" />
-    <Compile Include="Test\Functional\UserPostPath.cs" />
     <Compile Include="Test\Functional\Parameters.cs" />
     <Compile Include="Test\Functional\ParametersTest.cs" />
+    <Compile Include="Test\Functional\UserTest.cs" />
+    <Compile Include="Test\Functional\User.cs" />
+    <Compile Include="Test\Functional\PostTest.cs" />
+    <Compile Include="Test\Functional\Post.cs" />
+    <Compile Include="Test\Functional\UserPostHeaderTest.cs" />
+    <Compile Include="Test\Functional\UserPostHeader.cs" />
+    <Compile Include="Test\Functional\UserPostPathTest.cs" />
+    <Compile Include="Test\Functional\UserPostPath.cs" />
     <Compile Include="Test\ApiControllerTest.cs" />
     <Compile Include="Test\BaseMapTest.cs" />
     <Compile Include="Test\OAuthUtilTest.cs" />
     <Compile Include="Test\TestBaseObject.cs" />
     <Compile Include="Test\TestPathBaseObject.cs" />
     <Compile Include="Test\UtilTest.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\JObjectExtension.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

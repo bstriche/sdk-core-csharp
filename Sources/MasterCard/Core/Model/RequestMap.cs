@@ -412,9 +412,17 @@ namespace MasterCard.Core.Model
 
 				} else {
 					if (null == map) {
-						Object tmpOut;
-						__storage.TryGetValue ((String)thisKey, out tmpOut);
-						map = (IDictionary<String, Object>)tmpOut;
+						try {
+							Object tmpOut = __storage [thisKey];
+							if(tmpOut.GetType() == typeof(JObject)) {
+								map = ((JObject) tmpOut).ToDictionary();
+							} else {
+								map = (IDictionary<String, Object>)tmpOut;
+							}
+						} catch  {
+							return null;
+						}
+
 					} else {
 						map = (IDictionary<String, Object>)map [thisKey];
 					}

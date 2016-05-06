@@ -126,6 +126,7 @@ namespace TestMasterCard
         
         
         
+        
         /// <summary>
         /// Creates an object of type <code>User</code>
         /// </summary>
@@ -150,10 +151,12 @@ namespace TestMasterCard
         
         
         
+        
         /// <summary>
         /// Retrieves one object of type <code>User</code>
         /// </summary>
-        /// <param name="id">The unique identifier which is used to identify an User object.</praram>
+        /// <param name="id">The unique identifier which is used to identify an User object.</param>
+        /// <param name = "parameters">This is the optional paramter which can be passed to the request.</param>
         /// <returns> A User object </returns>
         /// <exception cref="ApiCommunicationException"> </exception>
         /// <exception cref="AuthenticationException"> </exception>
@@ -161,12 +164,16 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static User Read(String id)
+        public static User Read(String id,  RequestMap parameters = null)
         {
             RequestMap map = new RequestMap();
             map.Set("id", id);
+		    if (parameters != null && parameters.Count > 0) {
+		        map.AddAll (parameters);
+            }
             return (User) BaseObject.readObject(new User(map));
         }
+        
         
         
         
@@ -185,6 +192,7 @@ namespace TestMasterCard
             return  this.updateObject(this);
         }
 
+        
         
         
         
@@ -224,6 +232,7 @@ namespace TestMasterCard
             User currentObject = new User(new RequestMap("id", id));
             return currentObject.Delete();
         }
+        
         
         
         

@@ -102,7 +102,7 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static List<Post> List()
+        public static List<Post> doList()
         {
             return BaseObject.listObjects(new Post());
         }
@@ -118,10 +118,11 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static List<Post> List(RequestMap criteria)
+        public static List<Post> doList(RequestMap criteria)
         {
             return BaseObject.listObjects(new Post(criteria));
         }
+        
         
         
         
@@ -136,7 +137,7 @@ namespace TestMasterCard
         /// <exception cref="InvalidRequestException"> </exception>
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static Post Create(RequestMap map)
+        public static Post doCreate(RequestMap map)
         {
             return (Post) BaseObject.createObject(new Post(map));
         }
@@ -150,10 +151,12 @@ namespace TestMasterCard
         
         
         
+        
         /// <summary>
         /// Retrieves one object of type <code>Post</code>
         /// </summary>
-        /// <param name="id">The unique identifier which is used to identify an Post object.</praram>
+        /// <param name="id">The unique identifier which is used to identify an Post object.</param>
+        /// <param name = "parameters">This is the optional paramter which can be passed to the request.</param>
         /// <returns> A Post object </returns>
         /// <exception cref="ApiCommunicationException"> </exception>
         /// <exception cref="AuthenticationException"> </exception>
@@ -161,12 +164,16 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static Post Read(String id)
+        public static Post doFind(String id,  RequestMap parameters = null)
         {
             RequestMap map = new RequestMap();
             map.Set("id", id);
+		    if (parameters != null && parameters.Count > 0) {
+		        map.AddAll (parameters);
+            }
             return (Post) BaseObject.readObject(new Post(map));
         }
+        
         
         
         
@@ -180,11 +187,12 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public Post Update()
+        public Post doUpdate()
         {
             return  this.updateObject(this);
         }
 
+        
         
         
         
@@ -203,7 +211,7 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public Post Delete()
+        public Post doDelete()
         {
             return this.deleteObject(this);
         }
@@ -219,11 +227,12 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static Post Delete(String id)
+        public static Post doDelete(String id)
         {
             Post currentObject = new Post(new RequestMap("id", id));
-            return currentObject.Delete();
+            return currentObject.doDelete();
         }
+        
         
         
         

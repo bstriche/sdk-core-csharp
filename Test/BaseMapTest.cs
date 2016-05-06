@@ -55,6 +55,41 @@ namespace TestMasterCard
 		}
 
 
+		[Test()]
+		public void TestIssueWithMockResponse() {
+			String responseString = "{  \n" + "   \"website\":\"hildegard.org\",\n" + "   \"address\":{  \n"
+			                         + "      \"instructions\":{  \n" + "         \"doorman\":true,\n"
+			                         + "         \"text\":\"some delivery instructions text\"\n" + "      },\n"
+			                         + "      \"city\":\"New York\",\n" + "      \"postalCode\":\"10577\",\n" + "      \"id\":1,\n"
+			                         + "      \"state\":\"NY\",\n" + "      \"line1\":\"2000 Purchase Street\"\n" + "   },\n"
+			                         + "   \"phone\":\"1-770-736-8031\",\n" + "   \"name\":\"Joe Bloggs\",\n" + "   \"id\":1,\n"
+			                         + "   \"email\":\"name@example.com\",\n" + "   \"username\":\"jbloggs\"\n" + "}";
+
+			RequestMap tmpMap = new RequestMap (responseString);
+			Assert.AreEqual ("hildegard.org", tmpMap ["website"]);	
+			Assert.AreEqual ("some delivery instructions text", tmpMap ["address.instructions.text"]);	
+			Assert.AreEqual ("true", tmpMap ["address.instructions.doorman"].ToString().ToLower());	
+
+		}
+
+
+		[Test()]
+		public void TestIssueWithMockResponseAsDictionary() {
+			String responseString = "{  \n" + "   \"website\":\"hildegard.org\",\n" + "   \"address\":{  \n"
+				+ "      \"instructions\":{  \n" + "         \"doorman\":true,\n"
+				+ "         \"text\":\"some delivery instructions text\"\n" + "      },\n"
+				+ "      \"city\":\"New York\",\n" + "      \"postalCode\":\"10577\",\n" + "      \"id\":1,\n"
+				+ "      \"state\":\"NY\",\n" + "      \"line1\":\"2000 Purchase Street\"\n" + "   },\n"
+				+ "   \"phone\":\"1-770-736-8031\",\n" + "   \"name\":\"Joe Bloggs\",\n" + "   \"id\":1,\n"
+				+ "   \"email\":\"name@example.com\",\n" + "   \"username\":\"jbloggs\"\n" + "}";
+
+			RequestMap tmpMap = new RequestMap (RequestMap.AsDictionary(responseString));
+			Assert.AreEqual ("hildegard.org", tmpMap ["website"]);	
+			Assert.AreEqual ("some delivery instructions text", tmpMap ["address.instructions.text"]);	
+			Assert.AreEqual ("true", tmpMap ["address.instructions.doorman"].ToString().ToLower());	
+
+		}
+
 
 		[Test ()]
 		public void TestRemve(){
