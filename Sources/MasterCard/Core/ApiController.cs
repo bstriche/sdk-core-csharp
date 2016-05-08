@@ -36,6 +36,7 @@ using MasterCard.Core.Model;
 using log4net;
 using log4net.Config;
 using System.Linq;
+using System.IO;
 
 namespace MasterCard.Core
 {
@@ -45,7 +46,14 @@ namespace MasterCard.Core
 
 		private static readonly ILog log = LogManager.GetLogger(typeof(ApiController));
 		static ApiController() {
-			BasicConfigurator.Configure();
+			if (ApiConfig.isDebug ()) {
+				if (File.Exists ("log4net.xml")) {
+					XmlConfigurator.Configure (new FileInfo ("log4net.xml"));
+				} else {
+					BasicConfigurator.Configure();
+				}
+			} 
+
 		}
 
 		String fullUrl;
