@@ -92,6 +92,9 @@
     <Compile Include="Test\TestPathBaseObject.cs" />
     <Compile Include="Test\UtilTest.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\JObjectExtension.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
+    <Compile Include="Test\CryptUtilTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

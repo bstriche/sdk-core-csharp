@@ -27,6 +27,7 @@
 
 using System;
 using MasterCard.Core.Security;
+using System.Collections.Generic;
 
 namespace MasterCard.Core
 {
@@ -38,6 +39,7 @@ namespace MasterCard.Core
 		private static Boolean SANDBOX = true;
 		private static Boolean DEBUG = false;
 		private static AuthenticationInterface authentication;
+		private static Dictionary<String,Object> cryptographyMap = new Dictionary<String,Object> ();
 
 		/// <summary>
 		/// The VERSIO.
@@ -119,6 +121,27 @@ namespace MasterCard.Core
 		public static void setAuthentication(AuthenticationInterface authentication) {
 			ApiConfig.authentication = authentication;
 		}
+
+
+		/// <summary>
+		/// Adds the cryptography interceptor.
+		/// </summary>
+		/// <param name="cryptographyInterceptor">Cryptography interceptor.</param>
+		public static void AddCryptographyInterceptor(CryptographyInterceptor cryptographyInterceptor) {
+			if (!cryptographyMap.ContainsKey (cryptographyInterceptor.GetTriggeringPath ())) {
+				cryptographyMap.Add (cryptographyInterceptor.GetTriggeringPath (), cryptographyInterceptor);
+			}
+		}
+
+		public static CryptographyInterceptor GetCryptographyInterceptor(String basePath) {
+			foreach(var entry in cryptographyMap) {
+				if (entry.Key.Contains(basePath) || basePath.Contains(entry.Key)) {
+					return (CryptographyInterceptor) entry.Value;
+				}
+			}
+			return null;
+		}
+
 
 		/// <summary>
 		/// Ises the sandbox.
