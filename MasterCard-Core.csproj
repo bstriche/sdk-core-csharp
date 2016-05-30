@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>sdkcorecharp</RootNamespace>
     <AssemblyName>MasterCard-Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,23 +39,26 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>packages\RestSharp.105.2.3\lib\net4\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Moq">
-      <HintPath>packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
+      <HintPath>packages\Moq.4.5.3\lib\net45\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,6 +99,9 @@
     <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
     <Compile Include="Test\CryptUtilTest.cs" />
+    <Compile Include="Test\Functional\TokenActivation.cs" />
+    <Compile Include="Test\Functional\TokenActivationTest.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\MDES\MDESCryptography.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -105,6 +112,7 @@
     <Folder Include="Sources\MasterCard\Core\Model\" />
     <Folder Include="Sources\MasterCard\Core\Security\" />
     <Folder Include="Test\Functional\" />
+    <Folder Include="Sources\MasterCard\Core\Security\MDES\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

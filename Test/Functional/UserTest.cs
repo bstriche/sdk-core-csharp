@@ -38,7 +38,7 @@ using MasterCard.Core.Security.OAuth;
 using TestMasterCard;
 
 
-namespace MasterCard.Test
+namespace TestMasterCard
 {
 
 
