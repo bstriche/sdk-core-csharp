@@ -52,13 +52,17 @@ namespace TestMasterCard
 		{
 			ApiConfig.setSandbox (true);
 			ApiConfig.setDebug (true);
-			var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", "../../Test/prod_key.p12", "alias", "password");
+
+
+            var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
+
+
+            var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", path+"\\Test\\prod_key.p12", "alias", "password");
 			ApiConfig.setAuthentication (authentication);
 
-			String mastercardPublic = "../../Test/mastercard_public.crt";
-			String mastercardPrivate = "../../Test/mastercard_private.pem";
-
-			var interceptor = new MDESCryptography (mastercardPublic, mastercardPrivate);
+			String mastercardPublic = path+"\\Test\\mastercard_public.crt";
+			String mastercardPrivate = path+"\\Test\\mastercard_private.pem";
+            var interceptor = new MDESCryptography(mastercardPublic, mastercardPrivate);
 			ApiConfig.AddCryptographyInterceptor (interceptor);
 
 		}

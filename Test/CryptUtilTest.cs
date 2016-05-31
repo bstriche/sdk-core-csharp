@@ -10,8 +10,7 @@ using System.Collections.Generic;
 using MasterCard.Core.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto;
+using System.IO;
 
 namespace TestMasterCard
 {
@@ -47,17 +46,27 @@ namespace TestMasterCard
 
 		[Test]
 		public void TestEncryptDecryptRSA () {
-			X509Certificate2 cert = new X509Certificate2("../../Test/certificate.p12", "", X509KeyStorageFlags.Exportable);
+            Console.WriteLine("--------------------------------------");
 
-			AsymmetricCipherKeyPair keyPair = DotNetUtilities.GetRsaKeyPair (cert.PrivateKey as RSA);
+
+
+
+
+            string certPath = MasterCard.Core.Util.GetCurrenyAssemblyPath() + "\\Test\\certificate.p12";
+            Console.WriteLine(certPath);
+            X509Certificate2 cert = new X509Certificate2(new Uri(certPath).LocalPath
+                , "", X509KeyStorageFlags.Exportable);
+
+            var publicKey = cert.GetRSAPublicKey();
+            var privateKey = cert.GetRSAPrivateKey();
 
 			String data = "andrea_rizzini@mastercard.com";
 
-			byte[] encryptedData = CryptUtil.EncrytptRSA (System.Text.Encoding.UTF8.GetBytes (data), keyPair.Public);
+			byte[] encryptedData = CryptUtil.EncrytptRSA (Encoding.UTF8.GetBytes (data), publicKey);
 
 			Assert.NotNull (encryptedData);
 
-			byte[] decryptedData = CryptUtil.DecryptRSA (encryptedData, keyPair.Private);
+			byte[] decryptedData = CryptUtil.DecryptRSA (encryptedData, privateKey);
 
 			String dataOut = System.Text.Encoding.UTF8.GetString (decryptedData);
 
