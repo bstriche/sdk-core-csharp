@@ -29,64 +29,68 @@
 
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
-
-
 using MasterCard.Core;
 using MasterCard.Core.Exceptions;
 using MasterCard.Core.Model;
-using MasterCard.Core.Security.OAuth;
+using MasterCard.Core.Security;
 
 
 namespace TestMasterCard
 {
+	public class TokenActivation : BaseObject
+    {
 
-
-	[TestFixture ()]
-	public class UserPostPathTest
-	{
-
-		[SetUp]
-		public void setup ()
-		{
-            var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
-            var authentication = new OAuthAuthentication("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", currentPath + "\\Test\\prod_key.p12", "alias", "password");
-            ApiConfig.setAuthentication (authentication);
-			ApiConfig.setLocalhost ();
-		}
-
-		[TearDown]
-		public void tearDown() {
-			ApiConfig.unsetLocalhost();
-		}
-            
-            
-            
-                        
-
-        [Test ()]
-        public void get_user_posts_with_path_Test()
+		public TokenActivation(RequestMap bm) : base(bm)
         {
-            
-            RequestMap map = new RequestMap();
-            map.Set ("user_id", "1");
-            
-            
+		}
 
-            List<UserPostPath> responseList = UserPostPath.List(map);
-            UserPostPath response = responseList[0];
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
-            Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase );
-            Assert.That("My Title", Is.EqualTo(response["title"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["userId"].ToString()).IgnoreCase );
+		public TokenActivation() : base()
+        {
+        }
+
+        public override string GetResourcePath(string action) {
             
+            if (action == "create") {
+				return "/mdes/tokenization/1/0/token/tokenize";
+            }
+            throw new System.ArgumentException("Invalid action supplied: " + action);
+        }
+
+
+        public override List<string> GetHeaderParams(string action) {
+            
+            if (action == "create") {
+                return new List<String> {  };
+            }
+            throw new System.ArgumentException("Invalid action supplied: " + action);
+        }
+
+        
+        
+        
+        
+        
+        
+        
+        
+        /// <summary>
+        /// Query and Returns one object of type <code>Parameters</code>
+        /// </summary>
+        /// <param name = "parameters">This is the optional paramter which can be passed to the request.</param>
+        /// <returns> A Parameters object </returns>
+        /// <exception cref="ApiCommunicationException"> </exception>
+        /// <exception cref="AuthenticationException"> </exception>
+        /// <exception cref="InvalidRequestException"> </exception>
+        /// <exception cref="NotAllowedException"> </exception>
+        /// <exception cref="ObjectNotFoundException"> </exception>
+        /// <exception cref="SystemException"> </exception>
+		public static TokenActivation Create(RequestMap parameters)
+        {
+			return (TokenActivation) BaseObject.createObject(new TokenActivation(parameters));
         }
         
-            
-            
-            
-            
         
     }
 }
+
 #endif

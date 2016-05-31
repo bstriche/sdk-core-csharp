@@ -37,6 +37,7 @@ using log4net;
 using log4net.Config;
 using System.Linq;
 using System.IO;
+using MasterCard.Core.Security;
 
 namespace MasterCard.Core
 {
@@ -99,6 +100,7 @@ namespace MasterCard.Core
 		{
 			IRestResponse response;
 			IRestRequest request;
+			CryptographyInterceptor interceptor;
 
 			try 
 			{
@@ -106,7 +108,8 @@ namespace MasterCard.Core
 				IDictionary<String,Object> headerMap = Util.SubMap(paramterMap, headerList);
 
 				Uri uri = getURL (action, resourcePath, paramterMap);
-				request = getRequest (uri, action, paramterMap, headerMap);
+				interceptor = ApiConfig.GetCryptographyInterceptor(uri.AbsolutePath);
+				request = getRequest (uri, action, paramterMap, headerMap, interceptor);
 
 
 			} catch (Exception e) {
@@ -139,6 +142,9 @@ namespace MasterCard.Core
 				if (response.Content.StartsWith ("{") || response.Content.StartsWith ("[") || response.ContentType == "application/json") {
 					try {
 						responseObj = RequestMap.AsDictionary (response.Content);
+						if (interceptor != null) {
+							responseObj = interceptor.Encrypt(responseObj);
+						}
 					} catch (Exception) {
 						throw new MasterCard.Core.Exceptions.SystemException ("Error: parsing JSON response", response.Content);
 					}
@@ -344,14 +350,22 @@ namespace MasterCard.Core
 		/// <param name="uri">URI.</param>
 		/// <param name="action">Action.</param>
 		/// <param name="objectMap">Object map.</param>
-		RestRequest getRequest (Uri uri, String action, IDictionary<String,Object> inputMap, IDictionary<String,Object> headerMap)
+		RestRequest getRequest (Uri uri, String action, IDictionary<String,Object> inputMap, IDictionary<String,Object> headerMap, CryptographyInterceptor interceptor = null)
 		{
 
 			RestRequest request = null;
 
+
+
 			switch (action) {
 			case "create":
 				request = new RestRequest (uri, Method.POST);
+
+				//arizzini: adding cryptography interceptor for POST
+				if (interceptor != null) {
+					inputMap = interceptor.Encrypt (inputMap);
+				}
+
 				request.AddJsonBody (inputMap);
 				break;
 			case "delete":
@@ -359,6 +373,12 @@ namespace MasterCard.Core
 				break;
 			case "update":
 				request = new RestRequest (uri, Method.PUT);
+
+				//arizzini: adding cryptography interceptor for PUT
+				if (interceptor != null) {
+					inputMap = interceptor.Encrypt (inputMap);
+				}
+
 				request.AddJsonBody (inputMap);
 				break;
 			case "read":

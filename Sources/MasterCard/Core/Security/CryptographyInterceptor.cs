@@ -27,15 +27,15 @@
 
 
 using System;
-using RestSharp;
-
+using System.Collections.Generic;
 
 namespace MasterCard.Core.Security
 {
-	public interface AuthenticationInterface
+	public interface CryptographyInterceptor
 	{
-		void SignRequest(Uri uri, IRestRequest request);
-		String SignMessage(String message);
+		String GetTriggeringPath();
+		Dictionary<String,Object> Encrypt(IDictionary<String,Object> map);
+		Dictionary<String,Object> Decrypt(IDictionary<String,Object> map);
 	}
 }
 

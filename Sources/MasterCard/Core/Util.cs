@@ -51,6 +51,17 @@ namespace MasterCard.Core
 			return String.Format("{0}{1}{2}{3}", myUri.Scheme,  Uri.SchemeDelimiter, myUri.Authority, myUri.AbsolutePath);
 		}
 
+        /// <summary>
+        /// return the current assembly path
+        /// </summary>
+        /// <returns></returns>
+        public static String GetCurrenyAssemblyPath()
+        {
+            String tmpPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            tmpPath = tmpPath.Remove(0, "file:\\".Length);
+            return tmpPath;
+        }
+
 
 		/// <summary>
 		/// Returns a sub map by selecting the map items contained in the inList
