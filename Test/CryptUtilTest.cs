@@ -46,16 +46,9 @@ namespace TestMasterCard
 
 		[Test]
 		public void TestEncryptDecryptRSA () {
-            Console.WriteLine("--------------------------------------");
-
-
-
-
 
             string certPath = MasterCard.Core.Util.GetCurrenyAssemblyPath() + "\\Test\\certificate.p12";
-            Console.WriteLine(certPath);
-            X509Certificate2 cert = new X509Certificate2(new Uri(certPath).LocalPath
-                , "", X509KeyStorageFlags.Exportable);
+            X509Certificate2 cert = new X509Certificate2(certPath , "", X509KeyStorageFlags.Exportable);
 
             var publicKey = cert.GetRSAPublicKey();
             var privateKey = cert.GetRSAPrivateKey();
