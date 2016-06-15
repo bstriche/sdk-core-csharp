@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿
 
 using System;
 using System.Net;
@@ -184,4 +184,3 @@ namespace TestMasterCard
 	}
 }
 
-#endif

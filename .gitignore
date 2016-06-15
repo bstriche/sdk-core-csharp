@@ -4,7 +4,7 @@
 packages/
 TestResults/
 TestResult.xml
-Test\nodejs-server-server\node_modules
+Test/nodejs-server-server/node_modules/
 
 # globs
 Makefile.in

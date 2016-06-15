@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿
 
 using System;
 using System.Text;
@@ -72,4 +72,3 @@ namespace TestMasterCard
 
 }
 
-#endif

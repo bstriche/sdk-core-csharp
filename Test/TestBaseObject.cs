@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿
 
 using System;
 using MasterCard.Core.Model;
@@ -31,4 +31,4 @@ namespace TestMasterCard
 	}
 }
 
-#endif
+

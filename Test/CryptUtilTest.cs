@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿
 
 
 using System;
@@ -82,4 +82,3 @@ namespace TestMasterCard
 	}
 }
 
-#endif

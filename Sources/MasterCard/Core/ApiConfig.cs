@@ -151,7 +151,7 @@ namespace MasterCard.Core
 			return ApiConfig.SANDBOX;
 		}
 
-		#if DEBUG
+		
 		public static void setLocalhost() {
 			API_BASE_SANDBOX_URL = "http://localhost:8080";
 			API_BASE_LIVE_URL = "http://localhost:8080";
@@ -162,7 +162,7 @@ namespace MasterCard.Core
 			API_BASE_LIVE_URL = "https://api.mastercard.com";
 		}
 
-		#endif
+		
 
 	}
 
