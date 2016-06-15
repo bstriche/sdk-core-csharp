@@ -87,6 +87,8 @@
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Util.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
+    <Compile Include="Test\Functional\AudiencesSegment.cs" />
+    <Compile Include="Test\Functional\AudiencesSegmentTest.cs" />
     <Compile Include="Test\Functional\Parameters.cs" />
     <Compile Include="Test\Functional\ParametersTest.cs" />
     <Compile Include="Test\Functional\UserTest.cs" />
