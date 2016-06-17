@@ -65,14 +65,17 @@ namespace TestMasterCard
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        
-        
-        
-        
-        
-        
-        
-        
+        public override string GetApiVersion()
+        {
+            return "0.0.1";
+        }
+
+
+
+
+
+
+
         /// <summary>
         /// Query and Returns one object of type <code>Parameters</code>
         /// </summary>

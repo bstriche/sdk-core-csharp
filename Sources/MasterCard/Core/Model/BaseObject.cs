@@ -50,13 +50,15 @@ namespace MasterCard.Core.Model
 
 		public abstract List<string> GetHeaderParams (string action);
 
+        public abstract string GetApiVersion();
 
-		/// <summary>
-		/// Updates the object.
-		/// </summary>
-		/// <returns>The object.</returns>
-		/// <param name="inputObject">request object.</param>
-		protected internal static T queryObject<T> (T inputObject) where T : BaseObject
+
+        /// <summary>
+        /// Updates the object.
+        /// </summary>
+        /// <returns>The object.</returns>
+        /// <param name="inputObject">request object.</param>
+        protected internal static T queryObject<T> (T inputObject) where T : BaseObject
 		{
 			return execute ("query", inputObject);
 		}
@@ -122,7 +124,7 @@ namespace MasterCard.Core.Model
 		/// <param name="action">Action.</param>
 		/// <param name="inputObject">Input object.</param>
 		static T execute<T>(String action, T inputObject) where T : BaseObject {
-			ApiController apiController = new ApiController ();
+            ApiController apiController = new ApiController(inputObject.GetApiVersion());
 			IDictionary<String,Object> response = apiController.execute (action, inputObject.GetResourcePath(action), inputObject, inputObject.GetHeaderParams(action));
 
 			if (response != null) {

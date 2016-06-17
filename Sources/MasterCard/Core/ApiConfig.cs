@@ -42,11 +42,6 @@ namespace MasterCard.Core
 		private static Dictionary<String,Object> cryptographyMap = new Dictionary<String,Object> ();
 
 		/// <summary>
-		/// The VERSIO.
-		/// </summary>
-		private static string VERSION = "1.0.0";
-
-		/// <summary>
 		/// The AP i BAS e LIV e UR.
 		/// </summary>
 		private static string API_BASE_LIVE_URL = "https://api.mastercard.com";
@@ -70,14 +65,6 @@ namespace MasterCard.Core
 		/// <returns>The sandbox URL.</returns>
 		public static string getSandboxUrl() {
 			return API_BASE_SANDBOX_URL;
-		}
-
-		/// <summary>
-		/// Gets the version.
-		/// </summary>
-		/// <returns>The version.</returns>
-		public static string getVersion() {
-			return VERSION;
 		}
 
 		/// <summary>

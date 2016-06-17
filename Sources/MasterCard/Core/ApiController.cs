@@ -58,9 +58,13 @@ namespace MasterCard.Core
 		}
 
 		String fullUrl;
+        String apiVersion;
 		IRestClient restClient;
 
-		public ApiController() {
+		public ApiController(string apiVersion) {
+
+            //arizzini: making sure to propagate the version.
+            this.apiVersion = apiVersion;
 
 			checkState ();
 
@@ -390,7 +394,7 @@ namespace MasterCard.Core
 
 			request.AddHeader ("Accept", "application/json");
 			request.AddHeader ("Content-Type", "application/json");
-			request.AddHeader ("User-Agent", "Java-SDK/" + ApiConfig.getVersion());
+			request.AddHeader ("User-Agent", "CSharp-SDK/" + this.apiVersion);
 
 			//arizzini: adding the header paramter support.
 			foreach (KeyValuePair<string, object> entry in headerMap) {

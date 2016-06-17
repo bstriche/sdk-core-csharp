@@ -58,7 +58,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
@@ -79,7 +79,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("[ { \"name\":\"andrea\", \"surname\":\"rizzini\" } ]");
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
@@ -101,7 +101,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, null));
 
@@ -117,7 +117,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":{\"Source\":\"System\",\"ReasonCode\":\"METHOD_NOT_ALLOWED\",\"Description\":\"Method not Allowed\",\"Recoverable\":\"false\"}}}");
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
@@ -131,7 +131,7 @@ namespace TestMasterCard
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"Validation\",\"ReasonCode\":\"INVALID_TYPE\",\"Description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
 
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
@@ -144,7 +144,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Oauth customer key invalid\",\"Recoverable\":false,\"Details\":null}]}}");
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
@@ -157,7 +157,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Something went wrong\",\"Recoverable\":false,\"Details\":null}]}}");
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
@@ -171,7 +171,7 @@ namespace TestMasterCard
 
 			RequestMap requestMap = new RequestMap ("{\n\"id\":\"1\"\n}");
 			RequestMap responseMap = new RequestMap ("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
-			ApiController controller = new ApiController ();
+			ApiController controller = new ApiController ("0.0.1");
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 

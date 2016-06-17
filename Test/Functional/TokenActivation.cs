@@ -65,14 +65,20 @@ namespace TestMasterCard
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        
-        
-        
-        
-        
-        
-        
-        
+
+        public override string GetApiVersion()
+        {
+            return "0.0.1";
+        }
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Query and Returns one object of type <code>Parameters</code>
         /// </summary>
@@ -84,7 +90,7 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-		public static TokenActivation Create(RequestMap parameters)
+        public static TokenActivation Create(RequestMap parameters)
         {
 			return (TokenActivation) BaseObject.createObject(new TokenActivation(parameters));
         }
