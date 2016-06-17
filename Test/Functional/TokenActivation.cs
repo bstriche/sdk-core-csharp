@@ -37,21 +37,21 @@ using MasterCard.Core.Security;
 
 namespace TestMasterCard
 {
-    public class UserPostHeader : BaseObject
+	public class TokenActivation : BaseObject
     {
 
-        public UserPostHeader(RequestMap bm) : base(bm)
+		public TokenActivation(RequestMap bm) : base(bm)
         {
 		}
 
-        public UserPostHeader() : base()
+		public TokenActivation() : base()
         {
         }
 
         public override string GetResourcePath(string action) {
             
-            if (action == "list") {
-               return "/mock_crud_server/users/posts";
+            if (action == "create") {
+				return "/mdes/tokenization/1/0/token/tokenize";
             }
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
@@ -59,8 +59,8 @@ namespace TestMasterCard
 
         public override List<string> GetHeaderParams(string action) {
             
-            if (action == "list") {
-               return new List<String> { "user_id" };
+            if (action == "create") {
+                return new List<String> {  };
             }
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
@@ -73,39 +73,27 @@ namespace TestMasterCard
 
 
 
-        /// <summary>
-        /// Retrieves a list of type <code>UserPostHeader</code>
-        /// </summary>
-        /// <returns> A list UserPostHeader of objects </returns>
-        /// <exception cref="ApiCommunicationException"> </exception>
-        /// <exception cref="AuthenticationException"> </exception>
-        /// <exception cref="InvalidRequestException"> </exception>
-        /// <exception cref="NotAllowedException"> </exception>
-        /// <exception cref="ObjectNotFoundException"> </exception>
-        /// <exception cref="SystemException"> </exception>
-        public static List<UserPostHeader> List()
-        {
-            return BaseObject.listObjects(new UserPostHeader());
-        }
+
+
+
+
+
 
         /// <summary>
-        /// Retrieves a list of type <code>UserPostHeader</code> using the specified criteria
+        /// Query and Returns one object of type <code>Parameters</code>
         /// </summary>
-        /// <param name="criteria">The criteria set of values which is used to identify the set of records of UserPostHeader object to return</praram>
-        /// <returns>  a List of UserPostHeader objects which holds the list objects available. </returns>
+        /// <param name = "parameters">This is the optional paramter which can be passed to the request.</param>
+        /// <returns> A Parameters object </returns>
         /// <exception cref="ApiCommunicationException"> </exception>
         /// <exception cref="AuthenticationException"> </exception>
         /// <exception cref="InvalidRequestException"> </exception>
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static List<UserPostHeader> List(RequestMap criteria)
+        public static TokenActivation Create(RequestMap parameters)
         {
-            return BaseObject.listObjects(new UserPostHeader(criteria));
+			return (TokenActivation) BaseObject.createObject(new TokenActivation(parameters));
         }
-        
-        
-        
         
         
     }

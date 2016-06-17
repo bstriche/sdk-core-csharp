@@ -3,7 +3,7 @@ echo "Cleaning up"
 rm -rf bin/
 
 echo "Building Mastercard-Core-CSharp"
-RESPONSE=$(xbuild /p:Configuration=Release /flp1:LogFile=build.log MasterCard-Core.sln | grep -i "Build succeeded\|Build FAILED")
+RESPONSE=$(msbuild.exe /p:Configuration=Release /flp1:LogFile=build.log MasterCard-Core.sln | grep -i "Build succeeded\|Build FAILED")
 
 if [[ "$RESPONSE" =~ "FAILED" ]] 
 then
@@ -19,7 +19,7 @@ then
 fi
 
 echo "Running Test"
-RESPONSE=$(nunit-console bin/Release/MasterCard-Core.dll -xmlConsole -nologo | tail -n+3 | xmlstarlet sel -t -v "//test-suite[@name='bin/Release/MasterCard-Core.dll']/@success")
+RESPONSE=$(nunit3-console.exe bin/Release/MasterCard-Core.dll | tail -n+3 | xmlstarlet sel -t -v "//test-suite[@name='bin/Release/MasterCard-Core.dll']/@success")
 if [[ "$RESPONSE" =~ "False" ]]
 then
 	#echo $RESPONSE

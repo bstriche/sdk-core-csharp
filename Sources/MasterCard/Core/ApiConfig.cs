@@ -27,6 +27,7 @@
 
 using System;
 using MasterCard.Core.Security;
+using System.Collections.Generic;
 
 namespace MasterCard.Core
 {
@@ -38,11 +39,7 @@ namespace MasterCard.Core
 		private static Boolean SANDBOX = true;
 		private static Boolean DEBUG = false;
 		private static AuthenticationInterface authentication;
-
-		/// <summary>
-		/// The VERSIO.
-		/// </summary>
-		private static string VERSION = "1.0.0";
+		private static Dictionary<String,Object> cryptographyMap = new Dictionary<String,Object> ();
 
 		/// <summary>
 		/// The AP i BAS e LIV e UR.
@@ -68,14 +65,6 @@ namespace MasterCard.Core
 		/// <returns>The sandbox URL.</returns>
 		public static string getSandboxUrl() {
 			return API_BASE_SANDBOX_URL;
-		}
-
-		/// <summary>
-		/// Gets the version.
-		/// </summary>
-		/// <returns>The version.</returns>
-		public static string getVersion() {
-			return VERSION;
 		}
 
 		/// <summary>
@@ -120,6 +109,27 @@ namespace MasterCard.Core
 			ApiConfig.authentication = authentication;
 		}
 
+
+		/// <summary>
+		/// Adds the cryptography interceptor.
+		/// </summary>
+		/// <param name="cryptographyInterceptor">Cryptography interceptor.</param>
+		public static void AddCryptographyInterceptor(CryptographyInterceptor cryptographyInterceptor) {
+			if (!cryptographyMap.ContainsKey (cryptographyInterceptor.GetTriggeringPath ())) {
+				cryptographyMap.Add (cryptographyInterceptor.GetTriggeringPath (), cryptographyInterceptor);
+			}
+		}
+
+		public static CryptographyInterceptor GetCryptographyInterceptor(String basePath) {
+			foreach(var entry in cryptographyMap) {
+				if (entry.Key.Contains(basePath) || basePath.Contains(entry.Key)) {
+					return (CryptographyInterceptor) entry.Value;
+				}
+			}
+			return null;
+		}
+
+
 		/// <summary>
 		/// Ises the sandbox.
 		/// </summary>
@@ -128,7 +138,7 @@ namespace MasterCard.Core
 			return ApiConfig.SANDBOX;
 		}
 
-		#if DEBUG
+		
 		public static void setLocalhost() {
 			API_BASE_SANDBOX_URL = "http://localhost:8080";
 			API_BASE_LIVE_URL = "http://localhost:8080";
@@ -139,7 +149,7 @@ namespace MasterCard.Core
 			API_BASE_LIVE_URL = "https://api.mastercard.com";
 		}
 
-		#endif
+		
 
 	}
 

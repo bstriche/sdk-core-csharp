@@ -25,8 +25,6 @@
  *
  */
 
-
-
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -36,14 +34,17 @@ using MasterCard.Core;
 using MasterCard.Core.Exceptions;
 using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
+using MasterCard.Core.Security.MDES;
+
 
 
 namespace TestMasterCard
+
 {
 
 
-	[TestFixture ()]
-	public class ParametersTest
+    [TestFixture ()]
+	public class AudiencesSegmentTest
 	{
 
 		[SetUp]
@@ -51,9 +52,9 @@ namespace TestMasterCard
 		{
             var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
             var authentication = new OAuthAuthentication("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", currentPath + "\\Test\\prod_key.p12", "alias", "password");
-            ApiConfig.setAuthentication (authentication);
-			ApiConfig.setSandbox (true);
-		}
+            ApiConfig.setAuthentication(authentication);
+            ApiConfig.setSandbox(true);
+        }
 
         
             
@@ -65,30 +66,26 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void example_parameters_Test()
+        public void example_audience_request_Test()
         {
             RequestMap parameters = new RequestMap();
             
-            parameters.Set ("CurrentRow", "1");
-            parameters.Set ("Offset", "25");
+            parameters.Set ("DecileIDRangeEnd", "20");
+            parameters.Set ("ZipRangeStart", "000000000");
+            parameters.Set ("PageLength", "10");
+            parameters.Set ("ZipRangeEnd", "999999999");
+            parameters.Set ("PageOffset", "1");
+            parameters.Set ("Segment", "Standard_000001");
+            parameters.Set ("DecileIDRangeStart", "1");
             
             
 
-            Parameters response = Parameters.Query(parameters);
-            Assert.That("NO", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[1].Ecomm"]).IgnoreCase);
-            Assert.That("Quarterly", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[1].Period"]).IgnoreCase);
-            Assert.That("NO", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[2].Ecomm"]).IgnoreCase);
-            Assert.That("NO", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[0].Ecomm"]).IgnoreCase);
-            Assert.That("U.S. Natural and Organic Grocery Stores", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[0].Sector"]).IgnoreCase);
-            Assert.That("U.S. Natural and Organic Grocery Stores", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[1].Sector"]).IgnoreCase);
-            Assert.That("U.S. Natural and Organic Grocery Stores", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[2].Sector"]).IgnoreCase);
-            Assert.That("Monthly", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[0].Period"]).IgnoreCase);
-            Assert.That("Success", Is.EqualTo(response["ParameterList.Message"]).IgnoreCase);
-			Assert.That("3", Is.EqualTo(response["ParameterList.Count"].ToString()).IgnoreCase);
-            Assert.That("US", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[0].Country"]).IgnoreCase);
-            Assert.That("Weekly", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[2].Period"]).IgnoreCase);
-            Assert.That("US", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[1].Country"]).IgnoreCase);
-            Assert.That("US", Is.EqualTo(response["ParameterList.ParameterArray.Parameter[2].Country"]).IgnoreCase);
+            AudiencesSegment response = AudiencesSegment.Query(parameters);
+            Assert.That("1", Is.EqualTo(response["Response.PageOffset"].ToString()).IgnoreCase);
+            Assert.That("20", Is.EqualTo(response["Response.ArrayOfAudience[0].Audience.Demidecile"].ToString()).IgnoreCase);
+            Assert.That("Standard_000001", Is.EqualTo(response["Response.ArrayOfAudience[0].Audience.Segment"].ToString()).IgnoreCase);
+            Assert.That("311125860", Is.EqualTo(response["Response.ArrayOfAudience[0].Audience.Zip"].ToString()).IgnoreCase);
+            Assert.That("98", Is.EqualTo(response["Response.TotalCount"].ToString()).IgnoreCase);
             
 
         }
@@ -97,4 +94,3 @@ namespace TestMasterCard
         
     }
 }
-

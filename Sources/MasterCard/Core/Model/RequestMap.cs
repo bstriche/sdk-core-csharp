@@ -424,7 +424,15 @@ namespace MasterCard.Core.Model
 						}
 
 					} else {
-						map = (IDictionary<String, Object>)map [thisKey];
+                        Object tmpOut = map[thisKey];
+                        if (tmpOut.GetType() == typeof(JObject))
+                        {
+                            map = ((JObject)tmpOut).ToDictionary();
+                        }
+                        else
+                        {
+                            map = (IDictionary<String, Object>)tmpOut;
+                        }
 					}
 
 				}
@@ -695,7 +703,12 @@ namespace MasterCard.Core.Model
 					result2 = ((JArray)result2).ToObject<List<Dictionary<string,object>>>();
 				}
 
-				return result2;
+                if (result2.GetType() == typeof(JObject))
+                {
+                    result2 = ((JObject)result2).ToDictionary();
+                }
+
+                return result2;
 			}
 		}
 			

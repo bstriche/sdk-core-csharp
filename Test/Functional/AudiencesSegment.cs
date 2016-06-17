@@ -25,8 +25,6 @@
  *
  */
 
-
-
 using System;
 using System.Collections.Generic;
 using MasterCard.Core;
@@ -37,21 +35,21 @@ using MasterCard.Core.Security;
 
 namespace TestMasterCard
 {
-    public class UserPostHeader : BaseObject
+    public class AudiencesSegment : BaseObject
     {
 
-        public UserPostHeader(RequestMap bm) : base(bm)
+        public AudiencesSegment(RequestMap bm) : base(bm)
         {
 		}
 
-        public UserPostHeader() : base()
+        public AudiencesSegment() : base()
         {
         }
 
         public override string GetResourcePath(string action) {
             
-            if (action == "list") {
-               return "/mock_crud_server/users/posts";
+            if (action == "query") {
+                return "/audiences/v1/audiences/audiencesegment";
             }
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
@@ -59,12 +57,11 @@ namespace TestMasterCard
 
         public override List<string> GetHeaderParams(string action) {
             
-            if (action == "list") {
-               return new List<String> { "user_id" };
+            if (action == "query") {
+                return new List<String> {  };
             }
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
-
 
         public override string GetApiVersion()
         {
@@ -73,39 +70,27 @@ namespace TestMasterCard
 
 
 
-        /// <summary>
-        /// Retrieves a list of type <code>UserPostHeader</code>
-        /// </summary>
-        /// <returns> A list UserPostHeader of objects </returns>
-        /// <exception cref="ApiCommunicationException"> </exception>
-        /// <exception cref="AuthenticationException"> </exception>
-        /// <exception cref="InvalidRequestException"> </exception>
-        /// <exception cref="NotAllowedException"> </exception>
-        /// <exception cref="ObjectNotFoundException"> </exception>
-        /// <exception cref="SystemException"> </exception>
-        public static List<UserPostHeader> List()
-        {
-            return BaseObject.listObjects(new UserPostHeader());
-        }
+
+
+
+
+
 
         /// <summary>
-        /// Retrieves a list of type <code>UserPostHeader</code> using the specified criteria
+        /// Query and Returns one object of type <code>AudiencesSegment</code>
         /// </summary>
-        /// <param name="criteria">The criteria set of values which is used to identify the set of records of UserPostHeader object to return</praram>
-        /// <returns>  a List of UserPostHeader objects which holds the list objects available. </returns>
+        /// <param name = "parameters">This is the optional paramter which can be passed to the request.</param>
+        /// <returns> A AudiencesSegment object </returns>
         /// <exception cref="ApiCommunicationException"> </exception>
         /// <exception cref="AuthenticationException"> </exception>
         /// <exception cref="InvalidRequestException"> </exception>
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static List<UserPostHeader> List(RequestMap criteria)
+        public static AudiencesSegment Query(RequestMap parameters)
         {
-            return BaseObject.listObjects(new UserPostHeader(criteria));
+            return (AudiencesSegment) BaseObject.queryObject(new AudiencesSegment(parameters));
         }
-        
-        
-        
         
         
     }

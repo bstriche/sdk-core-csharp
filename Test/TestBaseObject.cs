@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿
 
 using System;
 using MasterCard.Core.Model;
@@ -28,7 +28,12 @@ namespace TestMasterCard
 		{
 			return new List<String> {  };
 		}
-	}
+
+        public override string GetApiVersion()
+        {
+            return "0.0.1";
+        }
+    }
 }
 
-#endif
+

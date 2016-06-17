@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿
 
 using System;
 using System.Text;
@@ -19,7 +19,9 @@ namespace TestMasterCard
 		[SetUp]
 		public void setup ()
 		{
-			var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", "../../Test/prod_key.p12", "alias", "password");
+
+            var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
+            var authentication = new OAuthAuthentication("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", currentPath + "\\Test\\prod_key.p12", "alias", "password");
 			ApiConfig.setAuthentication (authentication);
 		}
 
@@ -70,4 +72,3 @@ namespace TestMasterCard
 
 }
 
-#endif

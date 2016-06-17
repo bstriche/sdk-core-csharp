@@ -27,6 +27,7 @@
 
 
 
+
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -36,61 +37,74 @@ using MasterCard.Core;
 using MasterCard.Core.Exceptions;
 using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
-
+using MasterCard.Core.Security.MDES;
 
 namespace TestMasterCard
 {
 
 
 	[TestFixture ()]
-	public class UserPostHeaderTest
+	public class TokenActivationTest
 	{
 
 		[SetUp]
 		public void setup ()
 		{
-            var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
-            var authentication = new OAuthAuthentication("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", currentPath + "\\Test\\prod_key.p12", "alias", "password");
-            ApiConfig.setAuthentication (authentication);
-			ApiConfig.setLocalhost ();
-		}
+			ApiConfig.setSandbox (true);
+			ApiConfig.setDebug (true);
 
 
-		[TearDown]
-		public void tearDown() {
-			ApiConfig.unsetLocalhost();
+            var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
+
+
+            var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", path+"\\Test\\prod_key.p12", "alias", "password");
+			ApiConfig.setAuthentication (authentication);
+
+			String mastercardPublic = path+"\\Test\\mastercard_public.crt";
+			String mastercardPrivate = path+"\\Test\\mastercard_private.pem";
+            var interceptor = new MDESCryptography(mastercardPublic, mastercardPrivate);
+			ApiConfig.AddCryptographyInterceptor (interceptor);
+
 		}
 
         
+            
+            
+            
             
             
             
                         
 
         [Test ()]
-        public void get_user_posts_with_header_Test()
+        public void example_test_tokenization()
         {
+            RequestMap parameters = new RequestMap();
             
-            RequestMap map = new RequestMap();
-            map.Set ("user_id", "1");
+			parameters.Set("tokenRequestorId", "12345678901" );
+			parameters.Set("requestId", "123456");
+			parameters.Set("cardInfo.accountNumber", "5123456789012345");
+			parameters.Set("cardInfo.expiryMonth", "12");
+			parameters.Set("cardInfo.expiryYear", "16");
+			parameters.Set("cardInfo.securityCode", "123");
+			parameters.Set("cardInfo.billingAddress.line", "100 1st Street");
+			parameters.Set("cardInfo.billingAddress.line2", "Apt. 4B");
+			parameters.Set("cardInfo.billingAddress.city", "St. Louis");
+			parameters.Set("cardInfo.billingAddress.countrySubdivision", "MO");
+			parameters.Set("cardInfo.billingAddress.postalCode", "61000");
+			parameters.Set("cardInfo.billingAddress.country", "USA");
             
             
 
-            List<UserPostHeader> responseList = UserPostHeader.List(map);
-            UserPostHeader response = responseList[0];
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
-            Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase );
-            Assert.That("My Title", Is.EqualTo(response["title"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["userId"].ToString()).IgnoreCase );
+			TokenActivation response = TokenActivation.Create(parameters);
+			Assert.That("APPROVED", Is.EqualTo(response["decision"]).IgnoreCase);
             
+            
+
         }
         
-            
-            
-            
             
         
     }
 }
-
 

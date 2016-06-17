@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Web;
 using System.Text;
+using MasterCard.Core;
 
 
 namespace MasterCard.Core.Security.OAuth
