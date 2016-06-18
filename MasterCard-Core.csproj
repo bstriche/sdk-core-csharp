@@ -125,7 +125,7 @@
     <Content Include="Test\mastercard_private.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Test\prod_key.p12">
+    <Content Include="Test\mcapi_sandbox_key.p12">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Test\mastercard_public.crt">
