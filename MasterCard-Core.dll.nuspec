@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>MasterCard-Core.dll</id>
+    <id>MasterCard-Core</id>
     <version>0.0.1</version>
     <authors>Andrea Rizzini</authors>
     <owners>Andrea Rizzini</owners>
