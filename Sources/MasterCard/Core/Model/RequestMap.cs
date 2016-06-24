@@ -415,7 +415,7 @@ namespace MasterCard.Core.Model
 						try {
 							Object tmpOut = __storage [thisKey];
 							if(tmpOut.GetType() == typeof(JObject)) {
-								map = ((JObject) tmpOut).ToDictionary();
+                                map = ((JObject)tmpOut).ToObject<Dictionary<string, object>>();
 							} else {
 								map = (IDictionary<String, Object>)tmpOut;
 							}
@@ -427,7 +427,7 @@ namespace MasterCard.Core.Model
                         Object tmpOut = map[thisKey];
                         if (tmpOut.GetType() == typeof(JObject))
                         {
-                            map = ((JObject)tmpOut).ToDictionary();
+                            map = ((JObject)tmpOut).ToObject<Dictionary<string, object>>();
                         }
                         else
                         {
@@ -666,10 +666,38 @@ namespace MasterCard.Core.Model
 			}
 		}
 
-		/// <summary>
-		/// Json custom converter.
-		/// </summary>
-		private class CustomDictionaryConverter : CustomCreationConverter<IDictionary<string, object>>
+
+        private class MyConverter : CustomCreationConverter<IDictionary<string, object>>
+        {
+            public override IDictionary<string, object> Create(Type objectType)
+            {
+                return new Dictionary<string, object>();
+            }
+
+            public override bool CanConvert(Type objectType)
+            {
+                // in addition to handling IDictionary<string, object>
+                // we want to handle the deserialization of dict value
+                // which is of type object
+                return objectType == typeof(object) || base.CanConvert(objectType);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                if (reader.TokenType == JsonToken.StartObject
+                    || reader.TokenType == JsonToken.Null)
+                    return base.ReadJson(reader, objectType, existingValue, serializer);
+
+                // if the next token is not an object
+                // then fall back on standard deserializer (strings, numbers etc.)
+                return serializer.Deserialize(reader);
+            }
+        }
+
+        /// <summary>
+        /// Json custom converter.
+        /// </summary>
+        private class CustomDictionaryConverter : CustomCreationConverter<IDictionary<string, object>>
 		{
 			public override IDictionary<string, object> Create(Type objectType)
 			{
@@ -685,7 +713,7 @@ namespace MasterCard.Core.Model
 				bool isDictionary = objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(IDictionary<,>);
 				bool isObject = objectType == typeof(object);
 
-				return isDictionary || isObject || base.CanConvert(objectType);
+				return isObject || base.CanConvert(objectType);
 			}
 
 			public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -705,7 +733,7 @@ namespace MasterCard.Core.Model
 
                 if (result2.GetType() == typeof(JObject))
                 {
-                    result2 = ((JObject)result2).ToDictionary();
+                    result2 = ((JObject)result2).ToObject<Dictionary<string,object>>();
                 }
 
                 return result2;
