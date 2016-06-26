@@ -79,18 +79,26 @@ namespace MasterCard.Core.Security.OAuth
 		{
 			OAuthParameters oAuthParameters = new OAuthParameters();
 			oAuthParameters.setOAuthConsumerKey(clientId);
-			oAuthParameters.setOAuthNonce(OAuthUtil.GetNonce());
-			oAuthParameters.setOAuthTimestamp(OAuthUtil.GetTimestamp());
+            oAuthParameters.setOAuthNonce(OAuthUtil.GetNonce());
+            //oAuthParameters.setOAuthNonce("ssxECu3Ww1rURm2tM");
+            oAuthParameters.setOAuthTimestamp(OAuthUtil.GetTimestamp());
+            //oAuthParameters.setOAuthTimestamp("1466961120");
 			oAuthParameters.setOAuthSignatureMethod("RSA-SHA1");
-			oAuthParameters.setOAuthVersion("1.0");
-		
+            oAuthParameters.setOAuthVersion("1.0");
 
-			String encodedHash = Util.Base64Encode (Util.Sha1Encode (body));
-			oAuthParameters.setOAuthBodyHash (encodedHash);
+            //Console.WriteLine("body: " + body);
 
+            if (!String.IsNullOrEmpty(body))
+            {
+                String encodedHash = Util.Base64Encode(Util.Sha1Encode(body));
+                //Console.WriteLine("bodyHash: " + encodedHash);
+                oAuthParameters.setOAuthBodyHash(encodedHash);
+            }
 
 			String baseString = OAuthUtil.GetBaseString(URL, method, oAuthParameters.getBaseParameters());
-			String signature = RsaSign(baseString);
+            //Console.WriteLine("baseString: " + baseString);
+            String signature = RsaSign(baseString);
+            //Console.WriteLine("signature: " + signature);
 			oAuthParameters.setOAuthSignature(signature);
 
 			StringBuilder builder = new StringBuilder();
@@ -103,7 +111,9 @@ namespace MasterCard.Core.Security.OAuth
 				}
 				builder.Append ((entry.Key)).Append ("=\"").Append (Util.uriRfc3986 (entry.Value)).Append ("\"");
 			}
-				
+
+
+            //Console.WriteLine("authKey: " + builder.ToString());
 			return builder.ToString();
 		}
 			

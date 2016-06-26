@@ -336,7 +336,7 @@ namespace MasterCard.Core
 				
 			}
 
-			appendToQueryString (s, "Format=JSON");
+			appendToQueryString (s, "format=JSON");
 
 			try {
 				uri = new Uri (String.Format (s.ToString (), objectList.ToArray()));
@@ -344,6 +344,7 @@ namespace MasterCard.Core
 				throw new System.InvalidOperationException ("Failed to build URI", e);
 			}
 
+            //Console.WriteLine("url: " + uri.ToString());
 			return uri;
 		}
 
