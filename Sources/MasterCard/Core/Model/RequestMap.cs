@@ -257,13 +257,13 @@ namespace MasterCard.Core.Model
 			string[] keys = ((string)keyPath).Split ('.');
 
 			if (keys.Length <= 1) {
-				Match m = arrayIndexPattern.Match (keys [0]);
-				if (!m.Success) { // handles keyPath: "x"
+				Match matcher1 = arrayIndexPattern.Match (keys [0]);
+				if (!matcher1.Success) { // handles keyPath: "x"
 					Object o;
 					__storage.TryGetValue ((String)keys [0], out o);
 					return o;
 				} else { // handle the keyPath: "x[]"
-					string key = m.Groups[1].ToString(); // gets the key to retrieve from the matcher
+					string key = matcher1.Groups[1].ToString(); // gets the key to retrieve from the matcher
 					Object o;
 					__storage.TryGetValue (key, out o); // get the list from the map
 					if (!(o is IList)) {
@@ -274,8 +274,8 @@ namespace MasterCard.Core.Model
 					IList l = (IList)o;
 
 					int? index = l.Count - 1; //get last item if none specified
-					if (!"".Equals (m.Groups[2].ToString())) {
-						index = int.Parse (m.Groups [2].ToString());
+					if (!"".Equals (matcher1.Groups[2].ToString())) {
+						index = int.Parse (matcher1.Groups [2].ToString());
 					}
 
 					return l[index ?? 0]; // retrieve the map from the list
@@ -286,7 +286,34 @@ namespace MasterCard.Core.Model
 			IDictionary<String, Object> map = findLastMapInKeyPath (keyPath); // handles keyPaths beyond 'root' keyPath. i.e. "x.y OR x.y[].z, etc."
 
 			// retrieve the value at the end of the object path i.e. x.y.z, this retrieves whatever is in 'z'
-			return map [keys [keys.Length - 1]];
+
+            String lastKey = keys[keys.Length - 1];
+            Match matcher2 = arrayIndexPattern.Match(lastKey);
+            if (!matcher2.Success)
+            {
+                return map[lastKey];
+            }
+            else
+            {
+                string key = matcher2.Groups[1].ToString(); // gets the key to retrieve from the matcher
+				Object o;
+				map.TryGetValue (key, out o); // get the list from the map
+				if (!(o is IList)) {
+					throw new System.ArgumentException ("Property '" + key + "' is not an array");
+				}
+
+				//IList l =  ((IList) o);
+				IList l = (IList)o;
+
+				int? index = l.Count - 1; //get last item if none specified
+				if (!"".Equals (matcher2.Groups[2].ToString())) {
+					index = int.Parse (matcher2.Groups [2].ToString());
+				}
+
+				return l[index ?? 0]; // retrieve the map from the list
+            }
+            
+
 		}
 
 		/// <summary>
@@ -728,7 +755,14 @@ namespace MasterCard.Core.Model
 				// then fall back on standard deserializer (strings, numbers etc.)
 				var result2 = serializer.Deserialize(reader);
 				if (result2.GetType() == typeof(JArray)) {
-					result2 = ((JArray)result2).ToObject<List<Dictionary<string,object>>>();
+                    if (((JArray)result2).First.Type.ToString() == "String")
+                    {
+                        result2 = ((JArray)result2).ToObject<List<object>>();
+                    } else
+                    {
+                        result2 = ((JArray)result2).ToObject<List<Dictionary<string, object>>>();
+                    }
+					
 				}
 
                 if (result2.GetType() == typeof(JObject))
