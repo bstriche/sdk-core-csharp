@@ -106,12 +106,15 @@ namespace MasterCard.Core
 			IRestRequest request;
 			CryptographyInterceptor interceptor;
 
-			try 
+
+            Uri uri;
+
+            try 
 			{
 				IDictionary<String,Object> paramterMap = requestMap.Clone();
 				IDictionary<String,Object> headerMap = Util.SubMap(paramterMap, headerList);
 
-				Uri uri = getURL (action, resourcePath, paramterMap);
+				uri = getURL (action, resourcePath, paramterMap);
 				interceptor = ApiConfig.GetCryptographyInterceptor(uri.AbsolutePath);
 				request = getRequest (uri, action, paramterMap, headerMap, interceptor);
 
@@ -123,17 +126,16 @@ namespace MasterCard.Core
 			try {
 				log.Debug(">>execute(action='"+action+"', resourcePaht='"+resourcePath+"', requestMap='"+requestMap+"'");
 				log.Debug("excute(), request.Method='"+request.Method+"'");
-				log.Debug("excute(), request.QueryString=");
-				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.QueryString));
+                log.Debug("excute(), request.URL=" + uri.ToString());
 				log.Debug("excute(), request.Header=");
-				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.HttpHeader));
+                log.Debug(request.Parameters.Where(x => x.Type == ParameterType.HttpHeader));
 				log.Debug("excute(), request.Body=");
-				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.RequestBody));
-				response = restClient.Execute(request);
+                log.Debug(request.Parameters.Where(x => x.Type == ParameterType.RequestBody));
+                response = restClient.Execute(request);
 				log.Debug("execute(), response.Header=");
-				log.Debug(response.Headers);
+                log.Debug(response.Headers);
 				log.Debug("execute(), response.Body=");
-				log.Debug(response.Content);
+                log.Debug(response.Content.ToString());
 			} catch (Exception e) {
 				Exception wrapper = new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
 				log.Error (wrapper.Message, wrapper);
