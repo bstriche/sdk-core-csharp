@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterCard-Core", "MasterCard-Core.csproj", "{068705F0-69F9-4B26-A18E-17B0C6D13B24}"
 EndProject
 Global
@@ -14,18 +16,7 @@ Global
 		{068705F0-69F9-4B26-A18E-17B0C6D13B24}.Release|x86.ActiveCfg = Release|x86
 		{068705F0-69F9-4B26-A18E-17B0C6D13B24}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		Policies = $0
-		$0.DotNetNamingPolicy = $1
-		$1.DirectoryNamespaceAssociation = None
-		$1.ResourceNamePolicy = FileFormatDefault
-		$0.TextStylePolicy = $2
-		$2.FileWidth = 120
-		$2.TabsToSpaces = False
-		$2.inheritsSet = VisualStudio
-		$2.inheritsScope = text/plain
-		$2.scope = text/plain
-		$0.VersionControlPolicy = $3
-		$3.inheritsSet = Mono
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
