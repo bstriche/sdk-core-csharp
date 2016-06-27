@@ -336,7 +336,7 @@ namespace MasterCard.Core
 				
 			}
 
-			appendToQueryString (s, "format=JSON");
+			appendToQueryString (s, "Format=JSON");
 
 			try {
 				uri = new Uri (String.Format (s.ToString (), objectList.ToArray()));
