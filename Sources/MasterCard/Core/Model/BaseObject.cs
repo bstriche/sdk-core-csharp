@@ -50,6 +50,8 @@ namespace MasterCard.Core.Model
 
 		public abstract List<string> GetHeaderParams (string action);
 
+        public abstract List<string> GetQueryParams(string action);
+
         public abstract string GetApiVersion();
 
 
@@ -125,7 +127,7 @@ namespace MasterCard.Core.Model
 		/// <param name="inputObject">Input object.</param>
 		static T execute<T>(String action, T inputObject) where T : BaseObject {
             ApiController apiController = new ApiController(inputObject.GetApiVersion());
-			IDictionary<String,Object> response = apiController.execute (action, inputObject.GetResourcePath(action), inputObject, inputObject.GetHeaderParams(action));
+			IDictionary<String,Object> response = apiController.execute (action, inputObject.GetResourcePath(action), inputObject, inputObject.GetHeaderParams(action), inputObject.GetQueryParams(action));
 
 			if (response != null) {
 				inputObject.Clear ();
