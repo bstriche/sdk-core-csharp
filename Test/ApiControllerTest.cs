@@ -21,6 +21,7 @@ namespace TestMasterCard
 	{
 
 		List<String> headerList = new List<String> ();
+		List<String> queryList = new List<String> ();
 
 		[SetUp]
 		public void setup ()
@@ -62,7 +63,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList);
+			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList);
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("user"));
@@ -83,7 +84,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (), headerList);
+			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (), headerList, queryList);
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("list"));
@@ -105,7 +106,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, null));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList);
+			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList);
 
 			Assert.IsTrue (result == null);
 
@@ -121,7 +122,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
-			Assert.Throws<NotAllowedException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Method not Allowed");
+			Assert.Throws<NotAllowedException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "Method not Allowed");
 		}
 
 
@@ -135,7 +136,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
-			Assert.Throws<InvalidRequestException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "The supplied field: 'date' is of an unsupported format");
+			Assert.Throws<InvalidRequestException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "The supplied field: 'date' is of an unsupported format");
 		}
 
 
@@ -148,7 +149,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
-			Assert.Throws<AuthenticationException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList), "Oauth customer key invalid");
+			Assert.Throws<AuthenticationException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "Oauth customer key invalid");
 		}
 
 
@@ -161,7 +162,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.execute ( "create", "/test1", new TestBaseObject (responseMap), headerList), "Something went wrong");
+			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.execute ( "create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "Something went wrong");
 		}
 
 
@@ -175,7 +176,7 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("read", "/test1", new TestBaseObject (requestMap), headerList);
+			IDictionary<String,Object> result = controller.execute ("read", "/test1", new TestBaseObject (requestMap), headerList, queryList);
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.AreEqual("true", responseMapFromResponse["Account.Status"]);

@@ -89,6 +89,32 @@ namespace TestMasterCard
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
+        public override List<string> GetQueryParams(string action)
+        {
+
+            if (action == "list")
+            {
+                return new List<String> { };
+            }
+            if (action == "create")
+            {
+                return new List<String> { };
+            }
+            if (action == "read")
+            {
+                return new List<String> { };
+            }
+            if (action == "update")
+            {
+                return new List<String> { };
+            }
+            if (action == "delete")
+            {
+                return new List<String> { };
+            }
+            throw new System.ArgumentException("Invalid action supplied: " + action);
+        }
+
         public override string GetApiVersion()
         {
             return "0.0.1";

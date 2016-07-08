@@ -29,6 +29,11 @@ namespace TestMasterCard
 			return new List<String> {  };
 		}
 
+        public override List<string> GetQueryParams(string action)
+        {
+            return new List<String> { };
+        }
+
         public override string GetApiVersion()
         {
             return "0.0.1";
