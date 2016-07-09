@@ -100,18 +100,21 @@ namespace MasterCard.Core
 		/// <param name="resourcePath">Resource path.</param>
 		/// <param name="requestMap">Request Map.</param>
 		/// <param name="headerList">Header List.</param>
-		public virtual IDictionary<String, Object> execute (string action, string resourcePath, BaseObject requestMap, List<string> headerList)
+		public virtual IDictionary<String, Object> execute (string action, string resourcePath, BaseObject requestMap, List<string> headerList, List<string> queryList)
 		{
 			IRestResponse response;
 			IRestRequest request;
 			CryptographyInterceptor interceptor;
 
-			try 
+
+            Uri uri;
+
+            try 
 			{
 				IDictionary<String,Object> paramterMap = requestMap.Clone();
 				IDictionary<String,Object> headerMap = Util.SubMap(paramterMap, headerList);
 
-				Uri uri = getURL (action, resourcePath, paramterMap);
+				uri = getURL (action, resourcePath, paramterMap, queryList);
 				interceptor = ApiConfig.GetCryptographyInterceptor(uri.AbsolutePath);
 				request = getRequest (uri, action, paramterMap, headerMap, interceptor);
 
@@ -123,17 +126,16 @@ namespace MasterCard.Core
 			try {
 				log.Debug(">>execute(action='"+action+"', resourcePaht='"+resourcePath+"', requestMap='"+requestMap+"'");
 				log.Debug("excute(), request.Method='"+request.Method+"'");
-				log.Debug("excute(), request.QueryString=");
-				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.QueryString));
+                log.Debug("excute(), request.URL=" + uri.ToString());
 				log.Debug("excute(), request.Header=");
-				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.HttpHeader));
+                log.Debug(request.Parameters.Where(x => x.Type == ParameterType.HttpHeader));
 				log.Debug("excute(), request.Body=");
-				log.Debug(request.Parameters.Where(x => x.Type == ParameterType.RequestBody));
-				response = restClient.Execute(request);
+                log.Debug(request.Parameters.Where(x => x.Type == ParameterType.RequestBody));
+                response = restClient.Execute(request);
 				log.Debug("execute(), response.Header=");
-				log.Debug(response.Headers);
+                log.Debug(response.Headers);
 				log.Debug("execute(), response.Body=");
-				log.Debug(response.Content);
+                log.Debug(response.Content.ToString());
 			} catch (Exception e) {
 				Exception wrapper = new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
 				log.Error (wrapper.Message, wrapper);
@@ -288,7 +290,8 @@ namespace MasterCard.Core
 		/// <param name="action">Action.</param>
 		/// <param name="resourcePath">Type.</param>
 		/// <param name="inputMap">Input map.</param>
-		Uri getURL (string action, string resourcePath, IDictionary<String, Object> inputMap)
+		/// <param name="inputMap">additionalQueryParametersList</param>
+		Uri getURL (string action, string resourcePath, IDictionary<String, Object> inputMap, List<string> additionalQueryParametersList)
 		{
 			Uri uri;
 
@@ -299,23 +302,6 @@ namespace MasterCard.Core
 			List<object> objectList = new List<object> ();
 			StringBuilder s = new StringBuilder ("{"+(parameters++)+"}");
 			objectList.Add (resolvedPath);
-
-
-			switch (action) {
-				case "read":
-				case "update":
-				case "delete":
-					if (inputMap.ContainsKey ("id")) {
-						//arizzini: lostandfound uses PUT with no ID, so removing this check
-						//throw new System.InvalidOperationException ("id required for " + action.ToString () + "action");
-						s.Append ("/{" + (parameters++) + "}");
-						objectList.Add (getURLEncodedString (inputMap ["id"]));
-					}
-					break;
-				default: 
-					break;
-			}
-
 
 			switch(action)
 			{
@@ -331,10 +317,32 @@ namespace MasterCard.Core
 						}
 					}
 					break;
-				default: 
+				default:
 					break;
-				
+
 			}
+
+            // create and update may have Query and Body parameters as part of the request.
+            // Check additionalQueryParametersList
+            if (additionalQueryParametersList.Count > 0)
+            {
+                switch (action)
+                {
+                    case "create":
+                    case "update":
+                        // Get the submap of query parameters which also removes the values from objectMap
+                        IDictionary<String, Object> queryMap = Util.SubMap(inputMap, additionalQueryParametersList);
+
+                        foreach (KeyValuePair<String, Object> entry in queryMap)
+                        {
+                            appendToQueryString(s, "{" + (parameters++) + "}" + "=" + "{" + (parameters++) + "}");
+                            objectList.Add(getURLEncodedString(entry.Key.ToString()));
+                            objectList.Add(getURLEncodedString(entry.Value.ToString()));
+                        }
+
+                        break;
+                }
+            }
 
 			appendToQueryString (s, "Format=JSON");
 
@@ -344,6 +352,7 @@ namespace MasterCard.Core
 				throw new System.InvalidOperationException ("Failed to build URI", e);
 			}
 
+            //Console.WriteLine("url: " + uri.ToString());
 			return uri;
 		}
 

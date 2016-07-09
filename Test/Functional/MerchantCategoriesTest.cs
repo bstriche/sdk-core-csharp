@@ -25,9 +25,6 @@
  *
  */
 
-
-
-
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -39,33 +36,30 @@ using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
 using MasterCard.Core.Security.MDES;
 
+
+
 namespace TestMasterCard
 {
 
 
 	[TestFixture ()]
-	public class TokenActivationTest
+	public class MerchantCategoriesTest
 	{
 
 		[SetUp]
 		public void setup ()
 		{
-			ApiConfig.setSandbox (true);
-			ApiConfig.setDebug (true);
-
-
+            ApiConfig.setDebug (true);
+            ApiConfig.setSandbox(true);
             var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
 
+            var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", path+ "\\Test\\mcapi_sandbox_key.p12", "alias", "password");
+            ApiConfig.setAuthentication (authentication);
 
-            var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", path+"\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-			ApiConfig.setAuthentication (authentication);
-
-			String mastercardPublic = path+"\\Test\\mastercard_public.crt";
-			String mastercardPrivate = path+"\\Test\\mastercard_private.pem";
-            var interceptor = new MDESCryptography(mastercardPublic, mastercardPrivate);
-			ApiConfig.AddCryptographyInterceptor (interceptor);
-
+            var interceptor = new MDESCryptography(path+ "\\Test\\mastercard_public.crt", path+ "\\Test\\mastercard_private.pem");
+            ApiConfig.AddCryptographyInterceptor (interceptor);
 		}
+
 
         
             
@@ -77,34 +71,28 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void example_test_tokenization()
+        public void example_merchants_category_Test()
         {
             RequestMap parameters = new RequestMap();
             
-			parameters.Set("tokenRequestorId", "12345678901" );
-			parameters.Set("requestId", "123456");
-			parameters.Set("cardInfo.accountNumber", "5123456789012345");
-			parameters.Set("cardInfo.expiryMonth", "12");
-			parameters.Set("cardInfo.expiryYear", "16");
-			parameters.Set("cardInfo.securityCode", "123");
-			parameters.Set("cardInfo.billingAddress.line", "100 1st Street");
-			parameters.Set("cardInfo.billingAddress.line2", "Apt. 4B");
-			parameters.Set("cardInfo.billingAddress.city", "St. Louis");
-			parameters.Set("cardInfo.billingAddress.countrySubdivision", "MO");
-			parameters.Set("cardInfo.billingAddress.postalCode", "61000");
-			parameters.Set("cardInfo.billingAddress.country", "USA");
-            
-            
 
-			TokenActivation response = TokenActivation.Create(parameters);
-			Assert.That("APPROVED", Is.EqualTo(response["decision"]).IgnoreCase);
-            
+            MerchantCategories response = MerchantCategories.Query(parameters);
+            Assert.That("1Apparel", Is.EqualTo(response["Categories.Category[0]"].ToString()).IgnoreCase);
+            Assert.That("2Automotive", Is.EqualTo(response["Categories.Category[1]"].ToString()).IgnoreCase);
+            Assert.That("3Beauty", Is.EqualTo(response["Categories.Category[2]"].ToString()).IgnoreCase);
+            Assert.That("4Book Stores", Is.EqualTo(response["Categories.Category[3]"].ToString()).IgnoreCase);
+            Assert.That("5Convenience Stores", Is.EqualTo(response["Categories.Category[4]"].ToString()).IgnoreCase);
+            Assert.That("7Dry Cleaners And Laundry Services", Is.EqualTo(response["Categories.Category[5]"].ToString()).IgnoreCase);
+            Assert.That("8Fast Food Restaurants", Is.EqualTo(response["Categories.Category[6]"].ToString()).IgnoreCase);
+            Assert.That("9Gift Shops, Hobbies, Jewelers", Is.EqualTo(response["Categories.Category[7]"].ToString()).IgnoreCase);
+            Assert.That("10Grocery Stores And Supermarkets", Is.EqualTo(response["Categories.Category[8]"].ToString()).IgnoreCase);
+            Assert.That("11Health", Is.EqualTo(response["Categories.Category[9]"].ToString()).IgnoreCase);
             
 
         }
         
             
         
+
     }
 }
-

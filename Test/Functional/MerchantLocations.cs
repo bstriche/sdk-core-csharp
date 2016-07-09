@@ -25,8 +25,6 @@
  *
  */
 
-
-
 using System;
 using System.Collections.Generic;
 using MasterCard.Core;
@@ -37,21 +35,21 @@ using MasterCard.Core.Security;
 
 namespace TestMasterCard
 {
-	public class TokenActivation : BaseObject
+    public class MerchantLocations : BaseObject
     {
 
-		public TokenActivation(RequestMap bm) : base(bm)
+        public MerchantLocations(RequestMap bm) : base(bm)
         {
 		}
 
-		public TokenActivation() : base()
+        public MerchantLocations() : base()
         {
         }
 
         public override string GetResourcePath(string action) {
             
-            if (action == "create") {
-				return "/mdes/tokenization/1/0/token/tokenize";
+            if (action == "query") {
+                return "/merchants/v1/merchant";
             }
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
@@ -59,7 +57,7 @@ namespace TestMasterCard
 
         public override List<string> GetHeaderParams(string action) {
             
-            if (action == "create") {
+            if (action == "query") {
                 return new List<String> {  };
             }
             throw new System.ArgumentException("Invalid action supplied: " + action);
@@ -68,40 +66,40 @@ namespace TestMasterCard
         public override List<string> GetQueryParams(string action)
         {
 
-            if (action == "create")
+            if (action == "query")
             {
                 return new List<String> { };
             }
             throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        public override string GetApiVersion()
-        {
+       public override string GetApiVersion() {
             return "0.0.1";
         }
 
 
-
-
-
-
-
-
-
+        
+        
+        
+        
+        
+        
+        
+        
         /// <summary>
-        /// Query and Returns one object of type <code>Parameters</code>
+        /// Query and Returns one object of type <code>MerchantLocations</code>
         /// </summary>
         /// <param name = "parameters">This is the optional paramter which can be passed to the request.</param>
-        /// <returns> A Parameters object </returns>
+        /// <returns> A MerchantLocations object </returns>
         /// <exception cref="ApiCommunicationException"> </exception>
         /// <exception cref="AuthenticationException"> </exception>
         /// <exception cref="InvalidRequestException"> </exception>
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static TokenActivation Create(RequestMap parameters)
+        public static MerchantLocations Query(RequestMap parameters)
         {
-			return (TokenActivation) BaseObject.createObject(new TokenActivation(parameters));
+            return (MerchantLocations) BaseObject.queryObject(new MerchantLocations(parameters));
         }
         
         

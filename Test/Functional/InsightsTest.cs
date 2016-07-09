@@ -47,7 +47,7 @@ namespace TestMasterCard
 		[SetUp]
 		public void setup ()
 		{
-            var authentication = new OAuthAuthentication ("gVaoFbo86jmTfOB4NUyGKaAchVEU8ZVPalHQRLTxeaf750b6!414b543630362f426b4f6636415a5973656c33735661383d", "../../prod_key.p12", "alias", "password");
+            var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", "../../mcapi_sandbox_key.p12", "alias", "password");
             ApiConfig.setAuthentication (authentication);
 		}
 

@@ -25,9 +25,6 @@
  *
  */
 
-
-
-
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -39,33 +36,31 @@ using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
 using MasterCard.Core.Security.MDES;
 
+
+
+
 namespace TestMasterCard
 {
 
 
 	[TestFixture ()]
-	public class TokenActivationTest
+	public class ATMCountrySubdivisionsTest
 	{
 
 		[SetUp]
 		public void setup ()
 		{
-			ApiConfig.setSandbox (true);
-			ApiConfig.setDebug (true);
-
-
+            ApiConfig.setDebug (true);
+            ApiConfig.setSandbox(true);
             var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
 
+            var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", path+ "\\Test\\mcapi_sandbox_key.p12", "alias", "password");
+            ApiConfig.setAuthentication (authentication);
 
-            var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", path+"\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-			ApiConfig.setAuthentication (authentication);
-
-			String mastercardPublic = path+"\\Test\\mastercard_public.crt";
-			String mastercardPrivate = path+"\\Test\\mastercard_private.pem";
-            var interceptor = new MDESCryptography(mastercardPublic, mastercardPrivate);
-			ApiConfig.AddCryptographyInterceptor (interceptor);
-
+            var interceptor = new MDESCryptography(path+ "\\Test\\mastercard_public.crt", path+ "\\Test\\mastercard_private.pem");
+            ApiConfig.AddCryptographyInterceptor (interceptor);
 		}
+
 
         
             
@@ -77,34 +72,27 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void example_test_tokenization()
+        public void example_atm_countrysubdivision_Test()
         {
             RequestMap parameters = new RequestMap();
             
-			parameters.Set("tokenRequestorId", "12345678901" );
-			parameters.Set("requestId", "123456");
-			parameters.Set("cardInfo.accountNumber", "5123456789012345");
-			parameters.Set("cardInfo.expiryMonth", "12");
-			parameters.Set("cardInfo.expiryYear", "16");
-			parameters.Set("cardInfo.securityCode", "123");
-			parameters.Set("cardInfo.billingAddress.line", "100 1st Street");
-			parameters.Set("cardInfo.billingAddress.line2", "Apt. 4B");
-			parameters.Set("cardInfo.billingAddress.city", "St. Louis");
-			parameters.Set("cardInfo.billingAddress.countrySubdivision", "MO");
-			parameters.Set("cardInfo.billingAddress.postalCode", "61000");
-			parameters.Set("cardInfo.billingAddress.country", "USA");
+            parameters.Set ("Country", "USA");
             
             
 
-			TokenActivation response = TokenActivation.Create(parameters);
-			Assert.That("APPROVED", Is.EqualTo(response["decision"]).IgnoreCase);
-            
+            ATMCountrySubdivisions response = ATMCountrySubdivisions.Query(parameters);
+            Assert.That("ARMED FORCES AMERICAS", Is.EqualTo(response["CountrySubdivisions.CountrySubdivision[0].Name"].ToString()).IgnoreCase);
+            Assert.That("AA", Is.EqualTo(response["CountrySubdivisions.CountrySubdivision[0].Code"].ToString()).IgnoreCase);
+            Assert.That("ARMED FORCES CAN AFRICA E", Is.EqualTo(response["CountrySubdivisions.CountrySubdivision[1].Name"].ToString()).IgnoreCase);
+            Assert.That("AE", Is.EqualTo(response["CountrySubdivisions.CountrySubdivision[1].Code"].ToString()).IgnoreCase);
+            Assert.That("ALASKA", Is.EqualTo(response["CountrySubdivisions.CountrySubdivision[2].Name"].ToString()).IgnoreCase);
+            Assert.That("AK", Is.EqualTo(response["CountrySubdivisions.CountrySubdivision[2].Code"].ToString()).IgnoreCase);
             
 
         }
         
             
         
+
     }
 }
-

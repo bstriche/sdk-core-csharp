@@ -29,7 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" />
@@ -87,8 +87,22 @@
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Util.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
+    <Compile Include="Test\Functional\ATMCountries.cs" />
+    <Compile Include="Test\Functional\ATMCountriesTest.cs" />
+    <Compile Include="Test\Functional\ATMCountrySubdivisions.cs" />
+    <Compile Include="Test\Functional\ATMCountrySubdivisionsTest.cs" />
+    <Compile Include="Test\Functional\ATMLocations.cs" />
+    <Compile Include="Test\Functional\ATMLocationsTest.cs" />
     <Compile Include="Test\Functional\AudiencesSegment.cs" />
     <Compile Include="Test\Functional\AudiencesSegmentTest.cs" />
+    <Compile Include="Test\Functional\MerchantCategories.cs" />
+    <Compile Include="Test\Functional\MerchantCategoriesTest.cs" />
+    <Compile Include="Test\Functional\MerchantCountries.cs" />
+    <Compile Include="Test\Functional\MerchantCountriesTest.cs" />
+    <Compile Include="Test\Functional\MerchantCountrySubdivisions.cs" />
+    <Compile Include="Test\Functional\MerchantCountrySubdivisionsTest.cs" />
+    <Compile Include="Test\Functional\MerchantLocations.cs" />
+    <Compile Include="Test\Functional\MerchantLocationsTest.cs" />
     <Compile Include="Test\Functional\Parameters.cs" />
     <Compile Include="Test\Functional\ParametersTest.cs" />
     <Compile Include="Test\Functional\UserTest.cs" />
@@ -104,6 +118,7 @@
     <Compile Include="Test\OAuthUtilTest.cs" />
     <Compile Include="Test\TestBaseObject.cs" />
     <Compile Include="Test\TestPathBaseObject.cs" />
+    <Compile Include="Test\TestUtil.cs" />
     <Compile Include="Test\UtilTest.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\JObjectExtension.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
@@ -118,6 +133,9 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MasterCard-Core.dll.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <Content Include="Test\certificate.p12">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -125,8 +143,8 @@
     <Content Include="Test\mastercard_private.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Test\prod_key.p12">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="Test\mcapi_sandbox_key.p12">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Test\mastercard_public.crt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

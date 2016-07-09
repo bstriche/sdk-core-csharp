@@ -129,29 +129,23 @@ namespace MasterCard.Core
 		public static String NormalizeParameters(String requestUrl, SortedDictionary<String, String> oauthParameters) {
 
 			var paramString1 = new StringBuilder();
-			SortedDictionary<String, String> requestParameters = new SortedDictionary<String, String> ();
+
+            //arizzini: oauthParamters to the sorted dictionary
+            SortedDictionary<String, String> sortedParameters = new SortedDictionary<String, String> (oauthParameters, StringComparer.Ordinal);
 
 			//extract request paramter from the url and sort them
 			if (requestUrl.IndexOf ('?') > 0) {
 				NameValueCollection nameValueCollecion = HttpUtility.ParseQueryString (requestUrl.Substring (requestUrl.IndexOf ('?')));
 				foreach (String key in nameValueCollecion) {
 					foreach (String value in nameValueCollecion.GetValues(key)) {
-						requestParameters.Add (key, value);
+						sortedParameters.Add (key, value);
 					}
 				}
 			}
 
 
-			//add the sorted request paramters to the base string. 
-			foreach(KeyValuePair<string, string> entry in requestParameters)
-			{
-				if (paramString1.Length > 0) {
-					paramString1.Append ("&");
-				}
-				paramString1.Append(uriRfc3986((String)entry.Key)).Append("=").Append(uriRfc3986((String)entry.Value));
-			}
-
-			foreach(KeyValuePair<string, string> entry in oauthParameters)
+            //add the sorted request paramters to the base string. 
+            foreach (KeyValuePair<string, string> entry in sortedParameters)
 			{
 				if (paramString1.Length > 0) {
 					paramString1.Append ("&");
