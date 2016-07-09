@@ -85,24 +85,24 @@ namespace TestMasterCard
             
 
             MerchantLocations response = MerchantLocations.Query(parameters);
-            Assert.That("0", Is.EqualTo(response["Merchants.PageOffset"].ToString()).IgnoreCase);
-            Assert.That("3", Is.EqualTo(response["Merchants.TotalCount"].ToString()).IgnoreCase);
-            Assert.That("36564", Is.EqualTo(response["Merchants.Merchant[0].Id"].ToString()).IgnoreCase);
-            Assert.That("Merchant 36564", Is.EqualTo(response["Merchants.Merchant[0].Name"].ToString()).IgnoreCase);
-            Assert.That("7 - Dry Cleaners And Laundry Services", Is.EqualTo(response["Merchants.Merchant[0].Category"].ToString()).IgnoreCase);
-            Assert.That("Merchant 36564", Is.EqualTo(response["Merchants.Merchant[0].Location.Name"].ToString()).IgnoreCase);
-            Assert.That("0.9320591049747101", Is.EqualTo(response["Merchants.Merchant[0].Location.Distance"].ToString()).IgnoreCase);
-            Assert.That("MILE", Is.EqualTo(response["Merchants.Merchant[0].Location.DistanceUnit"].ToString()).IgnoreCase);
-            Assert.That("3822 West Fork Street", Is.EqualTo(response["Merchants.Merchant[0].Location.Address.Line1"].ToString()).IgnoreCase);
-            Assert.That("Great Falls", Is.EqualTo(response["Merchants.Merchant[0].Location.Address.City"].ToString()).IgnoreCase);
-            Assert.That("51765", Is.EqualTo(response["Merchants.Merchant[0].Location.Address.PostalCode"].ToString()).IgnoreCase);
-            Assert.That("Country Subdivision 517521", Is.EqualTo(response["Merchants.Merchant[0].Location.Address.CountrySubdivision.Name"].ToString()).IgnoreCase);
-            Assert.That("Country Subdivision Code 517521", Is.EqualTo(response["Merchants.Merchant[0].Location.Address.CountrySubdivision.Code"].ToString()).IgnoreCase);
-            Assert.That("Country 5175215", Is.EqualTo(response["Merchants.Merchant[0].Location.Address.Country.Name"].ToString()).IgnoreCase);
-            Assert.That("Country Code 5175215", Is.EqualTo(response["Merchants.Merchant[0].Location.Address.Country.Code"].ToString()).IgnoreCase);
-            Assert.That("38.52114017591121", Is.EqualTo(response["Merchants.Merchant[0].Location.Point.Latitude"].ToString()).IgnoreCase);
-            Assert.That("-90.28678100000002", Is.EqualTo(response["Merchants.Merchant[0].Location.Point.Longitude"].ToString()).IgnoreCase);
-            Assert.That("true", Is.EqualTo(response["Merchants.Merchant[0].Acceptance.PayPass.Register"].ToString()).IgnoreCase);
+            TestUtil.assert("0", response["Merchants.PageOffset"]);
+            TestUtil.assert("3", response["Merchants.TotalCount"]);
+            TestUtil.assert("36564", response["Merchants.Merchant[0].Id"]);
+            TestUtil.assert("Merchant 36564", response["Merchants.Merchant[0].Name"]);
+            TestUtil.assert("7 - Dry Cleaners And Laundry Services", response["Merchants.Merchant[0].Category"]);
+            TestUtil.assert("Merchant 36564", response["Merchants.Merchant[0].Location.Name"]);
+            TestUtil.assert("0.9320591049747101", response["Merchants.Merchant[0].Location.Distance"]);
+            TestUtil.assert("MILE", response["Merchants.Merchant[0].Location.DistanceUnit"]);
+            TestUtil.assert("3822 West Fork Street", response["Merchants.Merchant[0].Location.Address.Line1"]);
+            TestUtil.assert("Great Falls", response["Merchants.Merchant[0].Location.Address.City"]);
+            TestUtil.assert("51765", response["Merchants.Merchant[0].Location.Address.PostalCode"]);
+            TestUtil.assert("Country Subdivision 517521", response["Merchants.Merchant[0].Location.Address.CountrySubdivision.Name"]);
+            TestUtil.assert("Country Subdivision Code 517521", response["Merchants.Merchant[0].Location.Address.CountrySubdivision.Code"]);
+            TestUtil.assert("Country 5175215", response["Merchants.Merchant[0].Location.Address.Country.Name"]);
+            TestUtil.assert("Country Code 5175215", response["Merchants.Merchant[0].Location.Address.Country.Code"]);
+            TestUtil.assert("38.52114017591121", response["Merchants.Merchant[0].Location.Point.Latitude"]);
+            TestUtil.assert("-90.28678100000002", response["Merchants.Merchant[0].Location.Point.Longitude"]);
+            TestUtil.assert("true", response["Merchants.Merchant[0].Acceptance.PayPass.Register"]);
             
 
         }

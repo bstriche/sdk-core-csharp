@@ -77,33 +77,33 @@ namespace TestMasterCard
             
 
             ATMLocations response = ATMLocations.Query(parameters);
-            Assert.That("0", Is.EqualTo(response["Atms.PageOffset"].ToString()).IgnoreCase);
-            Assert.That("26", Is.EqualTo(response["Atms.TotalCount"].ToString()).IgnoreCase);
-            Assert.That("Sandbox ATM Location 1", Is.EqualTo(response["Atms.Atm[0].Location.Name"].ToString()).IgnoreCase);
-            Assert.That("0.9320591049747101", Is.EqualTo(response["Atms.Atm[0].Location.Distance"].ToString()).IgnoreCase);
-            Assert.That("MILE", Is.EqualTo(response["Atms.Atm[0].Location.DistanceUnit"].ToString()).IgnoreCase);
-            Assert.That("4201 Leverton Cove Road", Is.EqualTo(response["Atms.Atm[0].Location.Address.Line1"].ToString()).IgnoreCase);
-            Assert.That("SPRINGFIELD", Is.EqualTo(response["Atms.Atm[0].Location.Address.City"].ToString()).IgnoreCase);
-            Assert.That("11101", Is.EqualTo(response["Atms.Atm[0].Location.Address.PostalCode"].ToString()).IgnoreCase);
-            Assert.That("UYQQQQ", Is.EqualTo(response["Atms.Atm[0].Location.Address.CountrySubdivision.Name"].ToString()).IgnoreCase);
-            Assert.That("QQ", Is.EqualTo(response["Atms.Atm[0].Location.Address.CountrySubdivision.Code"].ToString()).IgnoreCase);
-            Assert.That("UYQQQRR", Is.EqualTo(response["Atms.Atm[0].Location.Address.Country.Name"].ToString()).IgnoreCase);
-            Assert.That("UYQ", Is.EqualTo(response["Atms.Atm[0].Location.Address.Country.Code"].ToString()).IgnoreCase);
-            Assert.That("38.76006576913497", Is.EqualTo(response["Atms.Atm[0].Location.Point.Latitude"].ToString()).IgnoreCase);
-            Assert.That("-90.74615107952418", Is.EqualTo(response["Atms.Atm[0].Location.Point.Longitude"].ToString()).IgnoreCase);
-            Assert.That("OTHER", Is.EqualTo(response["Atms.Atm[0].Location.LocationType.Type"].ToString()).IgnoreCase);
-            Assert.That("NO", Is.EqualTo(response["Atms.Atm[0].HandicapAccessible"].ToString()).IgnoreCase);
-            Assert.That("NO", Is.EqualTo(response["Atms.Atm[0].Camera"].ToString()).IgnoreCase);
-            Assert.That("UNKNOWN", Is.EqualTo(response["Atms.Atm[0].Availability"].ToString()).IgnoreCase);
-            Assert.That("UNKNOWN", Is.EqualTo(response["Atms.Atm[0].AccessFees"].ToString()).IgnoreCase);
-            Assert.That("Sandbox ATM 1", Is.EqualTo(response["Atms.Atm[0].Owner"].ToString()).IgnoreCase);
-            Assert.That("NO", Is.EqualTo(response["Atms.Atm[0].SharedDeposit"].ToString()).IgnoreCase);
-            Assert.That("NO", Is.EqualTo(response["Atms.Atm[0].SurchargeFreeAlliance"].ToString()).IgnoreCase);
-            Assert.That("DOES_NOT_PARTICIPATE_IN_SFA", Is.EqualTo(response["Atms.Atm[0].SurchargeFreeAllianceNetwork"].ToString()).IgnoreCase);
-            Assert.That("Sandbox", Is.EqualTo(response["Atms.Atm[0].Sponsor"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["Atms.Atm[0].SupportEMV"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["Atms.Atm[0].InternationalMaestroAccepted"].ToString()).IgnoreCase);
-            
+            TestUtil.assert("0", response["Atms.PageOffset"]);
+            TestUtil.assert("26", response["Atms.TotalCount"]);
+            TestUtil.assert("Sandbox ATM Location 1", response["Atms.Atm[0].Location.Name"]);
+            TestUtil.assert("0.9320591049747101", response["Atms.Atm[0].Location.Distance"]);
+            TestUtil.assert("MILE", response["Atms.Atm[0].Location.DistanceUnit"]);
+            TestUtil.assert("4201 Leverton Cove Road", response["Atms.Atm[0].Location.Address.Line1"]);
+            TestUtil.assert("SPRINGFIELD", response["Atms.Atm[0].Location.Address.City"]);
+            TestUtil.assert("11101", response["Atms.Atm[0].Location.Address.PostalCode"]);
+            TestUtil.assert("UYQQQQ", response["Atms.Atm[0].Location.Address.CountrySubdivision.Name"]);
+            TestUtil.assert("QQ", response["Atms.Atm[0].Location.Address.CountrySubdivision.Code"]);
+            TestUtil.assert("UYQQQRR", response["Atms.Atm[0].Location.Address.Country.Name"]);
+            TestUtil.assert("UYQ", response["Atms.Atm[0].Location.Address.Country.Code"]);
+            TestUtil.assert("38.76006576913497", response["Atms.Atm[0].Location.Point.Latitude"]);
+            TestUtil.assert("-90.74615107952418", response["Atms.Atm[0].Location.Point.Longitude"]);
+            TestUtil.assert("OTHER", response["Atms.Atm[0].Location.LocationType.Type"]);
+            TestUtil.assert("NO", response["Atms.Atm[0].HandicapAccessible"]);
+            TestUtil.assert("NO", response["Atms.Atm[0].Camera"]);
+            TestUtil.assert("UNKNOWN", response["Atms.Atm[0].Availability"]);
+            TestUtil.assert("UNKNOWN", response["Atms.Atm[0].AccessFees"]);
+            TestUtil.assert("Sandbox ATM 1", response["Atms.Atm[0].Owner"]);
+            TestUtil.assert("NO", response["Atms.Atm[0].SharedDeposit"]);
+            TestUtil.assert("NO", response["Atms.Atm[0].SurchargeFreeAlliance"]);
+            TestUtil.assert("DOES_NOT_PARTICIPATE_IN_SFA", response["Atms.Atm[0].SurchargeFreeAllianceNetwork"]);
+            TestUtil.assert("Sandbox", response["Atms.Atm[0].Sponsor"]);
+            TestUtil.assert("1", response["Atms.Atm[0].SupportEMV"]);
+            TestUtil.assert("1", response["Atms.Atm[0].InternationalMaestroAccepted"]);
+
 
         }
         
