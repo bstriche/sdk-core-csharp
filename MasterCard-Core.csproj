@@ -118,6 +118,7 @@
     <Compile Include="Test\OAuthUtilTest.cs" />
     <Compile Include="Test\TestBaseObject.cs" />
     <Compile Include="Test\TestPathBaseObject.cs" />
+    <Compile Include="Test\TestUtil.cs" />
     <Compile Include="Test\UtilTest.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\JObjectExtension.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
