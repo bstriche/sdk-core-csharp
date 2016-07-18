@@ -26,20 +26,11 @@
             <dependency id="RestSharp" version="105.2.3"  />
         </group>
 	</dependencies>
-    <references>
-        <group>
-            <reference file="MasterCard-Core.dll" />
-            <reference file="log4net.dll" />
-            <reference file="Newtonsoft.Json.dll" />
-            <reference file="RestSharp.dll" />
-        </group>
-        <group targetFramework="net461">
-            <reference file="MasterCard-Core.dll" />
-            <reference file="log4net.dll" />
-            <reference file="Newtonsoft.Json.dll" />
-            <reference file="RestSharp.dll" />
-        </group>
-        
-    </references>
+	<frameworkAssemblies>
+		<frameworkAssembly assemblyName="log4net" />
+		<frameworkAssembly assemblyName="Newtonsoft.Json"  />
+		<frameworkAssembly assemblyName="RestSharp"  />
+	</frameworkAssemblies>
+
   </metadata>
 </package>
