@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MasterCard-Core</id>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
     <authors>MasterCard Worldwide</authors>
     <owners>MasterCard Worldwide</owners>
     <licenseUrl>https://opensource.org/licenses/BSD-2-Clause</licenseUrl>
