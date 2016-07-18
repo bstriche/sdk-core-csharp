@@ -27,6 +27,7 @@
         </group>
 	</dependencies>
 	<frameworkAssemblies>
+        <frameworkAssembly assemblyName="MasterCard-Core" />
 		<frameworkAssembly assemblyName="log4net" />
 		<frameworkAssembly assemblyName="Newtonsoft.Json"  />
 		<frameworkAssembly assemblyName="RestSharp"  />
