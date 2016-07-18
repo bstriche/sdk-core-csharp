@@ -40,20 +40,24 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL" >
       <HintPath>packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.5.9.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>packages\Moq.4.5.9\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.5.3.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " >
+      <HintPath>packages\Moq.4.5.3\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.2.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.4.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+      <HintPath>packages\NUnit.3.4.1\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -61,12 +65,6 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,45 +85,45 @@
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Util.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
-    <Compile Include="Test\Functional\ATMCountries.cs" />
-    <Compile Include="Test\Functional\ATMCountriesTest.cs" />
-    <Compile Include="Test\Functional\ATMCountrySubdivisions.cs" />
-    <Compile Include="Test\Functional\ATMCountrySubdivisionsTest.cs" />
-    <Compile Include="Test\Functional\ATMLocations.cs" />
-    <Compile Include="Test\Functional\ATMLocationsTest.cs" />
-    <Compile Include="Test\Functional\AudiencesSegment.cs" />
-    <Compile Include="Test\Functional\AudiencesSegmentTest.cs" />
-    <Compile Include="Test\Functional\MerchantCategories.cs" />
-    <Compile Include="Test\Functional\MerchantCategoriesTest.cs" />
-    <Compile Include="Test\Functional\MerchantCountries.cs" />
-    <Compile Include="Test\Functional\MerchantCountriesTest.cs" />
-    <Compile Include="Test\Functional\MerchantCountrySubdivisions.cs" />
-    <Compile Include="Test\Functional\MerchantCountrySubdivisionsTest.cs" />
-    <Compile Include="Test\Functional\MerchantLocations.cs" />
-    <Compile Include="Test\Functional\MerchantLocationsTest.cs" />
-    <Compile Include="Test\Functional\Parameters.cs" />
-    <Compile Include="Test\Functional\ParametersTest.cs" />
-    <Compile Include="Test\Functional\UserTest.cs" />
-    <Compile Include="Test\Functional\User.cs" />
-    <Compile Include="Test\Functional\PostTest.cs" />
-    <Compile Include="Test\Functional\Post.cs" />
-    <Compile Include="Test\Functional\UserPostHeaderTest.cs" />
-    <Compile Include="Test\Functional\UserPostHeader.cs" />
-    <Compile Include="Test\Functional\UserPostPathTest.cs" />
-    <Compile Include="Test\Functional\UserPostPath.cs" />
-    <Compile Include="Test\ApiControllerTest.cs" />
-    <Compile Include="Test\BaseMapTest.cs" />
-    <Compile Include="Test\OAuthUtilTest.cs" />
-    <Compile Include="Test\TestBaseObject.cs" />
-    <Compile Include="Test\TestPathBaseObject.cs" />
-    <Compile Include="Test\TestUtil.cs" />
-    <Compile Include="Test\UtilTest.cs" />
+    <Compile Include="Test\Functional\ATMCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\ATMCountriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\ATMCountrySubdivisions.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\ATMCountrySubdivisionsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\ATMLocations.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\ATMLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\AudiencesSegment.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\AudiencesSegmentTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantCategories.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantCategoriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantCountriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantCountrySubdivisions.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantCountrySubdivisionsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantLocations.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MerchantLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\Parameters.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\ParametersTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\UserTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\User.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\PostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\Post.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\UserPostHeaderTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\UserPostHeader.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\UserPostPathTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\UserPostPath.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\ApiControllerTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\BaseMapTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\OAuthUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\TestBaseObject.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\TestPathBaseObject.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\TestUtil.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\UtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Sources\MasterCard\Core\Model\JObjectExtension.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
-    <Compile Include="Test\CryptUtilTest.cs" />
-    <Compile Include="Test\Functional\TokenActivation.cs" />
-    <Compile Include="Test\Functional\TokenActivationTest.cs" />
+    <Compile Include="Test\CryptUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\TokenActivation.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\TokenActivationTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Sources\MasterCard\Core\Security\MDES\MDESCryptography.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -135,8 +133,11 @@
   <ItemGroup>
     <None Include="MasterCard-Core.dll.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Test\certificate.p12">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
