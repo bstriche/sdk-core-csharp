@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MasterCard-Core</id>
-    <version>0.0.9</version>
+    <version>0.0.10</version>
     <authors>MasterCard Worldwide</authors>
     <owners>MasterCard Worldwide</owners>
     <licenseUrl>https://opensource.org/licenses/BSD-2-Clause</licenseUrl>
@@ -19,7 +19,6 @@
             <dependency id="Newtonsoft.Json" version="9.0.1" />
             <dependency id="RestSharp" version="105.2.3"  />
         </group>
-
         <group targetFramework="net461">
             <dependency id="log4net" version="2.0.3"  />
             <dependency id="Newtonsoft.Json" version="9.0.1" />
@@ -27,7 +26,6 @@
         </group>
 	</dependencies>
 	<frameworkAssemblies>
-        <frameworkAssembly assemblyName="MasterCard" />
 		<frameworkAssembly assemblyName="log4net" />
 		<frameworkAssembly assemblyName="Newtonsoft.Json"  />
 		<frameworkAssembly assemblyName="RestSharp"  />
