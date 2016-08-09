@@ -140,8 +140,8 @@ namespace MasterCard.Core
 
 		
 		public static void setLocalhost() {
-			API_BASE_SANDBOX_URL = "http://localhost:8080";
-			API_BASE_LIVE_URL = "http://localhost:8080";
+			API_BASE_SANDBOX_URL = "http://localhost:8081";
+			API_BASE_LIVE_URL = "http://localhost:8081";
 		}
 
 		public static void unsetLocalhost() {
