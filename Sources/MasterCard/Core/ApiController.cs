@@ -47,6 +47,9 @@ namespace MasterCard.Core
 
 		private static readonly ILog log = LogManager.GetLogger(typeof(ApiController));
 		static ApiController() {
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
 			if (ApiConfig.isDebug ()) {
 				if (File.Exists ("log4net.xml")) {
 					XmlConfigurator.Configure (new FileInfo ("log4net.xml"));
