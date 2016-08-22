@@ -150,7 +150,7 @@ namespace MasterCard.Core
 				if (paramString1.Length > 0) {
 					paramString1.Append ("&");
 				}
-				paramString1.Append(uriRfc3986((String)entry.Key)).Append("=").Append(uriRfc3986((String)entry.Value));
+				paramString1.Append(UriRfc3986((String)entry.Key)).Append("=").Append(UriRfc3986((String)entry.Value));
 			}
 
 			return paramString1.ToString();
@@ -163,7 +163,7 @@ namespace MasterCard.Core
 		/// </summary>
 		/// <param name="stringToEncode"></param>
 		/// <returns></returns>
-		public static String uriRfc3986(String stringToEncode) {
+		public static String UriRfc3986(String stringToEncode) {
 			StringBuilder escaped = new StringBuilder(Uri.EscapeDataString(stringToEncode));
 			for (int i = 0; i < URIRFC3986CHARSTOESCAPE.Length; i++)
 			{

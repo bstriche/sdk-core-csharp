@@ -28,7 +28,7 @@ namespace TestMasterCard
 		{
             var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
             var authentication = new OAuthAuthentication("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath + "\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-            ApiConfig.setAuthentication (authentication);
+            ApiConfig.SetAuthentication (authentication);
 		}
 
 
@@ -63,7 +63,10 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+
+            IDictionary <String,Object> result = controller.Execute (config, metadata, new TestBaseObject (responseMap));
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("user"));
@@ -84,8 +87,12 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (), headerList, queryList);
-			RequestMap responseMapFromResponse = new RequestMap (result);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+            //new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+
+            IDictionary<String, Object> result = controller.Execute(config, metadata, new TestBaseObject());
+            RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.IsTrue (responseMapFromResponse.ContainsKey ("list"));
 			Assert.AreEqual (typeof(List<Dictionary<String,Object>>), responseMapFromResponse ["list"].GetType () );
@@ -106,9 +113,13 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, null));
 
-			IDictionary<String,Object> result = controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList);
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
 
-			Assert.IsTrue (result == null);
+            IDictionary<String, Object> result = controller.Execute(config, metadata, new TestBaseObject(responseMap));
+
+            Assert.IsTrue (result == null);
 
 		}
 
@@ -122,7 +133,11 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
-			Assert.Throws<NotAllowedException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "Method not Allowed");
+            //new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+
+            Assert.Throws<NotAllowedException> (() => controller.Execute(config, metadata, new TestBaseObject(responseMap)), "Method not Allowed");
 		}
 
 
@@ -136,7 +151,11 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
-			Assert.Throws<InvalidRequestException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "The supplied field: 'date' is of an unsupported format");
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+
+            Assert.Throws<InvalidRequestException> (() => controller.Execute (config, metadata, new TestBaseObject (responseMap)), "The supplied field: 'date' is of an unsupported format");
 		}
 
 
@@ -149,7 +168,11 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
-			Assert.Throws<AuthenticationException> (() => controller.execute ("create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "Oauth customer key invalid");
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+
+            Assert.Throws<AuthenticationException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)), "Oauth customer key invalid");
 		}
 
 
@@ -162,7 +185,11 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
-			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.execute ( "create", "/test1", new TestBaseObject (responseMap), headerList, queryList), "Something went wrong");
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+
+            Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)), "Something went wrong");
 		}
 
 
@@ -176,7 +203,12 @@ namespace TestMasterCard
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
-			IDictionary<String,Object> result = controller.execute ("read", "/test1", new TestBaseObject (requestMap), headerList, queryList);
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "read", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+
+
+            IDictionary<String,Object> result = controller.Execute ( config, metadata,new TestBaseObject (requestMap));
 			RequestMap responseMapFromResponse = new RequestMap (result);
 
 			Assert.AreEqual("true", responseMapFromResponse["Account.Status"]);

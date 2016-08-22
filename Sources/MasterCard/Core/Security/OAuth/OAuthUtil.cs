@@ -51,7 +51,7 @@ namespace MasterCard.Core.Security.OAuth
 		/// </summary>
 		/// <returns>A string representing the OAuth SignatureBaseString</returns>
 		public static String GetBaseString(String requestUrl, String httpMethod, SortedDictionary<String, String> oauthParameters) {
-			return Util.uriRfc3986(httpMethod.ToUpper()) + "&" + Util.uriRfc3986(Util.NormalizeUrl(requestUrl)) + "&" + Util.uriRfc3986(Util.NormalizeParameters(requestUrl, oauthParameters));
+			return Util.UriRfc3986(httpMethod.ToUpper()) + "&" + Util.UriRfc3986(Util.NormalizeUrl(requestUrl)) + "&" + Util.UriRfc3986(Util.NormalizeParameters(requestUrl, oauthParameters));
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace MasterCard.Core.Security.OAuth
 		/// <returns></returns>
 		public static string RsaSign(string baseString)
 		{
-			return ApiConfig.getAuthentication ().SignMessage (baseString);
+			return ApiConfig.GetAuthentication ().SignMessage (baseString);
 		}
 
 
@@ -109,7 +109,7 @@ namespace MasterCard.Core.Security.OAuth
 				} else {
 					builder.Append (",");
 				}
-				builder.Append ((entry.Key)).Append ("=\"").Append (Util.uriRfc3986 (entry.Value)).Append ("\"");
+				builder.Append ((entry.Key)).Append ("=\"").Append (Util.UriRfc3986 (entry.Value)).Append ("\"");
 			}
 
 

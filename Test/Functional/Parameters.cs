@@ -48,42 +48,22 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "query") {
-                return "/sectorinsights/v1/sectins.svc/parameters";
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "query") {
-                return new List<String> {  };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-
-            if (action == "query")
+            switch (operationUUID)
             {
-                return new List<String> { };
+                case "uuid":
+                    return new OperationConfig("/sectorinsights/v1/sectins.svc/parameters", "query", new List<string>(), new List<string>());
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        public override string GetApiVersion()
+        protected override OperationMetadata GetOperationMetadata()
         {
-            return "0.0.1";
+            return new OperationMetadata("0.0.1", null);
         }
-
-
-
-
-
+        
 
 
         /// <summary>
@@ -99,7 +79,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static Parameters Query(RequestMap parameters)
         {
-            return (Parameters) BaseObject.queryObject(new Parameters(parameters));
+            return BaseObject.Execute("uuid",new Parameters(parameters));
         }
         
         

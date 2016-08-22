@@ -51,22 +51,11 @@ namespace TestMasterCard
 		{
             var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
             var authentication = new OAuthAuthentication("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath + "\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-            ApiConfig.setAuthentication (authentication);
-			
-			ApiConfig.setLocalhost ();
-			
-		}
+            ApiConfig.SetAuthentication (authentication);
+            ApiConfig.SetDebug(true);
 
-		[TearDown]
-		public void tearDown() {
-			
-			ApiConfig.unsetLocalhost();
-			
-		}
-            
-            
-            
-                        
+        }
+
 
         [Test ()]
         public void list_users_Test()

@@ -49,42 +49,22 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "list") {
-               return "/mock_crud_server/users/{user_id}/posts";
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "list") {
-               return new List<String> {  };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-
-            if (action == "list")
+            switch (operationUUID)
             {
-                return new List<String> { };
+                case "uuid":
+                    return new OperationConfig("/mock_crud_server/users/{user_id}/posts", "list", new List<string>(), new List<string> { });
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        public override string GetApiVersion()
+        protected override OperationMetadata GetOperationMetadata()
         {
-            return "0.0.1";
+            return new OperationMetadata("0.0.1", "http://localhost:8081");
         }
-
-
-
-
-
+        
 
         /// <summary>
         /// Retrieves a list of type <code>UserPostPath</code>
@@ -98,7 +78,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<UserPostPath> List()
         {
-            return BaseObject.listObjects(new UserPostPath());
+            return BaseObject.ExecuteForList("uuid",new UserPostPath());
         }
 
         /// <summary>
@@ -114,7 +94,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<UserPostPath> List(RequestMap criteria)
         {
-            return BaseObject.listObjects(new UserPostPath(criteria));
+            return BaseObject.ExecuteForList("uuid", new UserPostPath(criteria));
         }
         
         

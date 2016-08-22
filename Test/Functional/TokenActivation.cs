@@ -48,38 +48,22 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "create") {
-				return "/mdes/tokenization/1/0/token/tokenize";
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "create") {
-                return new List<String> {  };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-
-            if (action == "create")
+            switch (operationUUID)
             {
-                return new List<String> { };
+                case "uuid":
+                    return new OperationConfig("/mdes/tokenization/1/0/token/tokenize", "create", new List<string>(), new List<string>());
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        public override string GetApiVersion()
+        protected override OperationMetadata GetOperationMetadata()
         {
-            return "0.0.1";
+            return new OperationMetadata("0.0.1", null);
         }
-
+        
 
 
 
@@ -101,7 +85,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static TokenActivation Create(RequestMap parameters)
         {
-			return (TokenActivation) BaseObject.createObject(new TokenActivation(parameters));
+			return BaseObject.Execute("uuid",new TokenActivation(parameters));
         }
         
         

@@ -46,88 +46,37 @@ namespace MasterCard.Core.Model
 		{
 		}
 
-		public abstract string GetResourcePath(string action);
+        protected abstract OperationConfig GetOperationConfig(string operationUUID);
 
-		public abstract List<string> GetHeaderParams (string action);
-
-        public abstract List<string> GetQueryParams(string action);
-
-        public abstract string GetApiVersion();
+        protected abstract OperationMetadata GetOperationMetadata();
 
 
         /// <summary>
-        /// Updates the object.
+        /// Execute operation expecting to return a list
         /// </summary>
-        /// <returns>The object.</returns>
-        /// <param name="inputObject">request object.</param>
-        protected internal static T queryObject<T> (T inputObject) where T : BaseObject
-		{
-			return execute ("query", inputObject);
-		}
-
-		/// <summary>
-		/// Finds the object.
-		/// </summary>
-		/// <returns>The object.</returns>
-		/// <param name = "inputObject"></param>
-		protected internal static T readObject<T> (T inputObject) where T : BaseObject 
-		{
-			return execute ("read", inputObject);
-		}
+        /// <typeparam name="T"></typeparam>
+        /// <param name="operationUUID"></param>
+        /// <param name="inputObject"></param>
+        /// <returns></returns>
+        protected static ResourceList<T> ExecuteForList<T>(string operationUUID, T inputObject) where T : BaseObject
+        {
+            T tmpObjectWithList = Execute(operationUUID, inputObject);
+            return new ResourceList<T>(tmpObjectWithList);
+        }
 
 
-		/// <summary>
-		/// Lists the objects.
-		/// </summary>
-		/// <returns>The objects.</returns>
-		/// <param name="inputObject"></param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		protected internal static ResourceList<T> listObjects<T> (T inputObject) where T : BaseObject
-		{
-			T tmpObjectWithList =  execute ("list", inputObject);
-			return new ResourceList<T> (tmpObjectWithList);
-		}
 
-		/// <summary>
-		/// Creates the object.
-		/// </summary>
-		/// <returns>The object.</returns>
-		/// <param name="inputObject">request object.</param>
-		protected internal static T createObject<T> (T inputObject) where T : BaseObject
-		{
-			return execute ("create", inputObject);
-		}
+        /// <summary>
+        /// Execute operation expecting to return an Object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="operationUUID"></param>
+        /// <param name="inputObject"></param>
+        /// <returns></returns>
+        protected static T Execute<T>(string operationUUID, T inputObject) where T : BaseObject {
+            ApiController apiController = new ApiController(inputObject.GetOperationMetadata().Version);
 
-		/// <summary>
-		/// Updates the object.
-		/// </summary>
-		/// <returns>The object.</returns>
-		/// <param name="inputObject">request object.</param>
-		protected internal virtual T updateObject<T> (T inputObject) where T : BaseObject
-		{
-			return execute ("update", inputObject);
-		}
-
-
-		/// <summary>
-		/// Deletes the object.
-		/// </summary>
-		/// <returns>The object.</returns>
-		/// <param name="inputObject">request object.</param>
-		protected internal virtual T deleteObject<T> (T inputObject) where T : BaseObject
-		{
-			return execute ("delete", inputObject);
-		}
-
-
-		/// <summary>
-		/// Execute the specified action and inputObject.
-		/// </summary>
-		/// <param name="action">Action.</param>
-		/// <param name="inputObject">Input object.</param>
-		static T execute<T>(String action, T inputObject) where T : BaseObject {
-            ApiController apiController = new ApiController(inputObject.GetApiVersion());
-			IDictionary<String,Object> response = apiController.execute (action, inputObject.GetResourcePath(action), inputObject, inputObject.GetHeaderParams(action), inputObject.GetQueryParams(action));
+            IDictionary<String,Object> response = apiController.Execute (inputObject.GetOperationConfig(operationUUID), inputObject.GetOperationMetadata(), inputObject);
 
 			if (response != null) {
 				inputObject.Clear ();

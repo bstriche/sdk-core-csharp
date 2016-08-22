@@ -48,80 +48,31 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "list") {
-               return "/mock_crud_server/users";
-            }
-            if (action == "create") {
-                return "/mock_crud_server/users";
-            }
-            if (action == "read") {
-                return "/mock_crud_server/users/{id}";
-            }
-            if (action == "update") {
-                return "/mock_crud_server/users/{id}";
-            }
-            if (action == "delete") {
-                return "/mock_crud_server/users/{id}";
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
 
-
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "list") {
-               return new List<String> {  };
-            }
-            if (action == "create") {
-                return new List<String> {  };
-            }
-            if (action == "read") {
-                return new List<String> {  };
-            }
-            if (action == "update") {
-                return new List<String> {  };
-            }
-            if (action == "delete") {
-                return new List<String> {  };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-
-            if (action == "list")
+            switch (operationUUID)
             {
-                return new List<String> { };
+                case "list":
+                    return new OperationConfig("/mock_crud_server/users", "list", new List<string>(), new List<string>());
+                case "create":
+                    return new OperationConfig("/mock_crud_server/users", "create", new List<string>(), new List<string>());
+                case "read":
+                    return new OperationConfig("/mock_crud_server/users/{id}", "read", new List<string>(), new List<string>());
+                case "update":
+                    return new OperationConfig("/mock_crud_server/users/{id}", "update", new List<string>(), new List<string>());
+                case "delete":
+                    return new OperationConfig("/mock_crud_server/users/{id}", "delete", new List<string>(), new List<string>());
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
-            if (action == "create")
-            {
-                return new List<String> { };
-            }
-            if (action == "read")
-            {
-                return new List<String> { };
-            }
-            if (action == "update")
-            {
-                return new List<String> { };
-            }
-            if (action == "delete")
-            {
-                return new List<String> { };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        public override string GetApiVersion()
+        protected override OperationMetadata GetOperationMetadata()
         {
-            return "0.0.1";
+            return new OperationMetadata("0.0.1", "http://localhost:8081");
         }
-
-
-
+        
 
         /// <summary>
         /// Retrieves a list of type <code>User</code>
@@ -135,7 +86,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<User> List()
         {
-            return BaseObject.listObjects(new User());
+            return BaseObject.ExecuteForList("list",new User());
         }
 
         /// <summary>
@@ -151,7 +102,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<User> List(RequestMap criteria)
         {
-            return BaseObject.listObjects(new User(criteria));
+            return BaseObject.ExecuteForList("list",new User(criteria));
         }
         
         
@@ -170,7 +121,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static User Create(RequestMap map)
         {
-            return (User) BaseObject.createObject(new User(map));
+            return (User) BaseObject.Execute("create",new User(map));
         }
         
         
@@ -202,7 +153,7 @@ namespace TestMasterCard
 		    if (parameters != null && parameters.Count > 0) {
 		        map.AddAll (parameters);
             }
-            return (User) BaseObject.readObject(new User(map));
+            return BaseObject.Execute("read",new User(map));
         }
         
         
@@ -220,7 +171,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public User Update()
         {
-            return  this.updateObject(this);
+            return  BaseObject.Execute("update",this);
         }
 
         
@@ -244,7 +195,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public User Delete()
         {
-            return this.deleteObject(this);
+            return BaseObject.Execute("delete",this);
         }
 
         /// <summary>

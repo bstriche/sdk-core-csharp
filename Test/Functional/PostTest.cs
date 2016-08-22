@@ -51,27 +51,19 @@ namespace TestMasterCard
 		{
             var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
             var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath+"\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-            ApiConfig.setAuthentication (authentication);
+            ApiConfig.SetAuthentication (authentication);
+            ApiConfig.SetDebug(true);
 
-			ApiConfig.setLocalhost ();
-			
 		}
 
         
-		[TearDown]
-		public void tearDown() {
-			ApiConfig.unsetLocalhost();
-		}
-            
-            
-                        
 
         [Test ()]
         public void list_posts_query_1_Test()
         {
             
 
-            List<Post> responseList = Post.doList();
+            List<Post> responseList = Post.List();
             Post response = responseList[0];
             Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
             Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase );
@@ -90,7 +82,7 @@ namespace TestMasterCard
             
             
 
-            List<Post> responseList = Post.doList(map);
+            List<Post> responseList = Post.List(map);
             Post response = responseList[0];
             Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
             Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase );
@@ -114,7 +106,7 @@ namespace TestMasterCard
             map.Set ("body", "Some text as a body");
             map.Set ("title", "Title of Post");
             
-            Post response = Post.doCreate(map);
+            Post response = Post.Create(map);
             Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
             Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase );
             Assert.That("My Title", Is.EqualTo(response["title"].ToString()).IgnoreCase );
@@ -143,7 +135,7 @@ namespace TestMasterCard
 
             
 
-            Post response = Post.doFind(id);
+            Post response = Post.Read(id);
             Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase);
             Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase);
             Assert.That("My Title", Is.EqualTo(response["title"].ToString()).IgnoreCase);
@@ -165,7 +157,7 @@ namespace TestMasterCard
             
             
 
-            Post response = Post.doFind(id,parameters);
+            Post response = Post.Read(id,parameters);
             Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase);
             Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase);
             Assert.That("My Title", Is.EqualTo(response["title"].ToString()).IgnoreCase);
@@ -189,7 +181,7 @@ namespace TestMasterCard
             map.Set ("body", "updated body");
             map.Set ("title", "updated title");
             
-            Post response = new Post(map).doUpdate ();
+            Post response = new Post(map).Update ();
             Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase);
             Assert.That("updated body", Is.EqualTo(response["body"].ToString()).IgnoreCase);
             Assert.That("updated title", Is.EqualTo(response["title"].ToString()).IgnoreCase);
@@ -212,7 +204,7 @@ namespace TestMasterCard
         [Test ()]
         public void delete_post_Test()
         {
-            Post response = Post.doDelete ("1");
+            Post response = Post.Delete ("1");
             Assert.NotNull (response);
             
         }

@@ -48,77 +48,30 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "list") {
-               return "/mock_crud_server/posts";
-            }
-            if (action == "create") {
-                return "/mock_crud_server/posts";
-            }
-            if (action == "read") {
-                return "/mock_crud_server/posts/{id}";
-            }
-            if (action == "update") {
-                return "/mock_crud_server/posts/{id}";
-            }
-            if (action == "delete") {
-                return "/mock_crud_server/posts/{id}";
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "list") {
-               return new List<String> {  };
-            }
-            if (action == "create") {
-                return new List<String> {  };
-            }
-            if (action == "read") {
-                return new List<String> {  };
-            }
-            if (action == "update") {
-                return new List<String> {  };
-            }
-            if (action == "delete") {
-                return new List<String> {  };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-
-            if (action == "list")
+            switch (operationUUID)
             {
-                return new List<String> { };
+                case "list":
+                    return new OperationConfig("/mock_crud_server/posts", "list", new List<string>(), new List<string>());
+                case "create":
+                    return new OperationConfig("/mock_crud_server/posts", "create", new List<string>(), new List<string>());
+                case "read":
+                    return new OperationConfig("/mock_crud_server/posts/{id}", "read", new List<string>(), new List<string>());
+                case "update":
+                    return new OperationConfig("/mock_crud_server/posts/{id}", "update", new List<string>(), new List<string>());
+                case "delete":
+                    return new OperationConfig("/mock_crud_server/posts/{id}", "delete", new List<string>(), new List<string>());
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
-            if (action == "create")
-            {
-                return new List<String> { };
-            }
-            if (action == "read")
-            {
-                return new List<String> { };
-            }
-            if (action == "update")
-            {
-                return new List<String> { };
-            }
-            if (action == "delete")
-            {
-                return new List<String> { };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        public override string GetApiVersion()
+        protected override OperationMetadata GetOperationMetadata()
         {
-            return "0.0.1";
+            return new OperationMetadata("0.0.1", "http://localhost:8081");
         }
+        
 
 
 
@@ -133,9 +86,9 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static List<Post> doList()
+        public static List<Post> List()
         {
-            return BaseObject.listObjects(new Post());
+            return BaseObject.ExecuteForList("list", new Post());
         }
 
         /// <summary>
@@ -149,9 +102,9 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static List<Post> doList(RequestMap criteria)
+        public static List<Post> List(RequestMap criteria)
         {
-            return BaseObject.listObjects(new Post(criteria));
+            return BaseObject.ExecuteForList("list", new Post(criteria));
         }
         
         
@@ -168,9 +121,9 @@ namespace TestMasterCard
         /// <exception cref="InvalidRequestException"> </exception>
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static Post doCreate(RequestMap map)
+        public static Post Create(RequestMap map)
         {
-            return (Post) BaseObject.createObject(new Post(map));
+            return BaseObject.Execute("create",new Post(map));
         }
         
         
@@ -195,14 +148,14 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static Post doFind(String id,  RequestMap parameters = null)
+        public static Post Read(String id,  RequestMap parameters = null)
         {
             RequestMap map = new RequestMap();
             map.Set("id", id);
 		    if (parameters != null && parameters.Count > 0) {
 		        map.AddAll (parameters);
             }
-            return (Post) BaseObject.readObject(new Post(map));
+            return BaseObject.Execute("read",new Post(map));
         }
         
         
@@ -218,9 +171,9 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public Post doUpdate()
+        public Post Update()
         {
-            return  this.updateObject(this);
+            return  BaseObject.Execute("update", this);
         }
 
         
@@ -242,9 +195,9 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public Post doDelete()
+        public Post Delete()
         {
-            return this.deleteObject(this);
+            return BaseObject.Execute("delete", this);
         }
 
         /// <summary>
@@ -258,10 +211,10 @@ namespace TestMasterCard
         /// <exception cref="NotAllowedException"> </exception>
         /// <exception cref="ObjectNotFoundException"> </exception>
         /// <exception cref="SystemException"> </exception>
-        public static Post doDelete(String id)
+        public static Post Delete(String id)
         {
             Post currentObject = new Post(new RequestMap("id", id));
-            return currentObject.doDelete();
+            return currentObject.Delete();
         }
         
         

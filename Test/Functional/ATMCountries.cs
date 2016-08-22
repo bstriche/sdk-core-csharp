@@ -46,46 +46,33 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "query") {
-                return "/atms/v1/country";
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "query") {
-                return new List<String> {  };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-
-            if (action == "query")
+            switch (operationUUID)
             {
-                return new List<String> { };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
+                case "uuid":
+                    return new OperationConfig("/atms/v1/country", "query", new List<string>(), new List<string>());
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
+            } 
         }
 
-       public override string GetApiVersion() {
-            return "0.0.1";
+        protected override OperationMetadata GetOperationMetadata()
+        {
+            return new OperationMetadata("0.0.1", null);
         }
 
 
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Query and Returns one object of type <code>ATMCountries</code>
         /// </summary>
@@ -99,10 +86,8 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static ATMCountries Query(RequestMap parameters)
         {
-            return (ATMCountries) BaseObject.queryObject(new ATMCountries(parameters));
+            return BaseObject.Execute("uuid", new ATMCountries(parameters));
         }
-        
-        
     }
 }
 
