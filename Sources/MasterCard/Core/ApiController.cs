@@ -50,7 +50,7 @@ namespace MasterCard.Core
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-			if (ApiConfig.isDebug ()) {
+			if (ApiConfig.IsDebug ()) {
 				if (File.Exists ("log4net.xml")) {
 					XmlConfigurator.Configure (new FileInfo ("log4net.xml"));
 				} else {
@@ -60,7 +60,7 @@ namespace MasterCard.Core
 
 		}
 
-		String fullUrl;
+		String hostUrl;
         String apiVersion;
 		IRestClient restClient;
 
@@ -69,18 +69,16 @@ namespace MasterCard.Core
             //arizzini: making sure to propagate the version.
             this.apiVersion = apiVersion;
 
-			checkState ();
+			CheckState ();
 
-			fullUrl =  ApiConfig.getLiveUrl();
+			hostUrl =  ApiConfig.GetLiveUrl();
 
 			//ApiConfig.sandbox
-			if (ApiConfig.isSandbox()) {
-				fullUrl = ApiConfig.getSandboxUrl();
+			if (ApiConfig.IsSandbox()) {
+				hostUrl = ApiConfig.GetSandboxUrl();
 			}
 
-			Uri uri = new Uri (this.fullUrl);
-			String baseUrl = uri.Scheme + "://" + uri.Host + ":" + uri.Port;
-			restClient = new RestClient(baseUrl);
+			
 		}
 
 
@@ -91,7 +89,6 @@ namespace MasterCard.Core
 		/// <param name="restClient">Rest client.</param>
 		public void SetRestClient(IRestClient restClient)
 		{
-			restClient.BaseUrl =  new Uri (this.fullUrl);
 			this.restClient = restClient;
 		}
 
@@ -103,47 +100,55 @@ namespace MasterCard.Core
 		/// <param name="resourcePath">Resource path.</param>
 		/// <param name="requestMap">Request Map.</param>
 		/// <param name="headerList">Header List.</param>
-		public virtual IDictionary<String, Object> execute (string action, string resourcePath, BaseObject requestMap, List<string> headerList, List<string> queryList)
+		public virtual IDictionary<String, Object> Execute (OperationConfig config, OperationMetadata metadata, BaseObject requestMap)
 		{
 			IRestResponse response;
-			IRestRequest request;
+			RestyRequest request;
+            IRestClient client;
 			CryptographyInterceptor interceptor;
-
-
             Uri uri;
+
 
             try 
 			{
-				IDictionary<String,Object> paramterMap = requestMap.Clone();
-				IDictionary<String,Object> headerMap = Util.SubMap(paramterMap, headerList);
 
-				uri = getURL (action, resourcePath, paramterMap, queryList);
-				interceptor = ApiConfig.GetCryptographyInterceptor(uri.AbsolutePath);
-				request = getRequest (uri, action, paramterMap, headerMap, interceptor);
+				request = GetRequest (config, metadata, requestMap);
+                interceptor = request.interceptor;
+
+                //arizzini: create client
+                if (this.restClient != null)
+                {
+                    client = restClient;
+                    client.BaseUrl = request.BaseUrl;
+                }
+                else
+                {
+                    client = new RestClient(request.BaseUrl);
+                }
 
 
-			} catch (Exception e) {
+            } catch (Exception e) {
 				throw new MasterCard.Core.Exceptions.ApiException (e.Message, e);
 			}
 
 			try {
-				log.Debug(">>execute(action='"+action+"', resourcePaht='"+resourcePath+"', requestMap='"+requestMap+"'");
+				log.Debug(">>Execute(action='"+config.Action+"', resourcePaht='"+config.ResourcePath+"', requestMap='"+requestMap+"'");
 				log.Debug("excute(), request.Method='"+request.Method+"'");
-                log.Debug("excute(), request.URL=" + uri.ToString());
+                log.Debug("excute(), request.URL=" + request.AbsoluteUrl.ToString());
 				log.Debug("excute(), request.Header=");
                 log.Debug(request.Parameters.Where(x => x.Type == ParameterType.HttpHeader));
 				log.Debug("excute(), request.Body=");
                 log.Debug(request.Parameters.Where(x => x.Type == ParameterType.RequestBody));
-                response = restClient.Execute(request);
-				log.Debug("execute(), response.Header=");
+                response = client.Execute(request);
+				log.Debug("Execute(), response.Header=");
                 log.Debug(response.Headers);
-				log.Debug("execute(), response.Body=");
+				log.Debug("Execute(), response.Body=");
                 log.Debug(response.Content.ToString());
 			} catch (Exception e) {
 				Exception wrapper = new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
 				log.Error (wrapper.Message, wrapper);
 				throw wrapper;
-			} 
+			}
 
 			if (response.ErrorException == null && response.Content != null) {
 				IDictionary<String,Object> responseObj = null;
@@ -160,11 +165,11 @@ namespace MasterCard.Core
 				} 
 				 
 				if (response.StatusCode < HttpStatusCode.Ambiguous) {
-					log.Debug ("<<execute()");
+					log.Debug ("<<Execute()");
 					return responseObj;
 				} else {
 					try {
-						throwException (responseObj, response);
+						ThrowException (responseObj, response);
 					} catch (Exception e) {
 						log.Error (e.Message, e);
 						throw e;
@@ -177,6 +182,8 @@ namespace MasterCard.Core
 				throw wrapper;
 			}
 
+
+
 		}
 
 
@@ -185,7 +192,7 @@ namespace MasterCard.Core
 		/// </summary>
 		/// <param name="responseObj">Response object.</param>
 		/// <param name="response">Response.</param>
-		private static void throwException(IDictionary<String,Object> responseObj, IRestResponse response) {
+		private static void ThrowException(IDictionary<String,Object> responseObj, IRestResponse response) {
 			int status = (int)response.StatusCode;
 			if (status == (int)HttpStatusCode.BadRequest) {
 				if (responseObj != null) {
@@ -236,21 +243,21 @@ namespace MasterCard.Core
 		/// <summary>
 		/// Checks the state.
 		/// </summary>
-		private void checkState ()
+		private void CheckState ()
 		{
 
-			if (ApiConfig.getAuthentication() == null) {
+			if (ApiConfig.GetAuthentication() == null) {
 				throw new System.InvalidOperationException ("No ApiConfig.authentication has been configured");
 			}
 
 			try {
-				new Uri (ApiConfig.getLiveUrl());
+				new Uri (ApiConfig.GetLiveUrl());
 			} catch (UriFormatException e) {
 				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_LIVE_URL", e);
 			}
 
 			try {
-				new Uri (ApiConfig.getSandboxUrl());
+				new Uri (ApiConfig.GetSandboxUrl());
 			} catch (UriFormatException e) {
 				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_SANDBOX_URL", e);
 
@@ -264,7 +271,7 @@ namespace MasterCard.Core
 		/// <returns>The to query string.</returns>
 		/// <param name="s">S.</param>
 		/// <param name="stringToAppend">String to append.</param>
-		private void appendToQueryString (StringBuilder s, string stringToAppend)
+		private void AppendToQueryString (StringBuilder s, string stringToAppend)
 		{
 			if (s.ToString ().IndexOf ("?") == -1) {
 				s.Append ("?");
@@ -280,25 +287,28 @@ namespace MasterCard.Core
 		/// </summary>
 		/// <returns>The URL encoded string.</returns>
 		/// <param name="stringToEncode">String to encode.</param>
-		string getURLEncodedString (object stringToEncode)
+		string GetURLEncodedString (object stringToEncode)
 		{
 			return HttpUtility.UrlEncode (stringToEncode.ToString (), Encoding.UTF8);
 		}
 
 
-		/// <summary>
-		/// Gets the UR.
-		/// </summary>
-		/// <returns>The UR.</returns>
-		/// <param name="action">Action.</param>
-		/// <param name="resourcePath">Type.</param>
-		/// <param name="inputMap">Input map.</param>
-		/// <param name="inputMap">additionalQueryParametersList</param>
-		Uri getURL (string action, string resourcePath, IDictionary<String, Object> inputMap, List<string> additionalQueryParametersList)
+        /// <summary>
+        /// Gets the URL
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="metadata"></param>
+        /// <param name="inputMap"></param>
+        /// <returns></returns>
+		Uri GetURL (OperationConfig config, OperationMetadata metadata, IDictionary<String, Object> inputMap)
 		{
 			Uri uri;
 
-			String path = this.fullUrl + resourcePath;
+
+            List<string> additionalQueryParametersList = config.QueryParams;
+
+            String resolvedHost = (metadata.Host == null) ? this.hostUrl : metadata.Host;
+            String path = resolvedHost + config.ResourcePath;
 			String resolvedPath = Util.GetReplacedPath (path, inputMap);
 
 			int parameters = 0;
@@ -306,7 +316,7 @@ namespace MasterCard.Core
 			StringBuilder s = new StringBuilder ("{"+(parameters++)+"}");
 			objectList.Add (resolvedPath);
 
-			switch(action)
+			switch(config.Action)
 			{
 				case "read":
 				case "delete":
@@ -314,9 +324,9 @@ namespace MasterCard.Core
 				case "query":
 					if (inputMap != null && inputMap.Count > 0) {
 						foreach (KeyValuePair<String,Object> entry in inputMap) {
-							appendToQueryString (s, "{" + (parameters++) + "}" + "=" + "{" + (parameters++) + "}");
-							objectList.Add (getURLEncodedString (entry.Key.ToString ()));
-							objectList.Add (getURLEncodedString (entry.Value.ToString ()));
+							AppendToQueryString (s, "{" + (parameters++) + "}" + "=" + "{" + (parameters++) + "}");
+							objectList.Add (GetURLEncodedString (entry.Key.ToString ()));
+							objectList.Add (GetURLEncodedString (entry.Value.ToString ()));
 						}
 					}
 					break;
@@ -329,7 +339,7 @@ namespace MasterCard.Core
             // Check additionalQueryParametersList
             if (additionalQueryParametersList.Count > 0)
             {
-                switch (action)
+                switch (config.Action)
                 {
                     case "create":
                     case "update":
@@ -338,16 +348,16 @@ namespace MasterCard.Core
 
                         foreach (KeyValuePair<String, Object> entry in queryMap)
                         {
-                            appendToQueryString(s, "{" + (parameters++) + "}" + "=" + "{" + (parameters++) + "}");
-                            objectList.Add(getURLEncodedString(entry.Key.ToString()));
-                            objectList.Add(getURLEncodedString(entry.Value.ToString()));
+                            AppendToQueryString(s, "{" + (parameters++) + "}" + "=" + "{" + (parameters++) + "}");
+                            objectList.Add(GetURLEncodedString(entry.Key.ToString()));
+                            objectList.Add(GetURLEncodedString(entry.Value.ToString()));
                         }
 
                         break;
                 }
             }
 
-			appendToQueryString (s, "Format=JSON");
+			AppendToQueryString (s, "Format=JSON");
 
 			try {
 				uri = new Uri (String.Format (s.ToString (), objectList.ToArray()));
@@ -359,48 +369,59 @@ namespace MasterCard.Core
 			return uri;
 		}
 
-		/// <summary>
-		/// Gets the request.
-		/// </summary>
-		/// <returns>The request.</returns>
-		/// <param name="uri">URI.</param>
-		/// <param name="action">Action.</param>
-		/// <param name="objectMap">Object map.</param>
-		RestRequest getRequest (Uri uri, String action, IDictionary<String,Object> inputMap, IDictionary<String,Object> headerMap, CryptographyInterceptor interceptor = null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="config"></param>
+        /// <param name="inputMap"></param>
+        /// <returns></returns>
+		RestyRequest GetRequest (OperationConfig config, OperationMetadata metadata, RequestMap requestMap)
 		{
 
-			RestRequest request = null;
+			RestyRequest request = null;
+
+
+            // separate the parameterMap and headerMap from requestMap
+            IDictionary<String, Object> paramterMap = requestMap.Clone();
+            IDictionary<String, Object> headerMap = Util.SubMap(paramterMap, config.HeaderParams);
+
+            Uri url = GetURL(config, metadata, paramterMap);
+            String baseUriString = url.Scheme + "://" + url.Host + ":" + url.Port;
+            Uri baseUrl = new Uri(baseUriString);
+
+            CryptographyInterceptor interceptor = ApiConfig.GetCryptographyInterceptor(url.AbsolutePath);
 
 
 
-			switch (action) {
+            switch (config.Action) {
 			case "create":
-				request = new RestRequest (uri, Method.POST);
+				request = new RestyRequest(url, Method.POST);
 
 				//arizzini: adding cryptography interceptor for POST
 				if (interceptor != null) {
-					inputMap = interceptor.Encrypt (inputMap);
+                    paramterMap = interceptor.Encrypt (paramterMap);
 				}
 
-				request.AddJsonBody (inputMap);
+				request.AddJsonBody (paramterMap);
 				break;
 			case "delete":
-				request = new RestRequest (uri, Method.DELETE);
+				request = new RestyRequest(url, Method.DELETE);
 				break;
 			case "update":
-				request = new RestRequest (uri, Method.PUT);
+				request = new RestyRequest(url, Method.PUT);
 
 				//arizzini: adding cryptography interceptor for PUT
 				if (interceptor != null) {
-					inputMap = interceptor.Encrypt (inputMap);
+                    paramterMap = interceptor.Encrypt (paramterMap);
 				}
 
-				request.AddJsonBody (inputMap);
+				request.AddJsonBody (paramterMap);
 				break;
 			case "read":
 			case "list":
 			case "query":
-				request = new RestRequest (uri, Method.GET);
+				request = new RestyRequest(url, Method.GET);
 				break;
 			}
 
@@ -413,7 +434,13 @@ namespace MasterCard.Core
 				request.AddHeader (entry.Key, entry.Value.ToString());
 			}
 
-			ApiConfig.getAuthentication().SignRequest(uri, request);
+			ApiConfig.GetAuthentication().SignRequest(url, request);
+
+
+            request.AbsoluteUrl = url;
+            request.BaseUrl = baseUrl;
+            request.interceptor = interceptor;
+               
 
 			return request;
 		}

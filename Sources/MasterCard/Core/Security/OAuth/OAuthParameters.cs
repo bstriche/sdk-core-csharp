@@ -31,36 +31,36 @@ namespace MasterCard.Core.Security.OAuth
 			this.baseParameters = new SortedDictionary<String,String>();
 		}
 
-		private void put(String key, String value, SortedDictionary<String, String> dictionary) {
+		private void Put(String key, String value, SortedDictionary<String, String> dictionary) {
 			dictionary.Add(key, value);
 		}
 
 		public void setOAuthConsumerKey(String consumerKey) {
-			this.put(OAUTH_CONSUMER_KEY, consumerKey, this.baseParameters);
+			this.Put(OAUTH_CONSUMER_KEY, consumerKey, this.baseParameters);
 		}
 
 		public void setOAuthNonce(String oauthNonce) {
-			this.put(OAUTH_NONCE_KEY, oauthNonce, this.baseParameters);
+			this.Put(OAUTH_NONCE_KEY, oauthNonce, this.baseParameters);
 		}
 
 		public void setOAuthTimestamp(String timestamp) {
-			this.put(OAUTH_TIMESTAMP_KEY, timestamp, this.baseParameters);
+			this.Put(OAUTH_TIMESTAMP_KEY, timestamp, this.baseParameters);
 		}
 
 		public void setOAuthSignatureMethod(String signatureMethod) {
-			this.put(OAUTH_SIGNATURE_METHOD_KEY, signatureMethod, this.baseParameters);
+			this.Put(OAUTH_SIGNATURE_METHOD_KEY, signatureMethod, this.baseParameters);
 		}
 
 		public void setOAuthSignature(String signature) {
-			this.put(OAUTH_SIGNATURE_KEY, signature, this.baseParameters);
+			this.Put(OAUTH_SIGNATURE_KEY, signature, this.baseParameters);
 		}
 
 		public void setOAuthBodyHash(String bodyHash) {
-			this.put(OAUTH_BODY_HASH_KEY, bodyHash, this.baseParameters);
+			this.Put(OAUTH_BODY_HASH_KEY, bodyHash, this.baseParameters);
 		}
 
 		public void setOAuthVersion (String version) {
-			this.put(OAUTH_VERSION, version, this.baseParameters);
+			this.Put(OAUTH_VERSION, version, this.baseParameters);
 		}
 
 		public SortedDictionary<String, String> getBaseParameters() {

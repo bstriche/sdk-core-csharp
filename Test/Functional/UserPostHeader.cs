@@ -48,39 +48,23 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "list") {
-               return "/mock_crud_server/users/posts";
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
 
-
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "list") {
-               return new List<String> { "user_id" };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-
-            if (action == "list")
+            switch (operationUUID)
             {
-                return new List<String> { "user_id" };
+                case "uuid":
+                    return new OperationConfig("/mock_crud_server/users/posts", "list", new List<string>(), new List<string> { "user_id" });
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
         }
 
-        public override string GetApiVersion()
+        protected override OperationMetadata GetOperationMetadata()
         {
-            return "0.0.1";
+            return new OperationMetadata("0.0.1", "http://localhost:8081");
         }
-
-
+        
 
         /// <summary>
         /// Retrieves a list of type <code>UserPostHeader</code>
@@ -94,7 +78,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<UserPostHeader> List()
         {
-            return BaseObject.listObjects(new UserPostHeader());
+            return BaseObject.ExecuteForList("uuid", new UserPostHeader());
         }
 
         /// <summary>
@@ -110,7 +94,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<UserPostHeader> List(RequestMap criteria)
         {
-            return BaseObject.listObjects(new UserPostHeader(criteria));
+            return BaseObject.ExecuteForList("uuid",new UserPostHeader(criteria));
         }
         
         

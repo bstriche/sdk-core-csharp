@@ -207,13 +207,13 @@ namespace MasterCard.Core.Model
 				for (int i = 0; i < (properties.Length - 1); i++) {
 					string property = properties [i];
 					if (property.Contains ("[")) {
-						destinationObject = getDestinationMap (property, destinationObject);
+						destinationObject = GetDestinationMap (property, destinationObject);
 					} else {
-						destinationObject = getPropertyMapFrom (property, destinationObject);
+						destinationObject = GetPropertyMapFrom (property, destinationObject);
 					}
 				}
 			} else if (keyPath.Contains ("[")) {
-				destinationObject = getDestinationMap (keyPath, destinationObject);
+				destinationObject = GetDestinationMap (keyPath, destinationObject);
 			}
 
 			// TODO: need to take care of the case where we are inserting a value into an array rather than
@@ -283,7 +283,7 @@ namespace MasterCard.Core.Model
 				}
 			}
 
-			IDictionary<String, Object> map = findLastMapInKeyPath (keyPath); // handles keyPaths beyond 'root' keyPath. i.e. "x.y OR x.y[].z, etc."
+			IDictionary<String, Object> map = FindLastMapInKeyPath (keyPath); // handles keyPaths beyond 'root' keyPath. i.e. "x.y OR x.y[].z, etc."
 
 			// retrieve the value at the end of the object path i.e. x.y.z, this retrieves whatever is in 'z'
 
@@ -348,7 +348,7 @@ namespace MasterCard.Core.Model
 				}
 			}
 
-			IDictionary<String, Object> map = findLastMapInKeyPath (keyPath);
+			IDictionary<String, Object> map = FindLastMapInKeyPath (keyPath);
 			if (map == null) {
 				return false;
 			}
@@ -394,7 +394,7 @@ namespace MasterCard.Core.Model
 				}
 			}
 
-			IDictionary<string, object> map = findLastMapInKeyPath (keyPath);
+			IDictionary<string, object> map = FindLastMapInKeyPath (keyPath);
 
 			return map.Remove (keys [keys.Length - 1]);
 		}
@@ -404,7 +404,7 @@ namespace MasterCard.Core.Model
 		/// </summary>
 		/// <returns>The last map in key path.</returns>
 		/// <param name="keyPath">Key path.</param>
-		private IDictionary<string, object> findLastMapInKeyPath (String keyPath)
+		private IDictionary<string, object> FindLastMapInKeyPath (String keyPath)
 		{
 			string[] keys = ((string)keyPath).Split ('.');
 
@@ -475,7 +475,7 @@ namespace MasterCard.Core.Model
 		/// <returns>The destination map.</returns>
 		/// <param name="property">Property.</param>
 		/// <param name="destinationObject">Destination object.</param>
-		private static IDictionary<string, object> getDestinationMap (string property, IDictionary<string, object> destinationObject)
+		private static IDictionary<string, object> GetDestinationMap (string property, IDictionary<string, object> destinationObject)
 		{
 
 			Match m = arrayIndexPattern.Match (property);
@@ -485,7 +485,7 @@ namespace MasterCard.Core.Model
 				if (!"".Equals (m.Groups[2].ToString())) {
 					index = int.Parse (m.Groups[2].ToString());
 				}
-				return findOrAddToList (destinationObject, propName, index);
+				return FindOrAddToList (destinationObject, propName, index);
 			}
 
 			return destinationObject;
@@ -499,7 +499,7 @@ namespace MasterCard.Core.Model
 		/// <param name="destinationObject">Destination object.</param>
 		/// <param name="propName">Property name.</param>
 		/// <param name="index">Index.</param>
-		private static IDictionary<String, Object> findOrAddToList (IDictionary<String, Object> destinationObject, string propName, int? index)
+		private static IDictionary<String, Object> FindOrAddToList (IDictionary<String, Object> destinationObject, string propName, int? index)
 		{
 			//
 
@@ -543,7 +543,7 @@ namespace MasterCard.Core.Model
 		/// <returns>The property map from.</returns>
 		/// <param name="property">Property.</param>
 		/// <param name="object">Object.</param>
-		private static IDictionary<String, Object> getPropertyMapFrom (string property, IDictionary<String, Object> @object)
+		private static IDictionary<String, Object> GetPropertyMapFrom (string property, IDictionary<String, Object> @object)
 		{
 			// create a new map at the key specified if it doesnt already exist
 			if (!@object.ContainsKey (property)) {

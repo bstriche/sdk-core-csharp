@@ -50,15 +50,15 @@ namespace TestMasterCard
 		[SetUp]
 		public void setup ()
 		{
-			ApiConfig.setSandbox (true);
-			ApiConfig.setDebug (true);
+			ApiConfig.SetSandbox ();
+			ApiConfig.SetDebug (true);
 
 
             var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
 
 
             var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", path+"\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-			ApiConfig.setAuthentication (authentication);
+			ApiConfig.SetAuthentication (authentication);
 
 			String mastercardPublic = path+"\\Test\\mastercard_public.crt";
 			String mastercardPrivate = path+"\\Test\\mastercard_private.pem";

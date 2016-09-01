@@ -73,7 +73,7 @@ namespace MasterCard.Core.Security.MDES
 			return triggeringPath;
 		}
 		
-		public Dictionary<String,Object> Encrypt(IDictionary<String,Object> map) {
+		public IDictionary<String,Object> Encrypt(IDictionary<String,Object> map) {
 			if (map.ContainsKey ("cardInfo")) {
 				// 1) extract the encryptedData from map
 				IDictionary<String,Object> encryptedDataMap =  (IDictionary<String,Object>)  map["cardInfo"];
@@ -115,10 +115,10 @@ namespace MasterCard.Core.Security.MDES
 				map.Remove ("cardInfo");
 				map.Add("cardInfo", encryptedMap);
 			}
-			return new Dictionary<String,Object>(map);
+			return map;
 		}
 
-		public Dictionary<String,Object> Decrypt(IDictionary<String,Object> map) {
+		public IDictionary<String,Object> Decrypt(IDictionary<String,Object> map) {
 			if (map.ContainsKey ("token")) {
 				// 1) extract the encryptedData from map
 				IDictionary<String,Object> tokenMap =  (IDictionary<String,Object>)  map["token"];
@@ -155,7 +155,7 @@ namespace MasterCard.Core.Security.MDES
 					}
 				}
 			}
-			return new Dictionary<String,Object>(map);
+			return map;
 	}
 }
 

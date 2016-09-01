@@ -34,8 +34,8 @@ namespace MasterCard.Core.Security
 	public interface CryptographyInterceptor
 	{
 		String GetTriggeringPath();
-		Dictionary<String,Object> Encrypt(IDictionary<String,Object> map);
-		Dictionary<String,Object> Decrypt(IDictionary<String,Object> map);
+		IDictionary<String,Object> Encrypt(IDictionary<String,Object> map);
+		IDictionary<String,Object> Decrypt(IDictionary<String,Object> map);
 	}
 }
 

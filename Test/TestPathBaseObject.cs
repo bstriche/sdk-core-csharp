@@ -19,26 +19,14 @@ namespace TestMasterCard
 		{
 		}
 
-
-
-		public override string GetResourcePath (String action)
-		{
-			return "/testurl/test-base-object";
-		}
-
-		public override List<string> GetHeaderParams(string action) 
-		{
-			return new List<String> {  };
-		}
-
-        public override List<string> GetQueryParams(string action)
+        protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-            return new List<String> { };
+            return new OperationConfig("/testurl/test-base-object", "create", new List<string>(), new List<string>());
         }
 
-        public override string GetApiVersion()
+        protected override OperationMetadata GetOperationMetadata()
         {
-            return "0.0.1";
+            return new OperationMetadata("0.0.1", null);
         }
     }
 }
