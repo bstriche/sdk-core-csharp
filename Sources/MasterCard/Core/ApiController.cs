@@ -106,8 +106,6 @@ namespace MasterCard.Core
 			RestyRequest request;
             IRestClient client;
 			CryptographyInterceptor interceptor;
-            Uri uri;
-
 
             try 
 			{
