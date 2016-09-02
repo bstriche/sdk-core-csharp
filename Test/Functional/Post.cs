@@ -48,23 +48,23 @@ namespace TestMasterCard
         {
         }
 
+
+        private static readonly Dictionary<string, OperationConfig> _store = new Dictionary<string, OperationConfig>
+        {
+        {"list", new OperationConfig("/mock_crud_server/posts", "list", new List<string>(), new List<string>())},
+        {"create", new OperationConfig("/mock_crud_server/posts", "create", new List<string>(), new List<string>())},
+        {"read", new OperationConfig("/mock_crud_server/posts/{id}", "read", new List<string>(), new List<string>())},
+        {"update", new OperationConfig("/mock_crud_server/posts/{id}", "update", new List<string>(), new List<string>())},
+        {"delete", new OperationConfig("/mock_crud_server/posts/{id}", "delete", new List<string>(), new List<string>())},
+        };
+
         protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-            switch (operationUUID)
-            {
-                case "list":
-                    return new OperationConfig("/mock_crud_server/posts", "list", new List<string>(), new List<string>());
-                case "create":
-                    return new OperationConfig("/mock_crud_server/posts", "create", new List<string>(), new List<string>());
-                case "read":
-                    return new OperationConfig("/mock_crud_server/posts/{id}", "read", new List<string>(), new List<string>());
-                case "update":
-                    return new OperationConfig("/mock_crud_server/posts/{id}", "update", new List<string>(), new List<string>());
-                case "delete":
-                    return new OperationConfig("/mock_crud_server/posts/{id}", "delete", new List<string>(), new List<string>());
-                default:
-                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
+            if (!_store.ContainsKey(operationUUID))
+            { 
+                throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
+            return _store[operationUUID];
         }
 
         protected override OperationMetadata GetOperationMetadata()
