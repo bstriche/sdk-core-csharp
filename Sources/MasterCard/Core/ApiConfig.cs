@@ -91,9 +91,9 @@ namespace MasterCard.Core
         /// Sets the sandbox.
         /// </summary>
         /// <param name="debug">If set to <c>true</c> debug.</param>
-        public static void SetSandbox()
+        public static void SetSandbox(Boolean sandbox)
         {
-            ApiConfig.SANDBOX = true;
+            ApiConfig.SANDBOX = sandbox;
         }
 
         /// <summary>
@@ -103,14 +103,6 @@ namespace MasterCard.Core
         public static Boolean IsSandbox()
         {
             return ApiConfig.SANDBOX;
-        }
-
-        /// <summary>
-        /// Sets the productioction
-        /// </summary>
-        public static void SetProduction()
-        {
-            ApiConfig.SANDBOX = false;
         }
 
 

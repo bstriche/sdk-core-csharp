@@ -50,7 +50,7 @@ namespace TestMasterCard
 		public void setup ()
 		{
             ApiConfig.SetDebug (true);
-            ApiConfig.SetSandbox();
+            ApiConfig.SetSandbox(true);
             var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
 
             //Console.WriteLine("path:: " + path);
