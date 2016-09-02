@@ -50,7 +50,7 @@ namespace TestMasterCard
 		[SetUp]
 		public void setup ()
 		{
-			ApiConfig.SetSandbox ();
+			ApiConfig.SetSandbox (true);
 			ApiConfig.SetDebug (true);
 
 
