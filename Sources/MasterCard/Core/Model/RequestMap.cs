@@ -189,45 +189,114 @@ namespace MasterCard.Core.Model
 				Add (key, data [key]);
 			}
 		}
-			
+
+		private bool isListKey(string key) {
+			return key.Contains("[");
+		}
+
+		private string extractKeyName(string key) {
+			return key.Substring(0, key.IndexOf("["));
+		}
+
+		private int extractKeyIndex(string key) {
+			Match matcher = arrayIndexPattern.Match (key);
+			if (matcher.Success) {
+				if (!"".Equals (matcher.Groups[2].ToString())) {
+					return int.Parse (matcher.Groups [2].ToString());
+				}
+			}
+			return -1;
+		}
 
 
-		/// <summary>
-		/// Associates the specified value to the specified key path. </summary>
-		/// <param name="keyPath"> key path to which the specified value is to be associated. </param>
-		/// <param name="value"> the value which is to be associated with the specified key path. </param>
-		/// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
-		/// <exception cref="IndexOutOfBoundsException"> if using an array index in the key path is out of bounds. </exception>
-		public void Add (String keyPath, Object value)
+
+        /// <summary>
+        /// Associates the specified value to the specified key path. </summary>
+        /// <param name="keyPath"> key path to which the specified value is to be associated. </param>
+        /// <param name="value"> the value which is to be associated with the specified key path. </param>
+        /// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
+        /// <exception cref="IndexOutOfBoundsException"> if using an array index in the key path is out of bounds. </exception>
+        public void Add (String keyPath, Object value)
 		{
 			string[] properties = keyPath.Split ('.');
-			IDictionary<string, object> destinationObject = __storage;
+			Dictionary<string,object> destinationObject = __storage;
+			Dictionary<string,object> parsedMap = null;
 
-			if (properties.Length > 1) {
-				for (int i = 0; i < (properties.Length - 1); i++) {
-					string property = properties [i];
-					if (property.Contains ("[")) {
-						destinationObject = GetDestinationMap (property, destinationObject);
+			bool mapValue = false;
+			//if (value is IDictionary) { // if putting a map, call put all
+			//	mapValue = true;
+            //    parsedMap = (Dictionary<String,Object>) value;
+            //} 
+
+			for (int i = 0; i < properties.Length; i++) {
+				bool isLastOne = ((i+1) == properties.Length);
+				string property = properties [i];
+				if (isListKey(property)) {
+					
+					String keyName = extractKeyName(property);
+					int keyIndex = extractKeyIndex(property);
+
+					if (destinationObject.ContainsKey(keyName)) {
+						//shopping exists
+						if (isLastOne) {
+							List<Object> list = (List<Object>) destinationObject[keyName];
+							// if last one set the value
+							if (keyIndex > -1 && keyIndex < list.Count) {
+								list[keyIndex] = mapValue ? parsedMap : value;
+							} else {
+								list.Add(mapValue ? parsedMap : value);
+							}
+							return;
+						} else {
+							// not last one, create a map
+							var list = ((List<Dictionary<string,object>>) destinationObject[keyName]);
+							if (keyIndex > -1 && keyIndex < list.Count) {
+								destinationObject = list[keyIndex];
+							} else {
+								list.Add(new Dictionary<string,object>());
+								destinationObject = list[list.Count - 1];
+							}
+						}
 					} else {
-						destinationObject = GetPropertyMapFrom (property, destinationObject);
+						// shopping doesn't exists
+						if (isLastOne) {
+                            destinationObject[keyName] = new List<Object>();
+                            List<Object> list = (List<Object>)destinationObject[keyName];
+                            list.Add(mapValue ? parsedMap : value);
+							return;
+						} else {
+                            destinationObject[keyName] = new List<Dictionary<string,object>>();
+                            List<Dictionary<string, object>> list = (List < Dictionary < string,object>>) destinationObject[keyName];
+                            list.Add(new Dictionary<string,object>());
+							destinationObject = (Dictionary<string,object>) list[list.Count - 1];
+						}
 					}
+				} else {
+					//this is not a list property
+					if (destinationObject.ContainsKey(property)) {
+						if (isLastOne) {
+							destinationObject[property] = mapValue ? parsedMap : value;
+							return;
+						} else {
+							destinationObject = (Dictionary<string,object>)destinationObject[property];
+						}
+					} else {
+                        if (isLastOne)
+                        {
+                            destinationObject[property] = mapValue ? parsedMap : value;
+                            return;
+                        }
+                        else
+                        {
+                            destinationObject[property] = new Dictionary<string, object>();
+                            destinationObject = (Dictionary<string, object>)destinationObject[property];
+                        }
+						
+					}
+					
 				}
-			} else if (keyPath.Contains ("[")) {
-				destinationObject = GetDestinationMap (keyPath, destinationObject);
-			}
+			}//end for loop
 
-			// TODO: need to take care of the case where we are inserting a value into an array rather than
-			// map ( eg map.put("a[2]", 123);
-
-			if (destinationObject == __storage) {
-				__storage [keyPath] = value;
-			} else if (value is IDictionary) { // if putting a map, call put all
-				destinationObject.Clear ();
-				RequestMap newMap = new RequestMap ((Dictionary<String,Object>) value);
-				destinationObject [properties [properties.Length - 1]] = newMap;
-			} else {
-			 	destinationObject [properties [properties.Length - 1]] = value;
-			}
 		}
 
 
@@ -338,7 +407,7 @@ namespace MasterCard.Core.Model
 						throw new System.ArgumentException ("Property '" + key + "' is not an array");
 					}
 					//IList l =  ((IList) o);
-					IList<IDictionary<String, Object>> l = (IList<IDictionary<String, Object>>)o;
+					List<Dictionary<String, Object>> l = (List<Dictionary<String, Object>>)o;
 
 					int? index = l.Count - 1;
 					if (!"".Equals (m.Groups[2].ToString())) {
@@ -380,7 +449,7 @@ namespace MasterCard.Core.Model
 
 					//IList l =  ((IList) o);// get the list from the map
 
-					IList<IDictionary<String, Object>> l = (IList<IDictionary<String, Object>>)o;
+					List<Dictionary<String, Object>> l = (List<Dictionary<String, Object>>)o;
 
 					int? index = (l.Count - 1); //get last item if none specified
 					if (!"".Equals (m.Groups[2].ToString())) {
@@ -469,95 +538,7 @@ namespace MasterCard.Core.Model
 			return map;
 		}
 
-		/// <summary>
-		/// Gets the destination map.
-		/// </summary>
-		/// <returns>The destination map.</returns>
-		/// <param name="property">Property.</param>
-		/// <param name="destinationObject">Destination object.</param>
-		private static IDictionary<string, object> GetDestinationMap (string property, IDictionary<string, object> destinationObject)
-		{
 
-			Match m = arrayIndexPattern.Match (property);
-			if (m.Success) {
-				string propName = m.Groups[1].ToString();
-				int? index = null;
-				if (!"".Equals (m.Groups[2].ToString())) {
-					index = int.Parse (m.Groups[2].ToString());
-				}
-				return FindOrAddToList (destinationObject, propName, index);
-			}
-
-			return destinationObject;
-
-		}
-
-		/// <summary>
-		/// Finds the or add to list.
-		/// </summary>
-		/// <returns>The or add to list.</returns>
-		/// <param name="destinationObject">Destination object.</param>
-		/// <param name="propName">Property name.</param>
-		/// <param name="index">Index.</param>
-		private static IDictionary<String, Object> FindOrAddToList (IDictionary<String, Object> destinationObject, string propName, int? index)
-		{
-			//
-
-			IList<IDictionary<String, Object>> list = new List<IDictionary<String, Object>> ();
-			// find existing list or put the new list
-			if (destinationObject.ContainsKey (propName)) {
-				object o = destinationObject [propName];
-				if (!(o is IList)) {
-					throw new System.ArgumentException ("Property '" + propName + "' is not an array");
-				}
-				list = (IList<IDictionary<string, object>>)o;
-			} else {
-				destinationObject [propName] = list;
-			}
-
-			// get the existing object in the list at the index
-			IDictionary<String, Object> propertyValue = null;
-			if (index != null && list.Count > index) {
-				propertyValue = list [index ?? 0];
-			}
-
-			// no object at the index, create a new map and add it
-			if (null == propertyValue) {
-				propertyValue = new Dictionary<String, Object> ();
-				if (null == index) {
-					list.Add (propertyValue);
-				} else {
-					list.Insert (index ?? 0, propertyValue);
-				}
-			}
-
-			// return the map retrieved from or added to the list
-			destinationObject = propertyValue;
-
-			return destinationObject;
-		}
-
-		/// <summary>
-		/// Gets the property map from.
-		/// </summary>
-		/// <returns>The property map from.</returns>
-		/// <param name="property">Property.</param>
-		/// <param name="object">Object.</param>
-		private static IDictionary<String, Object> GetPropertyMapFrom (string property, IDictionary<String, Object> @object)
-		{
-			// create a new map at the key specified if it doesnt already exist
-			if (!@object.ContainsKey (property)) {
-				IDictionary<string, object> val = new Dictionary<string, object> ();
-				@object [property] = val;
-			}
-
-			object o = @object [property];
-			if (o is IDictionary) {
-				return (IDictionary<string, object>)o;
-			} else {
-				throw new System.ArgumentException ("cannot change nested property to map");
-			}
-		}
 
 		/// <summary>
 		/// Deserializes json nested maps in a proppery nested dictionary<String,Object>.
