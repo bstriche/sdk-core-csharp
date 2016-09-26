@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using MasterCard.Core.Model;
+using Newtonsoft.Json;
 
 
 namespace TestMasterCard
@@ -113,7 +114,117 @@ namespace TestMasterCard
 		}
 
 
-		[Test ()]
+        [Test()]
+        public void TestInsertListWithMap()
+        {
+            RequestMap map = new RequestMap();
+            map.Set("payment_transfer.transfer_reference", "10017018676132929870330");
+            map.Set("payment_transfer.payment_type", "P2P");
+            map.Set("payment_transfer.amount", "1000");
+            map.Set("payment_transfer.currency", "USD");
+            map.Set("payment_transfer.sender_account_uri", "pan:5013040000000018;exp=2017-08;cvc=123");
+            map.Set("payment_transfer.sender.first_name", "John");
+            map.Set("payment_transfer.sender.middle_name", "Tyler");
+            map.Set("payment_transfer.sender.last_name", "Jones");
+            map.Set("payment_transfer.sender.nationality", "USA");
+            map.Set("payment_transfer.sender.date_of_birth", "1994-05-21");
+            map.Set("payment_transfer.sender.address.line1", "21 Broadway");
+            map.Set("payment_transfer.sender.address.line2", "Apartment A-6");
+            map.Set("payment_transfer.sender.address.city", "OFallon");
+            map.Set("payment_transfer.sender.address.country_subdivision", "MO");
+            map.Set("payment_transfer.sender.address.postal_code", "63368");
+            map.Set("payment_transfer.sender.address.country", "USA");
+            map.Set("payment_transfer.sender.phone", "11234565555");
+            map.Set("payment_transfer.sender.email", " John.Jones123@abcmail.com ");
+            map.Set("payment_transfer.recipient_account_uri", "pan:5013040000000018;exp=2017-08;cvc=123");
+            map.Set("payment_transfer.recipient.first_name", "Jane");
+            map.Set("payment_transfer.recipient.middle_name", "Tyler");
+            map.Set("payment_transfer.recipient.last_name", "Smith");
+            map.Set("payment_transfer.recipient.nationality", "USA");
+            map.Set("payment_transfer.recipient.date_of_birth", "1999-12-30");
+            map.Set("payment_transfer.recipient.address.line1", "1 Main St");
+            map.Set("payment_transfer.recipient.address.line2", "Apartment 9");
+            map.Set("payment_transfer.recipient.address.city", "OFallon");
+            map.Set("payment_transfer.recipient.address.country_subdivision", "MO");
+            map.Set("payment_transfer.recipient.address.postal_code", "63368");
+            map.Set("payment_transfer.recipient.address.country", "USA");
+            map.Set("payment_transfer.recipient.phone", "11234567890");
+            map.Set("payment_transfer.recipient.email", " Jane.Smith123@abcmail.com ");
+            map.Set("payment_transfer.reconciliation_data.custom_field[0].name", " ABC");
+            map.Set("payment_transfer.reconciliation_data.custom_field[0].value", " 123 ");
+            map.Set("payment_transfer.reconciliation_data.custom_field[1].name", " DEF");
+            map.Set("payment_transfer.reconciliation_data.custom_field[1].value", " 456 ");
+            map.Set("payment_transfer.reconciliation_data.custom_field[2].name", " GHI");
+            map.Set("payment_transfer.reconciliation_data.custom_field[2].value", " 789 ");
+            map.Set("payment_transfer.statement_descriptor", "CLA*THANK YOU");
+            map.Set("payment_transfer.channel", "KIOSK");
+            map.Set("payment_transfer.funding_source", "DEBIT");
+            map.Set("payment_transfer.text", "funding_source");
+
+            Assert.AreEqual("{\"payment_transfer\":{\"transfer_reference\":\"10017018676132929870330\",\"payment_type\":\"P2P\",\"amount\":\"1000\",\"currency\":\"USD\",\"sender_account_uri\":\"pan:5013040000000018;exp=2017-08;cvc=123\",\"sender\":{\"first_name\":\"John\",\"middle_name\":\"Tyler\",\"last_name\":\"Jones\",\"nationality\":\"USA\",\"date_of_birth\":\"1994-05-21\",\"address\":{\"line1\":\"21 Broadway\",\"line2\":\"Apartment A-6\",\"city\":\"OFallon\",\"country_subdivision\":\"MO\",\"postal_code\":\"63368\",\"country\":\"USA\"},\"phone\":\"11234565555\",\"email\":\" John.Jones123@abcmail.com \"},\"recipient_account_uri\":\"pan:5013040000000018;exp=2017-08;cvc=123\",\"recipient\":{\"first_name\":\"Jane\",\"middle_name\":\"Tyler\",\"last_name\":\"Smith\",\"nationality\":\"USA\",\"date_of_birth\":\"1999-12-30\",\"address\":{\"line1\":\"1 Main St\",\"line2\":\"Apartment 9\",\"city\":\"OFallon\",\"country_subdivision\":\"MO\",\"postal_code\":\"63368\",\"country\":\"USA\"},\"phone\":\"11234567890\",\"email\":\" Jane.Smith123@abcmail.com \"},\"reconciliation_data\":{\"custom_field\":[{\"name\":\" ABC\",\"value\":\" 123 \"},{\"name\":\" DEF\",\"value\":\" 456 \"},{\"name\":\" GHI\",\"value\":\" 789 \"}]},\"statement_descriptor\":\"CLA*THANK YOU\",\"channel\":\"KIOSK\",\"funding_source\":\"DEBIT\",\"text\":\"funding_source\"}}",
+                JsonConvert.SerializeObject(map));
+
+        }
+
+        [Test()]
+        public void TestInsertListWithValue()
+        {
+            RequestMap map = new RequestMap();
+            map.Set("payment_transfer.transfer_reference", "40013875384705044606252");
+            map.Set("payment_transfer.payment_type", "P2P");
+            map.Set("payment_transfer.funding_source[0]", "CREDIT");
+            map.Set("payment_transfer.funding_source[1]", "DEBIT");
+            map.Set("payment_transfer.amount", "1800");
+            map.Set("payment_transfer.currency", "USD");
+            map.Set("payment_transfer.sender_account_uri", "pan:5013040000000018;exp=2017-08;cvc=123");
+            map.Set("payment_transfer.sender.first_name", "John");
+            map.Set("payment_transfer.sender.middle_name", "Tyler");
+            map.Set("payment_transfer.sender.last_name", "Jones");
+            map.Set("payment_transfer.sender.nationality", "USA");
+            map.Set("payment_transfer.sender.date_of_birth", "1994-05-21");
+            map.Set("payment_transfer.sender.address.line1", "21 Broadway");
+            map.Set("payment_transfer.sender.address.line2", "Apartment A-6");
+            map.Set("payment_transfer.sender.address.city", "OFallon");
+            map.Set("payment_transfer.sender.address.country_subdivision", "MO");
+            map.Set("payment_transfer.sender.address.postal_code", "63368");
+            map.Set("payment_transfer.sender.address.country", "USA");
+            map.Set("payment_transfer.sender.phone", "11234565555");
+            map.Set("payment_transfer.sender.email", " John.Jones123@abcmail.com ");
+            map.Set("payment_transfer.recipient_account_uri", "pan:5013040000000018;exp=2017-08;cvc=123");
+            map.Set("payment_transfer.recipient.first_name", "Jane");
+            map.Set("payment_transfer.recipient.middle_name", "Tyler");
+            map.Set("payment_transfer.recipient.last_name", "Smith");
+            map.Set("payment_transfer.recipient.nationality", "USA");
+            map.Set("payment_transfer.recipient.date_of_birth", "1999-12-30");
+            map.Set("payment_transfer.recipient.address.line1", "1 Main St");
+            map.Set("payment_transfer.recipient.address.line2", "Apartment 9");
+            map.Set("payment_transfer.recipient.address.city", "OFallon");
+            map.Set("payment_transfer.recipient.address.country_subdivision", "MO");
+            map.Set("payment_transfer.recipient.address.postal_code", "63368");
+            map.Set("payment_transfer.recipient.address.country", "USA");
+            map.Set("payment_transfer.recipient.phone", "11234567890");
+            map.Set("payment_transfer.recipient.email", " Jane.Smith123@abcmail.com ");
+            map.Set("payment_transfer.reconciliation_data.custom_field[0].name", " ABC");
+            map.Set("payment_transfer.reconciliation_data.custom_field[0].value", " 123 ");
+            map.Set("payment_transfer.reconciliation_data.custom_field[1].name", " DEF");
+            map.Set("payment_transfer.reconciliation_data.custom_field[1].value", " 456 ");
+            map.Set("payment_transfer.reconciliation_data.custom_field[2].name", " GHI");
+            map.Set("payment_transfer.reconciliation_data.custom_field[2].value", " 789 ");
+            map.Set("payment_transfer.statement_descriptor", "CLA*THANK YOU");
+            map.Set("payment_transfer.channel", "KIOSK");
+            map.Set("payment_transfer.text", "funding_source");
+
+            Assert.AreEqual("{\"payment_transfer\":{\"transfer_reference\":\"40013875384705044606252\",\"payment_type\":\"P2P\",\"funding_source\":[\"CREDIT\",\"DEBIT\"],\"amount\":\"1800\",\"currency\":\"USD\",\"sender_account_uri\":\"pan:5013040000000018;exp=2017-08;cvc=123\",\"sender\":{\"first_name\":\"John\",\"middle_name\":\"Tyler\",\"last_name\":\"Jones\",\"nationality\":\"USA\",\"date_of_birth\":\"1994-05-21\",\"address\":{\"line1\":\"21 Broadway\",\"line2\":\"Apartment A-6\",\"city\":\"OFallon\",\"country_subdivision\":\"MO\",\"postal_code\":\"63368\",\"country\":\"USA\"},\"phone\":\"11234565555\",\"email\":\" John.Jones123@abcmail.com \"},\"recipient_account_uri\":\"pan:5013040000000018;exp=2017-08;cvc=123\",\"recipient\":{\"first_name\":\"Jane\",\"middle_name\":\"Tyler\",\"last_name\":\"Smith\",\"nationality\":\"USA\",\"date_of_birth\":\"1999-12-30\",\"address\":{\"line1\":\"1 Main St\",\"line2\":\"Apartment 9\",\"city\":\"OFallon\",\"country_subdivision\":\"MO\",\"postal_code\":\"63368\",\"country\":\"USA\"},\"phone\":\"11234567890\",\"email\":\" Jane.Smith123@abcmail.com \"},\"reconciliation_data\":{\"custom_field\":[{\"name\":\" ABC\",\"value\":\" 123 \"},{\"name\":\" DEF\",\"value\":\" 456 \"},{\"name\":\" GHI\",\"value\":\" 789 \"}]},\"statement_descriptor\":\"CLA*THANK YOU\",\"channel\":\"KIOSK\",\"text\":\"funding_source\"}}",
+            JsonConvert.SerializeObject(map));
+        }
+
+
+
+
+
+
+
+        [Test ()]
 		public void TestReplace(){
 			RequestMap map = new RequestMap ();
 			map.Add("key1.key2", "value1");
@@ -179,7 +290,7 @@ namespace TestMasterCard
 		public void TestConvertValueToMap()	{
 			RequestMap map = new RequestMap ();
 			map.Add("level1", "value1");
-			Assert.Throws<ArgumentException> (()=> { map.Add ("level1.level2", "level2");} );
+			Assert.Throws<InvalidCastException> (()=> { map.Add ("level1.level2", "level2");} );
 
 		}
 
@@ -227,7 +338,7 @@ namespace TestMasterCard
 
 			Assert.AreEqual (1, map.Count);
 
-			Assert.AreNotSame(1, ((List<IDictionary<String, Object>> ) map["map"]).Count); 
+			Assert.AreNotSame(1, ((List<Dictionary<String, Object>> ) map["map"]).Count); 
 			//checl is it finds the key
 			Assert.IsTrue(map.ContainsKey("map"));
 			Assert.IsTrue(map.ContainsKey("map[0]"));
@@ -286,7 +397,7 @@ namespace TestMasterCard
 
 			Assert.AreEqual (1, map.Count);
 
-			Assert.AreNotSame(1, ((List<IDictionary<String, Object>> ) map["map"]).Count); 
+			Assert.AreNotSame(1, ((List<Dictionary<String, Object>> ) map["map"]).Count); 
 			//checl is it finds the key
 			Assert.IsTrue(map.ContainsKey("map"));
 			Assert.IsTrue(map.ContainsKey("map[0]"));
@@ -308,7 +419,7 @@ namespace TestMasterCard
 
 			Assert.AreEqual (1, newMap.Count);
 
-			Assert.AreNotSame(1, ((List<IDictionary<String, Object>> ) newMap["map"]).Count); 
+			Assert.AreNotSame(1, ((List<Dictionary<String, Object>> ) newMap["map"]).Count); 
 			//checl is it finds the key
 			Assert.IsTrue(newMap.ContainsKey("map"));
 			Assert.IsTrue(newMap.ContainsKey("map[0]"));
@@ -338,7 +449,7 @@ namespace TestMasterCard
 
 			Assert.AreEqual (1, map.Count);
 
-			Assert.AreNotSame(1, ((List<IDictionary<String, Object>> ) map["map"]).Count); 
+			Assert.AreNotSame(1, ((List<Dictionary<String, Object>> ) map["map"]).Count); 
 			//checl is it finds the key
 			Assert.AreEqual ("name1", map ["map[0].name"]);
 
@@ -349,7 +460,7 @@ namespace TestMasterCard
 			map.Add("map[0].name", "name1_replaced");
 			map.Add("map[0].surname", "surname");
 
-			Assert.AreNotSame(2, ((List<IDictionary<String, Object>> ) map["map"]).Count); 
+			Assert.AreNotSame(2, ((List<Dictionary<String, Object>> ) map["map"]).Count); 
 
 			Assert.AreEqual ("name1_replaced", map ["map[0].name"]);
 			Assert.AreEqual ("surname", map ["map[0].surname"]);
@@ -364,7 +475,7 @@ namespace TestMasterCard
 
 
 
-			Assert.Throws<ArgumentOutOfRangeException> (()=> { map.Add("map[1].name", "name1"); });
+			Assert.DoesNotThrow(()=> { map.Add("map[1].name", "name1"); });
 
 
 
