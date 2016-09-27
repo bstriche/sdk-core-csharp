@@ -122,7 +122,6 @@
     <Compile Include="Test\TestPathBaseObject.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\TestUtil.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\UtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Sources\MasterCard\Core\Model\JObjectExtension.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
     <Compile Include="Test\CryptUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
