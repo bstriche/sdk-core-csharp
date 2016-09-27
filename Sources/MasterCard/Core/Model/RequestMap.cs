@@ -190,15 +190,15 @@ namespace MasterCard.Core.Model
 			}
 		}
 
-		private bool isListKey(string key) {
+		private bool IsListKey(string key) {
 			return key.Contains("[");
 		}
 
-		private string extractKeyName(string key) {
+		private string ExtractKeyName(string key) {
 			return key.Substring(0, key.IndexOf("["));
 		}
 
-		private int extractKeyIndex(string key) {
+		private int ExtractKeyIndex(string key) {
 			Match matcher = arrayIndexPattern.Match (key);
 			if (matcher.Success) {
 				if (!"".Equals (matcher.Groups[2].ToString())) {
@@ -220,21 +220,15 @@ namespace MasterCard.Core.Model
 		{
 			string[] properties = keyPath.Split ('.');
 			Dictionary<string,object> destinationObject = __storage;
-			Dictionary<string,object> parsedMap = null;
+			RequestMap parsedMap = null;
 
-			bool mapValue = false;
-			//if (value is IDictionary) { // if putting a map, call put all
-			//	mapValue = true;
-            //    parsedMap = (Dictionary<String,Object>) value;
-            //} 
-
-			for (int i = 0; i < properties.Length; i++) {
+            for (int i = 0; i < properties.Length; i++) {
 				bool isLastOne = ((i+1) == properties.Length);
 				string property = properties [i];
-				if (isListKey(property)) {
+				if (IsListKey(property)) {
 					
-					String keyName = extractKeyName(property);
-					int keyIndex = extractKeyIndex(property);
+					String keyName = ExtractKeyName(property);
+					int keyIndex = ExtractKeyIndex(property);
 
 					if (destinationObject.ContainsKey(keyName)) {
 						//shopping exists
@@ -242,9 +236,9 @@ namespace MasterCard.Core.Model
 							List<Object> list = (List<Object>) destinationObject[keyName];
 							// if last one set the value
 							if (keyIndex > -1 && keyIndex < list.Count) {
-								list[keyIndex] = mapValue ? parsedMap : value;
+								list[keyIndex] =  value;
 							} else {
-								list.Add(mapValue ? parsedMap : value);
+								list.Add(value);
 							}
 							return;
 						} else {
@@ -262,7 +256,7 @@ namespace MasterCard.Core.Model
 						if (isLastOne) {
                             destinationObject[keyName] = new List<Object>();
                             List<Object> list = (List<Object>)destinationObject[keyName];
-                            list.Add(mapValue ? parsedMap : value);
+                            list.Add(value);
 							return;
 						} else {
                             destinationObject[keyName] = new List<Dictionary<string,object>>();
@@ -275,7 +269,7 @@ namespace MasterCard.Core.Model
 					//this is not a list property
 					if (destinationObject.ContainsKey(property)) {
 						if (isLastOne) {
-							destinationObject[property] = mapValue ? parsedMap : value;
+							destinationObject[property] = value;
 							return;
 						} else {
 							destinationObject = (Dictionary<string,object>)destinationObject[property];
@@ -283,7 +277,7 @@ namespace MasterCard.Core.Model
 					} else {
                         if (isLastOne)
                         {
-                            destinationObject[property] = mapValue ? parsedMap : value;
+                            destinationObject[property] = value;
                             return;
                         }
                         else
@@ -510,25 +504,14 @@ namespace MasterCard.Core.Model
 					if (null == map) {
 						try {
 							Object tmpOut = __storage [thisKey];
-							if(tmpOut.GetType() == typeof(JObject)) {
-                                map = ((JObject)tmpOut).ToObject<Dictionary<string, object>>();
-							} else {
-								map = (IDictionary<String, Object>)tmpOut;
-							}
+							map = (IDictionary<String, Object>)tmpOut;
 						} catch  {
 							return null;
 						}
 
 					} else {
                         Object tmpOut = map[thisKey];
-                        if (tmpOut.GetType() == typeof(JObject))
-                        {
-                            map = ((JObject)tmpOut).ToObject<Dictionary<string, object>>();
-                        }
-                        else
-                        {
-                            map = (IDictionary<String, Object>)tmpOut;
-                        }
+                        map = (IDictionary<String, Object>)tmpOut;
 					}
 
 				}
@@ -548,20 +531,99 @@ namespace MasterCard.Core.Model
 		public static IDictionary<String,Object> AsDictionary(String json)
 		{
 			try {
-				return JsonConvert.DeserializeObject<IDictionary<string, object>>(
-					json, new JsonConverter[] {new CustomDictionaryConverter()});
-			} catch (Exception) {
-				List<Dictionary<String,Object>> intermediaryResult = JsonConvert.DeserializeObject<List<Dictionary<String,Object>>> (json);
-				return new Dictionary<String,Object>() { { "list", intermediaryResult} };
+				IDictionary<string,object> tmpDict = JsonConvert.DeserializeObject<IDictionary<string, object>>(json);
+                return ParseDictionary(tmpDict);
+
+
+            } catch (Exception) {
+				IList<Object> intermediaryResult = JsonConvert.DeserializeObject<List<Object>> (json);
+				return new Dictionary<String,Object>() { { "list", ParseListOfDictionary(intermediaryResult) } };
 			}
 		}
 
+        private static List<Object> ParseListOfObjects(IList<Object> input)
+        {
+            List<Object> tmpList = new List<object>();
+            foreach (Object item in input)
+            {
+                Object convertedItem = null;
+                if (item is IDictionary)
+                {
+                    convertedItem = ParseDictionary((Dictionary<string, object>)item);
+                } else if (item is JObject)
+                {
+                    convertedItem = ParseDictionary(((JObject)item).ToObject<Dictionary<string, object>>());
+                } else
+                {
+                    convertedItem = item;
+                }
+                tmpList.Add(convertedItem);
+            }
+            return tmpList;
+        }
 
-		/// <summary>
-		/// Gets the enumerator.
-		/// </summary>
-		/// <returns>The enumerator.</returns>
-		IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator ()
+        private static List<Dictionary<string, object>> ParseListOfDictionary(IList<Object> input)
+        {
+            List<Dictionary<string,object>> tmpList = new List<Dictionary<string,object>>();
+            foreach (Object item in input)
+            {
+                Dictionary<string, object> convertedItem = null;
+                if (item is IDictionary)
+                {
+                    convertedItem = ParseDictionary((IDictionary<string, object>)item);
+                }
+                else if (item is JObject)
+                {
+                    convertedItem = ParseDictionary(((JObject)item).ToObject<Dictionary<string, object>>());
+                }
+
+                tmpList.Add(convertedItem);
+            }
+            return tmpList;
+        }
+
+        private static Dictionary<String,Object> ParseDictionary(IDictionary<string,object> input)
+        {
+            Dictionary<string, object> tmpDictionary = new Dictionary<string, object>();
+            foreach (KeyValuePair<string,object> pair in input)  {
+
+                Object convertedValue = null;
+                if (pair.Value is IDictionary)
+                {
+                    convertedValue = ParseDictionary((IDictionary < string, object > )pair.Value);
+                }
+                else if (pair.Value is JObject)
+                {
+                    convertedValue = ParseDictionary(((JObject)pair.Value).ToObject<IDictionary<string, object>>());
+                }
+                else if (pair.Value is JArray)
+                {
+                    var listItem = ((JArray)pair.Value)[0];
+                    if (listItem is JObject || listItem is IDictionary) {
+                        convertedValue = ParseListOfDictionary(((JArray)pair.Value).ToObject<List<Object>>());
+                    } else
+                    {
+                        convertedValue = ParseListOfObjects(((JArray)pair.Value).ToObject<List<Object>>());
+                    }
+                }
+                else
+                {
+                    convertedValue = pair.Value;
+                }
+                tmpDictionary.Add(pair.Key, convertedValue);
+            }
+
+            return tmpDictionary;
+        }
+
+
+
+
+        /// <summary>
+        /// Gets the enumerator.
+        /// </summary>
+        /// <returns>The enumerator.</returns>
+        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator ()
 		{
 			return __storage.GetEnumerator ();
 		}
@@ -673,88 +735,6 @@ namespace MasterCard.Core.Model
 				return ((ICollection<KeyValuePair<string, object>>)__storage).IsReadOnly;
 			}
 		}
-
-
-        private class MyConverter : CustomCreationConverter<IDictionary<string, object>>
-        {
-            public override IDictionary<string, object> Create(Type objectType)
-            {
-                return new Dictionary<string, object>();
-            }
-
-            public override bool CanConvert(Type objectType)
-            {
-                // in addition to handling IDictionary<string, object>
-                // we want to handle the deserialization of dict value
-                // which is of type object
-                return objectType == typeof(object) || base.CanConvert(objectType);
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.StartObject
-                    || reader.TokenType == JsonToken.Null)
-                    return base.ReadJson(reader, objectType, existingValue, serializer);
-
-                // if the next token is not an object
-                // then fall back on standard deserializer (strings, numbers etc.)
-                return serializer.Deserialize(reader);
-            }
-        }
-
-        /// <summary>
-        /// Json custom converter.
-        /// </summary>
-        private class CustomDictionaryConverter : CustomCreationConverter<IDictionary<string, object>>
-		{
-			public override IDictionary<string, object> Create(Type objectType)
-			{
-				return new Dictionary<string, object>();
-			}
-
-			public override bool CanConvert(Type objectType)
-			{
-				// in addition to handling IDictionary<string, object>
-				// we want to handle the deserialization of dict value
-				// which is of type object
-
-				bool isDictionary = objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(IDictionary<,>);
-				bool isObject = objectType == typeof(object);
-
-				return isObject || base.CanConvert(objectType);
-			}
-
-			public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-			{
-				if (reader.TokenType == JsonToken.StartObject || reader.TokenType == JsonToken.Null) {
-					var result1 =  base.ReadJson(reader, objectType, existingValue, serializer);
-					return result1;
-				}
-					
-
-				// if the next token is not an object
-				// then fall back on standard deserializer (strings, numbers etc.)
-				var result2 = serializer.Deserialize(reader);
-				if (result2.GetType() == typeof(JArray)) {
-                    if (((JArray)result2).First.Type.ToString() == "String")
-                    {
-                        result2 = ((JArray)result2).ToObject<List<object>>();
-                    } else
-                    {
-                        result2 = ((JArray)result2).ToObject<List<Dictionary<string, object>>>();
-                    }
-					
-				}
-
-                if (result2.GetType() == typeof(JObject))
-                {
-                    result2 = ((JObject)result2).ToObject<Dictionary<string,object>>();
-                }
-
-                return result2;
-			}
-		}
-			
 	}
 
 

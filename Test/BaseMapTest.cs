@@ -220,7 +220,47 @@ namespace TestMasterCard
 
 
 
+        [Test()]
+        public void TestJsonParser()
+        {
+            string json = "{\"quote\":{\"quote_reference\":\"07124577927084921195\",\"proposals\":{\"proposal\":[{\"id\":\"prp_cDaukdMdb_IjzWmCs2tA6AyO5Fs\",\"resource_type\":\"proposal\",\"fees_included\":\"true\",\"charged_amount\":{\"currency\":\"USD\",\"amount\":\"105.00\"},\"credited_amount\":{\"currency\":\"MAD\",\"amount\":\"1000.00\"},\"principal_amount\":{\"currency\":\"USD\",\"amount\":\"100.00\"},\"expiration_date\":\"2016-09-27T03:43:32.109-05:00\",\"additional_data_list\":{\"resource_type\":\"list\",\"item_count\":\"2\",\"data\":{\"data_field\":[{\"name\":\"811\",\"value\":\"123\"},{\"name\":\"851\",\"value\":\"456\"}]}},\"quote_fx_rate\":\"123\"},{\"id\":\"prp_71iZdHSOlHGHH8wPZmIlSxhj_CM\",\"resource_type\":\"proposal\",\"fees_included\":\"true\",\"charged_amount\":{\"currency\":\"USD\",\"amount\":\"100.00\"},\"credited_amount\":{\"currency\":\"MAD\",\"amount\":\"950.00\"},\"principal_amount\":{\"currency\":\"USD\",\"amount\":\"100.00\"},\"expiration_date\":\"2016-09-27T03:53:32.109-05:00\",\"additional_data_list\":{\"resource_type\":\"list\",\"item_count\":\"2\",\"data\":{\"data_field\":[{\"name\":\"811\",\"value\":\"123\"},{\"name\":\"851\",\"value\":\"456\"}]}},\"quote_fx_rate\":\"123\"}]}}}";
 
+            RequestMap response = new RequestMap(json);
+
+            Assert.AreEqual(response.Get("quote.quote_reference"), "07124577927084921195");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].id"), "prp_cDaukdMdb_IjzWmCs2tA6AyO5Fs");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].resource_type"), "proposal");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].fees_included"), "true");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].charged_amount.currency"), "USD");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].charged_amount.amount"), "105.00");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].credited_amount.currency"), "MAD");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].credited_amount.amount"), "1000.00");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].principal_amount.currency"), "USD");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].principal_amount.amount"), "100.00");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].additional_data_list.resource_type"), "list");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].additional_data_list.item_count"), "2");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].additional_data_list.data.data_field[0].name"), "811");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].additional_data_list.data.data_field[0].value"), "123");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].additional_data_list.data.data_field[1].name"), "851");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].additional_data_list.data.data_field[1].value"), "456");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[0].quote_fx_rate"), "123");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].id"), "prp_71iZdHSOlHGHH8wPZmIlSxhj_CM");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].resource_type"), "proposal");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].fees_included"), "true");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].charged_amount.currency"), "USD");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].charged_amount.amount"), "100.00");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].credited_amount.currency"), "MAD");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].credited_amount.amount"), "950.00");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].principal_amount.currency"), "USD");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].principal_amount.amount"), "100.00");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].additional_data_list.resource_type"), "list");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].additional_data_list.item_count"), "2");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].additional_data_list.data.data_field[0].name"), "811");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].additional_data_list.data.data_field[0].value"), "123");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].additional_data_list.data.data_field[1].name"), "851");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].additional_data_list.data.data_field[1].value"), "456");
+            Assert.AreEqual(response.Get("quote.proposals.proposal[1].quote_fx_rate"), "123");
+        }
 
 
 
