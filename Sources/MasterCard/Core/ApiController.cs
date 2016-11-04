@@ -149,14 +149,14 @@ namespace MasterCard.Core
 			}
 
 			if (response.ErrorException == null && response.Content != null) {
-				IDictionary<String,Object> responseObj = null;
+				IDictionary<String,Object> responseObj = new Dictionary<String,Object>();
 
-				if (response.Content.StartsWith ("{") || response.Content.StartsWith ("[") || response.ContentType == "application/json") {
+				if (response.Content.Length > 0) {
 					try {
 						responseObj = RequestMap.AsDictionary (response.Content);
 						if (interceptor != null) {
 							responseObj = interceptor.Encrypt(responseObj);
-						}
+						} 
 					} catch (Exception) {
 						throw new MasterCard.Core.Exceptions.SystemException ("Error: parsing JSON response", response.Content);
 					}

@@ -1,4 +1,5 @@
 /*
+
  * Copyright 2016 MasterCard International.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -25,17 +26,18 @@
  *
  */
 
-
-
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Test;
 
 
 using MasterCard.Core;
 using MasterCard.Core.Exceptions;
 using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
+using MasterCard.Core.Security.MDES;
+using System.Threading;
 
 
 namespace TestMasterCard
@@ -43,36 +45,49 @@ namespace TestMasterCard
 
 
 	[TestFixture ()]
-	public class UserPostHeaderTest
+	public class UserPostHeaderTest : BaseTest
 	{
 
 		[SetUp]
 		public void setup ()
 		{
-            var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
-            var authentication = new OAuthAuthentication("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath + "\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-            ApiConfig.SetAuthentication (authentication);
+            ApiConfig.SetDebug(true);
+            ApiConfig.SetSandbox(true);
+            var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
+
+            BaseTest.resetAuthentication();
+
 		}
 
+        
+            
             
             
                         
 
         [Test ()]
-        public void get_user_posts_with_header_Test()
+        public void Test_get_user_posts_with_header()
         {
             
+
+            
+
             RequestMap map = new RequestMap();
             map.Set ("user_id", "1");
             
             
-
             List<UserPostHeader> responseList = UserPostHeader.List(map);
             UserPostHeader response = responseList[0];
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
-            Assert.That("some body text", Is.EqualTo(response["body"].ToString()).IgnoreCase );
-            Assert.That("My Title", Is.EqualTo(response["title"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["userId"].ToString()).IgnoreCase );
+
+            List<string> ignoreAsserts = new List<string>();
+            
+            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "title", "My Title");
+            BaseTest.assertEqual(ignoreAsserts, response, "body", "some body text");
+            BaseTest.assertEqual(ignoreAsserts, response, "userId", "1");
+            
+
+            BaseTest.putResponse("get_user_posts_with_header", responseList[0]);
             
         }
         
@@ -83,5 +98,3 @@ namespace TestMasterCard
         
     }
 }
-
-

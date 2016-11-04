@@ -97,6 +97,7 @@
     <Compile Include="Test\Functional\ATMLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\AudiencesSegment.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\AudiencesSegmentTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\BaseTest.cs" />
     <Compile Include="Test\Functional\MerchantCategories.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategoriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -105,8 +106,12 @@
     <Compile Include="Test\Functional\MerchantCountrySubdivisionsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantLocations.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MultiplePathUserPost.cs" />
+    <Compile Include="Test\Functional\MultiplePathUserPostTest.cs" />
+    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" />
     <Compile Include="Test\Functional\Parameters.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ParametersTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\SDKConfig.cs" />
     <Compile Include="Test\Functional\UserTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\User.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\PostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />

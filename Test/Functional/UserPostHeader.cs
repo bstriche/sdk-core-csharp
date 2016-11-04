@@ -25,8 +25,6 @@
  *
  */
 
-
-
 using System;
 using System.Collections.Generic;
 using MasterCard.Core;
@@ -48,24 +46,31 @@ namespace TestMasterCard
         {
         }
 
+        private static readonly Dictionary<string, OperationConfig> _store = new Dictionary<string, OperationConfig>
+        {
+        {"e73cc3dc-243e-4e28-b614-d4cc7971f801", new OperationConfig("/mock_crud_server/users/posts", "list", new List<String> {  }, new List<String> { "user_id" })},
+        
+        };
 
         protected override OperationConfig GetOperationConfig(string operationUUID)
         {
-            switch (operationUUID)
+            if (!_store.ContainsKey(operationUUID))
             {
-                case "uuid":
-                    return new OperationConfig("/mock_crud_server/users/posts", "list", new List<string>(), new List<string> { "user_id" });
-                default:
-                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
+                throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
+            return _store[operationUUID];
         }
 
         protected override OperationMetadata GetOperationMetadata()
         {
-            return new OperationMetadata("0.0.1", "http://localhost:8081");
+            return new OperationMetadata(SDKConfig.GetVersion(), SDKConfig.GetHost());
         }
-        
 
+        
+        
+        
+        
+        
         /// <summary>
         /// Retrieves a list of type <code>UserPostHeader</code>
         /// </summary>
@@ -78,7 +83,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<UserPostHeader> List()
         {
-            return BaseObject.ExecuteForList("uuid", new UserPostHeader());
+            return BaseObject.ExecuteForList("e73cc3dc-243e-4e28-b614-d4cc7971f801", new UserPostHeader());
         }
 
         /// <summary>
@@ -94,7 +99,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static List<UserPostHeader> List(RequestMap criteria)
         {
-            return BaseObject.ExecuteForList("uuid",new UserPostHeader(criteria));
+            return BaseObject.ExecuteForList("e73cc3dc-243e-4e28-b614-d4cc7971f801", new UserPostHeader(criteria));
         }
         
         

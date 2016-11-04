@@ -1,4 +1,5 @@
 /*
+
  * Copyright 2016 MasterCard International.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -25,17 +26,18 @@
  *
  */
 
-
-
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Test;
 
 
 using MasterCard.Core;
+using MasterCard.Core.Exceptions;
 using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
-using TestMasterCard;
+using MasterCard.Core.Security.MDES;
+using System.Threading;
 
 
 namespace TestMasterCard
@@ -43,68 +45,93 @@ namespace TestMasterCard
 
 
 	[TestFixture ()]
-	public class UserTest
+	public class UserTest : BaseTest
 	{
 
 		[SetUp]
 		public void setup ()
 		{
-            var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
-            var authentication = new OAuthAuthentication("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath + "\\Test\\mcapi_sandbox_key.p12", "alias", "password");
-            ApiConfig.SetAuthentication (authentication);
             ApiConfig.SetDebug(true);
+            ApiConfig.SetSandbox(true);
+            var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
 
-        }
+            BaseTest.resetAuthentication();
 
+		}
+
+        
+            
+            
+            
+                        
 
         [Test ()]
-        public void list_users_Test()
+        public void Test_list_users()
         {
             
 
-            List<User> responseList = User.List();
+            
+
+            RequestMap map = new RequestMap();
+            
+            
+            List<User> responseList = User.List(map);
             User response = responseList[0];
-            Assert.That("1-770-736-8031", Is.EqualTo(response["phone"].ToString()).IgnoreCase );
-			Assert.That("hildegard.org", Is.EqualTo(response["website"].ToString()).IgnoreCase );
-            Assert.That("true", Is.EqualTo(response["address.instructions.doorman"].ToString()).IgnoreCase );
-            Assert.That("2000 Purchase Street", Is.EqualTo(response["address.line1"].ToString()).IgnoreCase );
-            Assert.That("NY", Is.EqualTo(response["address.state"].ToString()).IgnoreCase );
-            Assert.That("some delivery instructions text", Is.EqualTo(response["address.instructions.text"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
-            Assert.That("jbloggs", Is.EqualTo(response["username"].ToString()).IgnoreCase );
-            Assert.That("name@example.com", Is.EqualTo(response["email"].ToString()).IgnoreCase );
-            Assert.That("Joe Bloggs", Is.EqualTo(response["name"].ToString()).IgnoreCase );
-            Assert.That("10577", Is.EqualTo(response["address.postalCode"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["address.id"].ToString()).IgnoreCase );
-            Assert.That("New York", Is.EqualTo(response["address.city"].ToString()).IgnoreCase );
+
+            List<string> ignoreAsserts = new List<string>();
+            
+            BaseTest.assertEqual(ignoreAsserts, response, "website", "hildegard.org");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.doorman", "true");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.text", "some delivery instructions text");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.city", "New York");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.postalCode", "10577");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.state", "NY");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.line1", "2000 Purchase Street");
+            BaseTest.assertEqual(ignoreAsserts, response, "phone", "1-770-736-8031");
+            BaseTest.assertEqual(ignoreAsserts, response, "name", "Joe Bloggs");
+            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "email", "name@example.com");
+            BaseTest.assertEqual(ignoreAsserts, response, "username", "jbloggs");
+            
+
+            BaseTest.putResponse("list_users", responseList[0]);
             
         }
         
 
         [Test ()]
-        public void list_users_query_Test()
+        public void Test_list_users_query()
         {
             
+
+            
+
             RequestMap map = new RequestMap();
             map.Set ("max", "10");
             
             
-
             List<User> responseList = User.List(map);
             User response = responseList[0];
-            Assert.That("1-770-736-8031", Is.EqualTo(response["phone"].ToString()).IgnoreCase );
-			Assert.That("hildegard.org", Is.EqualTo(response["website"].ToString()).IgnoreCase );
-            Assert.That("true", Is.EqualTo(response["address.instructions.doorman"].ToString()).IgnoreCase );
-            Assert.That("2000 Purchase Street", Is.EqualTo(response["address.line1"].ToString()).IgnoreCase );
-            Assert.That("NY", Is.EqualTo(response["address.state"].ToString()).IgnoreCase );
-            Assert.That("some delivery instructions text", Is.EqualTo(response["address.instructions.text"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
-            Assert.That("jbloggs", Is.EqualTo(response["username"].ToString()).IgnoreCase );
-            Assert.That("name@example.com", Is.EqualTo(response["email"].ToString()).IgnoreCase );
-            Assert.That("Joe Bloggs", Is.EqualTo(response["name"].ToString()).IgnoreCase );
-            Assert.That("10577", Is.EqualTo(response["address.postalCode"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["address.id"].ToString()).IgnoreCase );
-            Assert.That("New York", Is.EqualTo(response["address.city"].ToString()).IgnoreCase );
+
+            List<string> ignoreAsserts = new List<string>();
+            
+            BaseTest.assertEqual(ignoreAsserts, response, "website", "hildegard.org");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.doorman", "true");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.text", "some delivery instructions text");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.city", "New York");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.postalCode", "10577");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.state", "NY");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.line1", "2000 Purchase Street");
+            BaseTest.assertEqual(ignoreAsserts, response, "phone", "1-770-736-8031");
+            BaseTest.assertEqual(ignoreAsserts, response, "name", "Joe Bloggs");
+            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "email", "name@example.com");
+            BaseTest.assertEqual(ignoreAsserts, response, "username", "jbloggs");
+            
+
+            BaseTest.putResponse("list_users_query", responseList[0]);
             
         }
         
@@ -117,33 +144,45 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void create_user_Test()
+        public void Test_create_user()
         {
-            RequestMap map = new RequestMap();
-            map.Set ("username", "jbloggs");
-            map.Set ("phone", "1-770-736-8031");
-            map.Set ("email", "name@example.com");
-            map.Set ("website", "hildegard.org");
-            map.Set ("name", "Joe Bloggs");
-            map.Set ("address.line1", "2000 Purchase Street");
-            map.Set ("address.state", "NY");
-            map.Set ("address.postalCode", "10577");
-            map.Set ("address.city", "New York");
             
+
+            
+
+            RequestMap map = new RequestMap();
+            map.Set ("website", "hildegard.org");
+            map.Set ("address.city", "New York");
+            map.Set ("address.postalCode", "10577");
+            map.Set ("address.state", "NY");
+            map.Set ("address.line1", "2000 Purchase Street");
+            map.Set ("phone", "1-770-736-8031");
+            map.Set ("name", "Joe Bloggs");
+            map.Set ("email", "name@example.com");
+            map.Set ("username", "jbloggs");
+            
+            
+
+            List<string> ignoreAsserts = new List<string>();
+            
+
             User response = User.Create(map);
-            Assert.That("1-770-736-8031", Is.EqualTo(response["phone"].ToString()).IgnoreCase );
-            Assert.That("hildegard.org", Is.EqualTo(response["website"].ToString()).IgnoreCase );
-            Assert.That("true", Is.EqualTo(response["address.instructions.doorman"].ToString()).IgnoreCase );
-            Assert.That("2000 Purchase Street", Is.EqualTo(response["address.line1"].ToString()).IgnoreCase );
-            Assert.That("NY", Is.EqualTo(response["address.state"].ToString()).IgnoreCase );
-            Assert.That("some delivery instructions text", Is.EqualTo(response["address.instructions.text"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase );
-            Assert.That("jbloggs", Is.EqualTo(response["username"].ToString()).IgnoreCase );
-            Assert.That("name@example.com", Is.EqualTo(response["email"].ToString()).IgnoreCase );
-            Assert.That("Joe Bloggs", Is.EqualTo(response["name"].ToString()).IgnoreCase );
-            Assert.That("10577", Is.EqualTo(response["address.postalCode"].ToString()).IgnoreCase );
-            Assert.That("1", Is.EqualTo(response["address.id"].ToString()).IgnoreCase );
-            Assert.That("New York", Is.EqualTo(response["address.city"].ToString()).IgnoreCase );
+            BaseTest.assertEqual(ignoreAsserts, response, "website", "hildegard.org");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.doorman", "true");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.text", "some delivery instructions text");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.city", "New York");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.postalCode", "10577");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.state", "NY");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.line1", "2000 Purchase Street");
+            BaseTest.assertEqual(ignoreAsserts, response, "phone", "1-770-736-8031");
+            BaseTest.assertEqual(ignoreAsserts, response, "name", "Joe Bloggs");
+            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "email", "name@example.com");
+            BaseTest.assertEqual(ignoreAsserts, response, "username", "jbloggs");
+            
+
+            BaseTest.putResponse("create_user", response);
             
         }
         
@@ -162,97 +201,132 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void get_user_Test()
+        public void Test_get_user()
         {
-            String id = "1";
-
             
 
-            User response = User.Read(id);
-            Assert.That("1-770-736-8031", Is.EqualTo(response["phone"].ToString()).IgnoreCase);
-            Assert.That("hildegard.org", Is.EqualTo(response["website"].ToString()).IgnoreCase);
-            Assert.That("true", Is.EqualTo(response["address.instructions.doorman"].ToString()).IgnoreCase);
-            Assert.That("2000 Purchase Street", Is.EqualTo(response["address.line1"].ToString()).IgnoreCase);
-            Assert.That("NY", Is.EqualTo(response["address.state"].ToString()).IgnoreCase);
-            Assert.That("some delivery instructions text", Is.EqualTo(response["address.instructions.text"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase);
-            Assert.That("jbloggs", Is.EqualTo(response["username"].ToString()).IgnoreCase);
-            Assert.That("name@example.com", Is.EqualTo(response["email"].ToString()).IgnoreCase);
-            Assert.That("Joe Bloggs", Is.EqualTo(response["name"].ToString()).IgnoreCase);
-            Assert.That("10577", Is.EqualTo(response["address.postalCode"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["address.id"].ToString()).IgnoreCase);
-            Assert.That("New York", Is.EqualTo(response["address.city"].ToString()).IgnoreCase);
-            
-
-        }
-        
-
-        [Test ()]
-        public void get_user_query_Test()
-        {
-            String id = "1";
-
-            
-            RequestMap parameters = new RequestMap();
-            parameters.Set ("min", "1");
-            parameters.Set ("max", "10");
-            
-            
-
-            User response = User.Read(id,parameters);
-            Assert.That("1-770-736-8031", Is.EqualTo(response["phone"].ToString()).IgnoreCase);
-            Assert.That("hildegard.org", Is.EqualTo(response["website"].ToString()).IgnoreCase);
-            Assert.That("true", Is.EqualTo(response["address.instructions.doorman"].ToString()).IgnoreCase);
-            Assert.That("2000 Purchase Street", Is.EqualTo(response["address.line1"].ToString()).IgnoreCase);
-            Assert.That("NY", Is.EqualTo(response["address.state"].ToString()).IgnoreCase);
-            Assert.That("some delivery instructions text", Is.EqualTo(response["address.instructions.text"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase);
-            Assert.That("jbloggs", Is.EqualTo(response["username"].ToString()).IgnoreCase);
-            Assert.That("name@example.com", Is.EqualTo(response["email"].ToString()).IgnoreCase);
-            Assert.That("Joe Bloggs", Is.EqualTo(response["name"].ToString()).IgnoreCase);
-            Assert.That("10577", Is.EqualTo(response["address.postalCode"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["address.id"].ToString()).IgnoreCase);
-            Assert.That("New York", Is.EqualTo(response["address.city"].ToString()).IgnoreCase);
-            
-
-        }
-        
-            
             
         
-            
-            
-                        
-
-        [Test ()]
-        public void update_user_Test()
-        {
             RequestMap map = new RequestMap();
-            map.Set ("id", "1");
-            map.Set ("phone", "1-770-736-8031");
-            map.Set ("username", "jbloggs");
-            map.Set ("website", "hildegard.org");
-            map.Set ("email", "name@example.com");
-            map.Set ("address.line1", "2000 Purchase Street");
+            
+            map.Set("id", BaseTest.resolveResponseValue("create_user.id"));
+            
+            User response = User.Read("",map);
+
+            List<string> ignoreAsserts = new List<string>();
+            ignoreAsserts.Add("address.city");
+            
+
+            BaseTest.assertEqual(ignoreAsserts, response, "website", "hildegard.org");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.doorman", "true");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.text", "some delivery instructions text");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.city", "New York");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.postalCode", "10577");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.state", "NY");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.line1", "2000 Purchase Street");
+            BaseTest.assertEqual(ignoreAsserts, response, "phone", "1-770-736-8031");
+            BaseTest.assertEqual(ignoreAsserts, response, "name", "Joe Bloggs");
+            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "email", "name@example.com");
+            BaseTest.assertEqual(ignoreAsserts, response, "username", "jbloggs");
+            
+
+            BaseTest.putResponse("get_user", response);
+            
+        }
+        
+
+        [Test ()]
+        public void Test_get_user_query()
+        {
+            
+
+            
+        
+            RequestMap map = new RequestMap();
+            map.Set ("min", "1");
+            map.Set ("max", "10");
+            
+            map.Set("id", BaseTest.resolveResponseValue("create_user.id"));
+            
+            User response = User.Read("",map);
+
+            List<string> ignoreAsserts = new List<string>();
+            
+
+            BaseTest.assertEqual(ignoreAsserts, response, "website", "hildegard.org");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.doorman", "true");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.text", "some delivery instructions text");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.city", "New York");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.postalCode", "10577");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.state", "NY");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.line1", "2000 Purchase Street");
+            BaseTest.assertEqual(ignoreAsserts, response, "phone", "1-770-736-8031");
+            BaseTest.assertEqual(ignoreAsserts, response, "name", "Joe Bloggs");
+            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "email", "name@example.com");
+            BaseTest.assertEqual(ignoreAsserts, response, "username", "jbloggs");
+            
+
+            BaseTest.putResponse("get_user_query", response);
+            
+        }
+        
+            
+            
+        
+            
+            
+                        
+
+        [Test ()]
+        public void Test_update_user()
+        {
+            
+
+            
+
+            RequestMap map = new RequestMap();
             map.Set ("name", "Joe Bloggs");
+            map.Set ("username", "jbloggs");
+            map.Set ("email", "name@example.com");
+            map.Set ("phone", "1-770-736-8031");
+            map.Set ("website", "hildegard.org");
+            map.Set ("address.line1", "2000 Purchase Street");
+            map.Set ("address.city", "New York");
             map.Set ("address.state", "NY");
             map.Set ("address.postalCode", "10577");
-            map.Set ("address.city", "New York");
+            
+            map.Set("id", BaseTest.resolveResponseValue("create_user.id"));
+            map.Set("id2", BaseTest.resolveResponseValue("create_user.id"));
+            map.Set("prepend", "prepend"+BaseTest.resolveResponseValue("create_user.id"));
+            map.Set("append", BaseTest.resolveResponseValue("create_user.id")+"append");
+            map.Set("complex", "prepend-"+BaseTest.resolveResponseValue("create_user.id")+"-"+BaseTest.resolveResponseValue("create_user.name"));
+            map.Set("name", BaseTest.resolveResponseValue("val:Andrea Rizzini"));
             
             User response = new User(map).Update ();
-            Assert.That("1-770-736-8031", Is.EqualTo(response["phone"].ToString()).IgnoreCase);
-            Assert.That("hildegard.org", Is.EqualTo(response["website"].ToString()).IgnoreCase);
-            Assert.That("true", Is.EqualTo(response["address.instructions.doorman"].ToString()).IgnoreCase);
-            Assert.That("2000 Purchase Street", Is.EqualTo(response["address.line1"].ToString()).IgnoreCase);
-            Assert.That("NY", Is.EqualTo(response["address.state"].ToString()).IgnoreCase);
-            Assert.That("some delivery instructions text", Is.EqualTo(response["address.instructions.text"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["id"].ToString()).IgnoreCase);
-            Assert.That("jbloggs", Is.EqualTo(response["username"].ToString()).IgnoreCase);
-            Assert.That("name@example.com", Is.EqualTo(response["email"].ToString()).IgnoreCase);
-            Assert.That("Joe Bloggs", Is.EqualTo(response["name"].ToString()).IgnoreCase);
-            Assert.That("10577", Is.EqualTo(response["address.postalCode"].ToString()).IgnoreCase);
-            Assert.That("1", Is.EqualTo(response["address.id"].ToString()).IgnoreCase);
-            Assert.That("New York", Is.EqualTo(response["address.city"].ToString()).IgnoreCase);
+
+            List<string> ignoreAsserts = new List<string>();
+            
+
+            BaseTest.assertEqual(ignoreAsserts, response, "website", "hildegard.org");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.doorman", "true");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.text", "some delivery instructions text");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.city", "New York");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.postalCode", "10577");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.state", "NY");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.line1", "2000 Purchase Street");
+            BaseTest.assertEqual(ignoreAsserts, response, "phone", "1-770-736-8031");
+            BaseTest.assertEqual(ignoreAsserts, response, "name", "Joe Bloggs");
+            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "email", "name@example.com");
+            BaseTest.assertEqual(ignoreAsserts, response, "username", "jbloggs");
+            
+
+            BaseTest.putResponse("update_user", response);
             
         }
         
@@ -269,10 +343,93 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void delete_user_Test()
+        public void Test_delete_user()
         {
-            User response = User.Delete ("1");
+            
+
+            
+        
+            RequestMap map = new RequestMap();
+            
+            map.Set("id", BaseTest.resolveResponseValue("create_user.id"));
+            
+            User response = User.Delete("ssss",map);
             Assert.NotNull (response);
+
+            List<string> ignoreAsserts = new List<string>();
+            
+
+            
+
+            BaseTest.putResponse("delete_user", response);
+            
+        }
+        
+
+            
+            
+            
+        
+            
+            
+            
+            
+                        
+
+        [Test ()]
+        public void Test_delete_user_200()
+        {
+            
+
+            
+        
+            RequestMap map = new RequestMap();
+            
+            map.Set("id", BaseTest.resolveResponseValue("create_user.id"));
+            
+            User response = User.delete200("ssss",map);
+            Assert.NotNull (response);
+
+            List<string> ignoreAsserts = new List<string>();
+            
+
+            
+
+            BaseTest.putResponse("delete_user_200", response);
+            
+        }
+        
+
+            
+            
+            
+        
+            
+            
+            
+            
+                        
+
+        [Test ()]
+        public void Test_delete_user_204()
+        {
+            
+
+            
+        
+            RequestMap map = new RequestMap();
+            
+            map.Set("id", BaseTest.resolveResponseValue("create_user.id"));
+            
+            User response = User.delete204("ssss",map);
+            Assert.NotNull (response);
+
+            List<string> ignoreAsserts = new List<string>();
+            
+
+            
+
+            BaseTest.putResponse("delete_user_204", response);
             
         }
         
@@ -283,5 +440,3 @@ namespace TestMasterCard
         
     }
 }
-
-

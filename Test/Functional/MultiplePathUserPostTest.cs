@@ -45,7 +45,7 @@ namespace TestMasterCard
 
 
 	[TestFixture ()]
-	public class PostTest : BaseTest
+	public class MultiplePathUserPostTest : BaseTest
 	{
 
 		[SetUp]
@@ -57,7 +57,6 @@ namespace TestMasterCard
 
             BaseTest.resetAuthentication();
 
-          
 		}
 
         
@@ -67,17 +66,19 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void Test_list_posts_query_1()
+        public void Test_get_user_posts_with_mutplie_path()
         {
             
 
             
 
             RequestMap map = new RequestMap();
+            map.Set ("user_id", "1");
+            map.Set ("post_id", "2");
             
             
-            List<Post> responseList = Post.List(map);
-            Post response = responseList[0];
+            List<MultiplePathUserPost> responseList = MultiplePathUserPost.List(map);
+            MultiplePathUserPost response = responseList[0];
 
             List<string> ignoreAsserts = new List<string>();
             
@@ -87,114 +88,12 @@ namespace TestMasterCard
             BaseTest.assertEqual(ignoreAsserts, response, "userId", "1");
             
 
-            BaseTest.putResponse("list_posts_query_1", responseList[0]);
-            
-        }
-        
-
-        [Test ()]
-        public void Test_list_posts_query_2()
-        {
-            
-
-            
-
-            RequestMap map = new RequestMap();
-            map.Set ("max", "10");
-            
-            
-            List<Post> responseList = Post.List(map);
-            Post response = responseList[0];
-
-            List<string> ignoreAsserts = new List<string>();
-            
-            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
-            BaseTest.assertEqual(ignoreAsserts, response, "title", "My Title");
-            BaseTest.assertEqual(ignoreAsserts, response, "body", "some body text");
-            BaseTest.assertEqual(ignoreAsserts, response, "userId", "1");
-            
-
-            BaseTest.putResponse("list_posts_query_2", responseList[0]);
+            BaseTest.putResponse("get_user_posts_with_mutplie_path", responseList[0]);
             
         }
         
             
             
-            
-            
-        
-            
-                        
-
-      
-        
-            
-            
-            
-            
-            
-            
-        
-            
-            
-            
-            
-            
-                        
-
-        [Test ()]
-        public void Test_get_post_query_1()
-        {
-            
-
-            
-        
-            RequestMap map = new RequestMap();
-            
-            
-            Post response = Post.Read("1",map);
-
-            List<string> ignoreAsserts = new List<string>();
-            
-
-            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
-            BaseTest.assertEqual(ignoreAsserts, response, "title", "My Title");
-            BaseTest.assertEqual(ignoreAsserts, response, "body", "some body text");
-            BaseTest.assertEqual(ignoreAsserts, response, "userId", "1");
-            
-
-            BaseTest.putResponse("get_post_query_1", response);
-            
-        }
-        
-
-        [Test ()]
-        public void Test_get_post_query_2()
-        {
-            
-
-            
-        
-            RequestMap map = new RequestMap();
-            map.Set ("min", "1");
-            map.Set ("max", "10");
-            
-            
-            Post response = Post.Read("1",map);
-
-            List<string> ignoreAsserts = new List<string>();
-            
-
-            BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
-            BaseTest.assertEqual(ignoreAsserts, response, "title", "My Title");
-            BaseTest.assertEqual(ignoreAsserts, response, "body", "some body text");
-            BaseTest.assertEqual(ignoreAsserts, response, "userId", "1");
-            
-
-            BaseTest.putResponse("get_post_query_2", response);
-            
-        }
-        
             
             
         
@@ -203,30 +102,48 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void Test_update_post()
+        public void Test_update_user_posts_with_mutplie_path()
         {
             
 
             
 
             RequestMap map = new RequestMap();
-            map.Set ("id", "1111");
-            map.Set ("title", "updated title");
-            map.Set ("body", "updated body");
+            map.Set ("user_id", "1");
+            map.Set ("post_id", "1");
+            map.Set ("testQuery", "testQuery");
+            map.Set ("name", "Joe Bloggs");
+            map.Set ("username", "jbloggs");
+            map.Set ("email", "name@example.com");
+            map.Set ("phone", "1-770-736-8031");
+            map.Set ("website", "hildegard.org");
+            map.Set ("address.line1", "2000 Purchase Street");
+            map.Set ("address.city", "New York");
+            map.Set ("address.state", "NY");
+            map.Set ("address.postalCode", "10577");
             
             
-            Post response = new Post(map).Update ();
+            MultiplePathUserPost response = new MultiplePathUserPost(map).Update ();
 
             List<string> ignoreAsserts = new List<string>();
             
 
+            BaseTest.assertEqual(ignoreAsserts, response, "website", "hildegard.org");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.doorman", "true");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.instructions.text", "some delivery instructions text");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.city", "New York");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.postalCode", "10577");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.id", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.state", "NY");
+            BaseTest.assertEqual(ignoreAsserts, response, "address.line1", "2000 Purchase Street");
+            BaseTest.assertEqual(ignoreAsserts, response, "phone", "1-770-736-8031");
+            BaseTest.assertEqual(ignoreAsserts, response, "name", "Joe Bloggs");
             BaseTest.assertEqual(ignoreAsserts, response, "id", "1");
-            BaseTest.assertEqual(ignoreAsserts, response, "title", "updated title");
-            BaseTest.assertEqual(ignoreAsserts, response, "body", "updated body");
-            BaseTest.assertEqual(ignoreAsserts, response, "userId", "1");
+            BaseTest.assertEqual(ignoreAsserts, response, "email", "name@example.com");
+            BaseTest.assertEqual(ignoreAsserts, response, "username", "jbloggs");
             
 
-            BaseTest.putResponse("update_post", response);
+            BaseTest.putResponse("update_user_posts_with_mutplie_path", response);
             
         }
         
@@ -243,16 +160,18 @@ namespace TestMasterCard
                         
 
         [Test ()]
-        public void Test_delete_post()
+        public void Test_delete_user_posts_with_mutplie_path()
         {
             
 
             
         
             RequestMap map = new RequestMap();
+            map.Set ("user_id", "1");
+            map.Set ("post_id", "2");
             
             
-            Post response = Post.Delete("1",map);
+            MultiplePathUserPost response = MultiplePathUserPost.Delete("",map);
             Assert.NotNull (response);
 
             List<string> ignoreAsserts = new List<string>();
@@ -260,7 +179,7 @@ namespace TestMasterCard
 
             
 
-            BaseTest.putResponse("delete_post", response);
+            BaseTest.putResponse("delete_user_posts_with_mutplie_path", response);
             
         }
         

@@ -15,15 +15,11 @@ namespace TestMasterCard
 		[SetUp]
 		public void setup ()
 		{
+            var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
+            var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath+"\\Test\\mcapi_sandbox_key.p12", "test", "password");
+			ApiConfig.SetAuthentication(authentication);
+			ApiConfig.SetSandbox (true);
 
-			var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", "../../Test/mcapi_sandbox_key.p12", "alias", "password");
-			ApiConfig.setAuthentication (authentication);
-			ApiConfig.setSandbox (true);
-
-
-			#if DEBUG
-			ApiConfig.setLocalhost ();
-			#endif
 
 		}
 
@@ -33,10 +29,6 @@ namespace TestMasterCard
 		public void teardown ()
 		{
 
-
-			#if DEBUG
-			ApiConfig.unsetLocalhost();
-			#endif
 
 		}
 
@@ -56,7 +48,7 @@ namespace TestMasterCard
 		[Test]
 		public void testActionReadPostEqual500()
 		{
-			Assert.Throws<MasterCard.Core.Exceptions.InvalidRequestException> (() => Post.Read ("aaa"), "400");
+			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => Post.Read("aaa"), "500");
 		}
 
 
@@ -209,7 +201,7 @@ namespace TestMasterCard
 		public void testActionListWithUserHdearPath500()
 		{
 
-			Assert.Throws<MasterCard.Core.Exceptions.InvalidRequestException> (() => UserPostHeader.List(), "Error: Parameter (user_id) is required<br> &nbsp; &nbsp;at throwErrorWithCode (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/swagger-tools/lib/validators.js:121:13)<br> &nbsp; &nbsp;at Object.module.exports.validateRequiredness (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/swagger-tools/lib/validators.js:456:5)<br> &nbsp; &nbsp;at /Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/swagger-tools/middleware/swagger-validator.js:334:32<br> &nbsp; &nbsp;at /Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/async/lib/async.js:356:13<br> &nbsp; &nbsp;at async.forEachOf.async.eachOf (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/async/lib/async.js:233:13)<br> &nbsp; &nbsp;at _asyncMap (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/async/lib/async.js:355:9)<br> &nbsp; &nbsp;at Object.map (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/async/lib/async.js:337:20)<br> &nbsp; &nbsp;at swaggerValidator (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/swagger-tools/middleware/swagger-validator.js:321:15)<br> &nbsp; &nbsp;at call (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/connect/index.js:239:7)<br> &nbsp; &nbsp;at next (/Users/andrearizzini/Workspace/sdk-core-nodejs/nodejs-server/node_modules/connect/index.js:183:5)");
+			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => UserPostHeader.List());
 
 
 		}

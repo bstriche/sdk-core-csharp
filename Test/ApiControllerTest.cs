@@ -27,7 +27,7 @@ namespace TestMasterCard
 		public void setup ()
 		{
             var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
-            var authentication = new OAuthAuthentication("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath + "\\Test\\mcapi_sandbox_key.p12", "alias", "password");
+            var authentication = new OAuthAuthentication("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath + "\\Test\\mcapi_sandbox_key.p12", "test", "password");
             ApiConfig.SetAuthentication (authentication);
 		}
 
@@ -119,7 +119,7 @@ namespace TestMasterCard
 
             IDictionary<String, Object> result = controller.Execute(config, metadata, new TestBaseObject(responseMap));
 
-            Assert.IsTrue (result == null);
+            Assert.IsTrue (result.Count == 0);
 
 		}
 
