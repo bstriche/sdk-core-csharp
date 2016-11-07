@@ -97,7 +97,7 @@
     <Compile Include="Test\Functional\ATMLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\AudiencesSegment.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\AudiencesSegmentTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\BaseTest.cs" />
+    <Compile Include="Test\Functional\BaseTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategories.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategoriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -106,12 +106,12 @@
     <Compile Include="Test\Functional\MerchantCountrySubdivisionsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantLocations.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\MultiplePathUserPost.cs" />
-    <Compile Include="Test\Functional\MultiplePathUserPostTest.cs" />
-    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" />
+    <Compile Include="Test\Functional\MultiplePathUserPost.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Compile Include="Test\Functional\MultiplePathUserPostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
     <Compile Include="Test\Functional\Parameters.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ParametersTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\SDKConfig.cs" />
+    <Compile Include="Test\Functional\SDKConfig.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
     <Compile Include="Test\Functional\UserTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\User.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\PostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -127,12 +127,12 @@
     <Compile Include="Test\TestPathBaseObject.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\TestUtil.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\UtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
-    <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
     <Compile Include="Test\CryptUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\TokenActivation.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\TokenActivationTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Sources\MasterCard\Core\Security\MDES\MDESCryptography.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
