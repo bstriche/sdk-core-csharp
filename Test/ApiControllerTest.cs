@@ -249,6 +249,7 @@ namespace TestMasterCard
 			// new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/atms/v1/{:env}/locations", "read", headerList, queryList);
             var metadata = new OperationMetadata("0.0.1", null);
+			var metadata2 = new OperationMetadata("0.0.1", null, "andrea");
 
 			//default
 			Assert.AreEqual("/atms/v1/locations", controller.GetURL(config,metadata, new RequestMap()).AbsolutePath);
@@ -264,6 +265,9 @@ namespace TestMasterCard
 
             ApiConfig.SetEnvironment(null);
             Assert.AreEqual("/atms/v1/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+
+			ApiConfig.SetEnvironment(null);
+            Assert.AreEqual("/atms/v1/andrea/locations", controller.GetURL(config, metadata2, new RequestMap()).AbsolutePath);
 
         }
 	}

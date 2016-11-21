@@ -38,11 +38,20 @@ namespace MasterCard.Core.Model
         public string Host { get; }
         public string Version { get; }
 
+        public string Environment { get; }
+
 
         public OperationMetadata(string version, string host)
         {
             this.Version = version;
             this.Host = host;
+        }
+
+        public OperationMetadata(string version, string host, string environment)
+        {
+            this.Version = version;
+            this.Host = host;
+            this.Environment = environment;
         }
     }
 }

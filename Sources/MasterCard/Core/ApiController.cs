@@ -299,7 +299,12 @@ namespace MasterCard.Core
 			String resourcePath = config.ResourcePath;
 			if (resourcePath.Contains("{:env}")) 
 			{
-				String environment = (ApiConfig.GetEnvironment() != null) ? ApiConfig.GetEnvironment() : "";
+				String environment = "";
+				if (metadata.Environment != null) {
+					environment = metadata.Environment;
+				} else if (ApiConfig.GetEnvironment() != null) {
+					environment = ApiConfig.GetEnvironment();
+				}
 				resourcePath = resourcePath.Replace("{:env}", environment);
 				resourcePath = resourcePath.Replace("//", "/");
 			}
