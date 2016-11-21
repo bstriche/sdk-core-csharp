@@ -60,7 +60,6 @@ namespace MasterCard.Core
 
 		}
 
-		String hostUrl;
         String apiVersion;
 		IRestClient restClient;
 
@@ -70,15 +69,19 @@ namespace MasterCard.Core
             this.apiVersion = apiVersion;
 
 			CheckState ();
-
-			hostUrl =  ApiConfig.GetLiveUrl();
-
-			//ApiConfig.sandbox
-			if (ApiConfig.IsSandbox()) {
-				hostUrl = ApiConfig.GetSandboxUrl();
-			}
-
 			
+		}
+
+
+		public String GenerateHost() {
+			String hostUrl =  "https://";
+			if (ApiConfig.GetSubDomain() != null) {
+				hostUrl += ApiConfig.GetSubDomain();
+				hostUrl += ".";
+			}
+			hostUrl += "api.mastercard.com";
+			
+			return hostUrl;
 		}
 
 
@@ -247,20 +250,6 @@ namespace MasterCard.Core
 			if (ApiConfig.GetAuthentication() == null) {
 				throw new System.InvalidOperationException ("No ApiConfig.authentication has been configured");
 			}
-
-			try {
-				new Uri (ApiConfig.GetLiveUrl());
-			} catch (UriFormatException e) {
-				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_LIVE_URL", e);
-			}
-
-			try {
-				new Uri (ApiConfig.GetSandboxUrl());
-			} catch (UriFormatException e) {
-				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_SANDBOX_URL", e);
-
-
-			}
 		}
 
 		/// <summary>
@@ -298,15 +287,24 @@ namespace MasterCard.Core
         /// <param name="metadata"></param>
         /// <param name="inputMap"></param>
         /// <returns></returns>
-		Uri GetURL (OperationConfig config, OperationMetadata metadata, IDictionary<String, Object> inputMap)
+		public Uri GetURL (OperationConfig config, OperationMetadata metadata, IDictionary<String, Object> inputMap)
 		{
 			Uri uri;
 
 
             List<string> additionalQueryParametersList = config.QueryParams;
 
-            String resolvedHost = (metadata.Host == null) ? this.hostUrl : metadata.Host;
-            String path = resolvedHost + config.ResourcePath;
+            String resolvedHost = (metadata.Host == null) ? this.GenerateHost() : metadata.Host;
+
+			String resourcePath = config.ResourcePath;
+			if (resourcePath.Contains("{:env}")) 
+			{
+				String environment = (ApiConfig.GetEnvironment() != null) ? ApiConfig.GetEnvironment() : "";
+				resourcePath = resourcePath.Replace("{:env}", environment);
+				resourcePath = resourcePath.Replace("//", "/");
+			}
+
+            String path = resolvedHost + resourcePath;
 			String resolvedPath = Util.GetReplacedPath (path, inputMap);
 
 			int parameters = 0;

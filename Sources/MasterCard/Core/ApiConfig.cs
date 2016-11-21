@@ -36,37 +36,55 @@ namespace MasterCard.Core
     /// </summary>
     public static class ApiConfig
     {
-        private static Boolean SANDBOX = true;
+        private static String subdomain = "sandbox";
+        private static String environment = null;
         private static Boolean DEBUG = false;
         private static AuthenticationInterface authentication;
         private static Dictionary<String, Object> cryptographyMap = new Dictionary<String, Object>();
 
         /// <summary>
-        /// The AP i BAS e LIV e UR.
+        /// This is the method to set the subDomain 
         /// </summary>
-        private static string API_BASE_LIVE_URL = "https://api.mastercard.com";
-
-        /// <summary>
-        /// The AP i BAS e SANDBO x UR.
-        /// </summary>
-        private static string API_BASE_SANDBOX_URL = "https://sandbox.api.mastercard.com";
-
-        /// <summary>
-        /// Gets the live URL.
-        /// </summary>
-        /// <returns>The live URL.</returns>
-        public static string GetLiveUrl()
+        /// <param name="subDomain"></param>
+        public static void SetSubDomain(String sub)
         {
-            return API_BASE_LIVE_URL;
+            if (!String.IsNullOrEmpty(sub))
+            {
+                ApiConfig.subdomain = sub;
+            } else
+            {
+                ApiConfig.subdomain = null;
+            }
         }
 
         /// <summary>
-        /// Gets the sandbox URL.
+        /// This is the method to return the subDomain
         /// </summary>
-        /// <returns>The sandbox URL.</returns>
-        public static string GetSandboxUrl()
+        public static String GetSubDomain() {
+            return ApiConfig.subdomain;
+        }
+
+
+        /// <summary>
+        /// This is the method to set the environment 
+        /// </summary>
+        /// <param name="environment"></param>
+        public static void SetEnvironment(String env)
         {
-            return API_BASE_SANDBOX_URL;
+            if (!String.IsNullOrEmpty(env))
+            {
+                ApiConfig.environment = env;
+            } else
+            {
+                ApiConfig.environment = null;
+            }
+        }
+
+        /// <summary>
+        /// This is the method to return the environment
+        /// </summary>
+        public static String GetEnvironment() {
+            return ApiConfig.environment;
         }
 
         /// <summary>
@@ -93,7 +111,14 @@ namespace MasterCard.Core
         /// <param name="debug">If set to <c>true</c> debug.</param>
         public static void SetSandbox(Boolean sandbox)
         {
-            ApiConfig.SANDBOX = sandbox;
+            if (sandbox)
+            {
+                ApiConfig.subdomain = "sandbox";
+            } else
+            {
+                ApiConfig.subdomain = null;
+            }
+            
         }
 
         /// <summary>
@@ -102,17 +127,7 @@ namespace MasterCard.Core
         /// <returns><c>true</c>, if sandbox was ised, <c>false</c> otherwise.</returns>
         public static Boolean IsSandbox()
         {
-            return ApiConfig.SANDBOX;
-        }
-
-
-        /// <summary>
-        /// get the production
-        /// </summary>
-        /// <returns></returns>
-        public static Boolean IsProduction()
-        {
-            return !ApiConfig.SANDBOX;
+            return ApiConfig.subdomain != null && ApiConfig.subdomain.CompareTo("sandbox") == 0;
         }
 
 

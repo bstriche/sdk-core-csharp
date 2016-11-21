@@ -214,6 +214,58 @@ namespace TestMasterCard
 			Assert.AreEqual("true", responseMapFromResponse["Account.Status"]);
 			Assert.AreEqual("STOLEN", responseMapFromResponse["Account.Reason"]);
 		}
+
+		[Test]
+		public void TestSubDomains ()
+		{
+
+			ApiController controller = new ApiController("0.0.1");
+
+			//default
+			Assert.AreEqual("https://sandbox.api.mastercard.com", controller.GenerateHost());
+
+			//sandbox=true
+			ApiConfig.SetSandbox(false);
+			Assert.AreEqual("https://api.mastercard.com", controller.GenerateHost());
+			
+			ApiConfig.SetSandbox(true);
+			Assert.AreEqual("https://sandbox.api.mastercard.com", controller.GenerateHost());
+
+			ApiConfig.SetSubDomain("stage");
+			Assert.AreEqual("https://stage.api.mastercard.com", controller.GenerateHost());
+
+			ApiConfig.SetSubDomain("");
+			Assert.AreEqual("https://api.mastercard.com", controller.GenerateHost());
+
+			ApiConfig.SetSubDomain(null);
+			Assert.AreEqual("https://api.mastercard.com", controller.GenerateHost());
+		}
+
+		[Test]
+		public void TestEnvironments ()
+		{
+
+			ApiController controller = new ApiController("0.0.1");
+			// new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/atms/v1/{:env}/locations", "read", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", null);
+
+			//default
+			Assert.AreEqual("/atms/v1/locations", controller.GetURL(config,metadata, new RequestMap()).AbsolutePath);
+
+            ApiConfig.SetEnvironment("ITF");
+            Assert.AreEqual("/atms/v1/ITF/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+
+            ApiConfig.SetEnvironment("MTF");
+            Assert.AreEqual("/atms/v1/MTF/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+
+            ApiConfig.SetEnvironment("");
+            Assert.AreEqual("/atms/v1/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+
+            ApiConfig.SetEnvironment(null);
+            Assert.AreEqual("/atms/v1/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+
+        }
 	}
 }
 
