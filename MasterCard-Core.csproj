@@ -113,7 +113,7 @@
     <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\Parameters.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ParametersTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\ResourceConfig.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Compile Include="Test\Functional\ResourceConfig.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\UserTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\User.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\PostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />

@@ -186,12 +186,27 @@ namespace MasterCard.Core
 			return hashBytes;
 		}
 
-		/// <summary>
-		/// This method encodes the string using BASE64 encoding
-		/// </summary>
-		/// <param name="textBytes"></param>
-		/// <returns></returns>
-		public static string Base64Encode(byte[] textBytes) {
+        /// <summary>
+        /// This method encodes a string using a SHA1 algorithm
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static byte[] Sha256Encode(String input)
+        {
+            SHA256 sha256 = new SHA256CryptoServiceProvider();
+            byte[] inputBytes = encoder.GetBytes(input);
+            byte[] hashBytes = sha256.ComputeHash(inputBytes);
+            return hashBytes;
+        }
+
+
+
+        /// <summary>
+        /// This method encodes the string using BASE64 encoding
+        /// </summary>
+        /// <param name="textBytes"></param>
+        /// <returns></returns>
+        public static string Base64Encode(byte[] textBytes) {
 			return System.Convert.ToBase64String(textBytes);
 		}
 
