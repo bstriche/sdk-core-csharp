@@ -67,7 +67,7 @@ namespace TestMasterCard
 
         protected override OperationMetadata GetOperationMetadata()
         {
-            return new OperationMetadata(SDKConfig.GetVersion(), SDKConfig.GetHost());
+            return new OperationMetadata(ResourceConfig.Instance.GetVersion(), ResourceConfig.Instance.GetHost(), ResourceConfig.Instance.GetContext());
         }
 
         

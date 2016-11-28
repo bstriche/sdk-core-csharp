@@ -28,6 +28,9 @@
 using System;
 using MasterCard.Core.Security;
 using System.Collections.Generic;
+using MasterCard.Core.Model;
+
+using Environment = MasterCard.Core.Model.Constants.Environment;
 
 namespace MasterCard.Core
 {
@@ -36,54 +39,32 @@ namespace MasterCard.Core
     /// </summary>
     public static class ApiConfig
     {
-        private static String subdomain = "sandbox";
-        private static String environment = null;
+        private static Environment environment = Environment.SANDBOX;
         private static Boolean DEBUG = false;
         private static AuthenticationInterface authentication;
         private static Dictionary<String, Object> cryptographyMap = new Dictionary<String, Object>();
+        private static Dictionary<String, ResourceConfigInterface> registeredInstances = new Dictionary<String, ResourceConfigInterface>();
+                
 
-        /// <summary>
-        /// This is the method to set the subDomain 
-        /// </summary>
-        /// <param name="subDomain"></param>
-        public static void SetSubDomain(String sub)
-        {
-            if (!String.IsNullOrEmpty(sub))
-            {
-                ApiConfig.subdomain = sub;
-            } else
-            {
-                ApiConfig.subdomain = null;
-            }
-        }
-
-        /// <summary>
-        /// This is the method to return the subDomain
-        /// </summary>
-        public static String GetSubDomain() {
-            return ApiConfig.subdomain;
-        }
 
 
         /// <summary>
         /// This is the method to set the environment 
         /// </summary>
         /// <param name="environment"></param>
-        public static void SetEnvironment(String env)
+        public static void SetEnvironment(Environment environment)
         {
-            if (!String.IsNullOrEmpty(env))
+            foreach( ResourceConfigInterface instance in registeredInstances.Values)
             {
-                ApiConfig.environment = env;
-            } else
-            {
-                ApiConfig.environment = null;
+                instance.SetEnvironment(environment);
             }
+            ApiConfig.environment = environment;
         }
 
         /// <summary>
         /// This is the method to return the environment
         /// </summary>
-        public static String GetEnvironment() {
+        public static Environment GetEnvironment() {
             return ApiConfig.environment;
         }
 
@@ -113,10 +94,10 @@ namespace MasterCard.Core
         {
             if (sandbox)
             {
-                ApiConfig.subdomain = "sandbox";
+                ApiConfig.environment = Environment.SANDBOX;
             } else
             {
-                ApiConfig.subdomain = null;
+                ApiConfig.environment = Environment.PRODUCTION;
             }
             
         }
@@ -127,7 +108,7 @@ namespace MasterCard.Core
         /// <returns><c>true</c>, if sandbox was ised, <c>false</c> otherwise.</returns>
         public static Boolean IsSandbox()
         {
-            return ApiConfig.subdomain != null && ApiConfig.subdomain.CompareTo("sandbox") == 0;
+            return ApiConfig.environment != null && ApiConfig.environment == Environment.SANDBOX;
         }
 
 
@@ -173,6 +154,16 @@ namespace MasterCard.Core
                 }
             }
             return null;
+        }
+
+
+        public static void RegisterResourceConfig(ResourceConfigInterface instance)
+        {
+            String className = instance.GetType().FullName;
+            if (!registeredInstances.ContainsKey(className))
+            {
+                registeredInstances.Add(className, instance);
+            }
         }
 
 

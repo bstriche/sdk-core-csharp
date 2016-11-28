@@ -77,8 +77,10 @@
     <Compile Include="Sources\MasterCard\Core\Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="Sources\MasterCard\Core\Exceptions\SystemException.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\BaseObject.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\Constants.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\OperationMetadata.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\OperationConfig.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\ResourceConfigInterface.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\RestyRequest.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\AuthenticationInterface.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthAuthentication.cs" />
@@ -106,12 +108,12 @@
     <Compile Include="Test\Functional\MerchantCountrySubdivisionsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantLocations.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\MultiplePathUserPost.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
-    <Compile Include="Test\Functional\MultiplePathUserPostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
-    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Compile Include="Test\Functional\MultiplePathUserPost.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\MultiplePathUserPostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\Parameters.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ParametersTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\SDKConfig.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Compile Include="Test\Functional\ResourceConfig.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
     <Compile Include="Test\Functional\UserTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\User.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\PostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />

@@ -13,6 +13,7 @@ using MasterCard.Core;
 using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
 using MasterCard.Core.Exceptions;
+using Environment = MasterCard.Core.Model.Constants.Environment;
 
 namespace TestMasterCard
 {
@@ -59,12 +60,12 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
             var config = new OperationConfig("/test1", "create", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
             IDictionary <String,Object> result = controller.Execute (config, metadata, new TestBaseObject (responseMap));
 			RequestMap responseMapFromResponse = new RequestMap (result);
@@ -83,12 +84,12 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("[ { \"name\":\"andrea\", \"surname\":\"rizzini\" } ]");
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
             var config = new OperationConfig("/test1", "create", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
             //new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
 
             IDictionary<String, Object> result = controller.Execute(config, metadata, new TestBaseObject());
@@ -109,13 +110,13 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, null));
 
             // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/test1", "create", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
             IDictionary<String, Object> result = controller.Execute(config, metadata, new TestBaseObject(responseMap));
 
@@ -129,13 +130,13 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":{\"Source\":\"System\",\"ReasonCode\":\"METHOD_NOT_ALLOWED\",\"Description\":\"Method not Allowed\",\"Recoverable\":\"false\"}}}");
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
             //new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/test1", "create", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
             Assert.Throws<NotAllowedException> (() => controller.Execute(config, metadata, new TestBaseObject(responseMap)), "Method not Allowed");
 		}
@@ -147,13 +148,13 @@ namespace TestMasterCard
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"Validation\",\"ReasonCode\":\"INVALID_TYPE\",\"Description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
 
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
             // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/test1", "create", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
             Assert.Throws<InvalidRequestException> (() => controller.Execute (config, metadata, new TestBaseObject (responseMap)), "The supplied field: 'date' is of an unsupported format");
 		}
@@ -164,13 +165,13 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Oauth customer key invalid\",\"Recoverable\":false,\"Details\":null}]}}");
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
             // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/test1", "create", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
             Assert.Throws<AuthenticationException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)), "Oauth customer key invalid");
 		}
@@ -181,13 +182,13 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Something went wrong\",\"Recoverable\":false,\"Details\":null}]}}");
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
             // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/test1", "create", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
             Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)), "Something went wrong");
 		}
@@ -199,13 +200,13 @@ namespace TestMasterCard
 
 			RequestMap requestMap = new RequestMap ("{\n\"id\":\"1\"\n}");
 			RequestMap responseMap = new RequestMap ("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
-			ApiController controller = new ApiController ("0.0.1");
+			ApiController controller = new ApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
             // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/test1", "read", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
 
             IDictionary<String,Object> result = controller.Execute ( config, metadata,new TestBaseObject (requestMap));
@@ -215,59 +216,42 @@ namespace TestMasterCard
 			Assert.AreEqual("STOLEN", responseMapFromResponse["Account.Reason"]);
 		}
 
-		[Test]
-		public void TestSubDomains ()
-		{
-
-			ApiController controller = new ApiController("0.0.1");
-
-			//default
-			Assert.AreEqual("https://sandbox.api.mastercard.com", controller.GenerateHost());
-
-			//sandbox=true
-			ApiConfig.SetSandbox(false);
-			Assert.AreEqual("https://api.mastercard.com", controller.GenerateHost());
-			
-			ApiConfig.SetSandbox(true);
-			Assert.AreEqual("https://sandbox.api.mastercard.com", controller.GenerateHost());
-
-			ApiConfig.SetSubDomain("stage");
-			Assert.AreEqual("https://stage.api.mastercard.com", controller.GenerateHost());
-
-			ApiConfig.SetSubDomain("");
-			Assert.AreEqual("https://api.mastercard.com", controller.GenerateHost());
-
-			ApiConfig.SetSubDomain(null);
-			Assert.AreEqual("https://api.mastercard.com", controller.GenerateHost());
-		}
+		
 
 		[Test]
 		public void TestEnvironments ()
 		{
 
-			ApiController controller = new ApiController("0.0.1");
+			ApiController controller = new ApiController();
+
+            ResourceConfig instance = ResourceConfig.Instance;
+            instance.clearHostOverride();
+            instance.SetEnvironment(ApiConfig.GetEnvironment());
+            ApiConfig.RegisterResourceConfig(instance);
+
 			// new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/atms/v1/{:env}/locations", "read", headerList, queryList);
-            var metadata = new OperationMetadata("0.0.1", null);
-			var metadata2 = new OperationMetadata("0.0.1", null, "andrea");
+            var metadata = new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext());
 
 			//default
-			Assert.AreEqual("/atms/v1/locations", controller.GetURL(config,metadata, new RequestMap()).AbsolutePath);
+			Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
-            ApiConfig.SetEnvironment("ITF");
-            Assert.AreEqual("/atms/v1/ITF/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+            ApiConfig.SetEnvironment(Environment.ITF);
+            Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/itf/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
-            ApiConfig.SetEnvironment("MTF");
-            Assert.AreEqual("/atms/v1/MTF/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+            ApiConfig.SetEnvironment(Environment.MTF);
+            Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/mtf/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
-            ApiConfig.SetEnvironment("");
-            Assert.AreEqual("/atms/v1/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+            ApiConfig.SetEnvironment(Environment.SANDBOX);
+            Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
-            ApiConfig.SetEnvironment(null);
-            Assert.AreEqual("/atms/v1/locations", controller.GetURL(config, metadata, new RequestMap()).AbsolutePath);
+            ApiConfig.SetEnvironment(Environment.PRODUCTION);
+            Assert.AreEqual("https://api.mastercard.com/atms/v1/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
-			ApiConfig.SetEnvironment(null);
-            Assert.AreEqual("/atms/v1/andrea/locations", controller.GetURL(config, metadata2, new RequestMap()).AbsolutePath);
+            ApiConfig.SetEnvironment(Environment.STAGE);
+            Assert.AreEqual("https://stage.api.mastercard.com/atms/v1/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
+
+            instance.setHostOverride();
 
         }
 	}

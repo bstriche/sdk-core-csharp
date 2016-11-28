@@ -74,7 +74,7 @@ namespace MasterCard.Core.Model
         /// <param name="inputObject"></param>
         /// <returns></returns>
         protected static T Execute<T>(string operationUUID, T inputObject) where T : BaseObject {
-            ApiController apiController = new ApiController(inputObject.GetOperationMetadata().Version);
+            ApiController apiController = new ApiController();
 
             IDictionary<String,Object> response = apiController.Execute (inputObject.GetOperationConfig(operationUUID), inputObject.GetOperationMetadata(), inputObject);
 
