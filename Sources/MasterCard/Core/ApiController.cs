@@ -38,6 +38,7 @@ using log4net.Config;
 using System.Linq;
 using System.IO;
 using MasterCard.Core.Security;
+using Environment = MasterCard.Core.Model.Constants.Environment;
 
 namespace MasterCard.Core
 {
@@ -60,20 +61,16 @@ namespace MasterCard.Core
 
 		}
 
-        String apiVersion;
 		IRestClient restClient;
 
-		public ApiController(string apiVersion) {
-
-            //arizzini: making sure to propagate the version.
-            this.apiVersion = apiVersion;
+		public ApiController() {
 
 			CheckState ();
 			
 		}
 
 
-		public String GenerateHost() {
+/*		public String GenerateHost() {
 			String hostUrl =  "https://";
 			if (ApiConfig.GetSubDomain() != null) {
 				hostUrl += ApiConfig.GetSubDomain();
@@ -83,7 +80,7 @@ namespace MasterCard.Core
 			
 			return hostUrl;
 		}
-
+    */
 
 
 		/// <summary>
@@ -294,18 +291,21 @@ namespace MasterCard.Core
 
             List<string> additionalQueryParametersList = config.QueryParams;
 
-            String resolvedHost = (metadata.Host == null) ? this.GenerateHost() : metadata.Host;
+            String resolvedHost = metadata.Host;
+
+            if (resolvedHost == null)
+            {
+                throw new System.InvalidOperationException("Host is '', empty");
+            }
 
 			String resourcePath = config.ResourcePath;
 			if (resourcePath.Contains("{:env}")) 
 			{
-				String environment = "";
-				if (metadata.Environment != null) {
-					environment = metadata.Environment;
-				} else if (ApiConfig.GetEnvironment() != null) {
-					environment = ApiConfig.GetEnvironment();
-				}
-				resourcePath = resourcePath.Replace("{:env}", environment);
+				String context = "";
+				if (metadata.Context != null) {
+                    context = metadata.Context;
+				} 
+				resourcePath = resourcePath.Replace("{:env}", context);
 				resourcePath = resourcePath.Replace("//", "/");
 			}
 
@@ -428,7 +428,7 @@ namespace MasterCard.Core
 
 			request.AddHeader ("Accept", "application/json");
 			request.AddHeader ("Content-Type", "application/json");
-			request.AddHeader ("User-Agent", "CSharp-SDK/" + this.apiVersion);
+			request.AddHeader ("User-Agent", "CSharp-SDK/" + metadata.Version);
 
 			//arizzini: adding the header paramter support.
 			foreach (KeyValuePair<string, object> entry in headerMap) {

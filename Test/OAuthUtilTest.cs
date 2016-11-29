@@ -39,7 +39,7 @@ namespace TestMasterCard
 			oAuthParameters.setOAuthConsumerKey (((OAuthAuthentication) ApiConfig.GetAuthentication()).ClientId);
 			oAuthParameters.setOAuthNonce ("NONCE");
 			oAuthParameters.setOAuthTimestamp ("TIMESTAMP");
-			oAuthParameters.setOAuthSignatureMethod ("RSA-SHA1");
+			oAuthParameters.setOAuthSignatureMethod ("RSA-SHA256");
 
 
 			if (!string.IsNullOrEmpty (body)) {
@@ -48,7 +48,7 @@ namespace TestMasterCard
 			}
 
 			String baseString = OAuthUtil.GetBaseString (url, method, oAuthParameters.getBaseParameters ());
-			Assert.AreEqual ("POST&http%3A%2F%2Fwww.andrea.rizzini.com%2Fsimple_service&oauth_body_hash%3DapwbAT6IoMRmB9wE9K4fNHDsaMo%253D%26oauth_consumer_key%3DL5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279%252150596e52466e3966546d434b7354584c4975693238513d3d%26oauth_nonce%3DNONCE%26oauth_signature_method%3DRSA-SHA1%26oauth_timestamp%3DTIMESTAMP", baseString);
+			Assert.AreEqual ("POST&http%3A%2F%2Fwww.andrea.rizzini.com%2Fsimple_service&oauth_body_hash%3DapwbAT6IoMRmB9wE9K4fNHDsaMo%253D%26oauth_consumer_key%3DL5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279%252150596e52466e3966546d434b7354584c4975693238513d3d%26oauth_nonce%3DNONCE%26oauth_signature_method%3DRSA-SHA256%26oauth_timestamp%3DTIMESTAMP", baseString);
 
 			String signature = OAuthUtil.RsaSign (baseString);
 			//Assert.AreEqual ("QcjTdnu6CQETgu3czDyURblLsYGIWgsWbnhENB0U0EqgXtoc50lTCvpfPQHT8pPBJ6y6USUgTxShcDXDzDrM4FWMkz0FnQtpTyo4c0ZOInrn9DwDKEOgFtw3BpHxJ1jZ5NSfGwOLXdUThWvS7JylYHod0u4D0381/9y/PkataSX5AdSBEZAT943AIrwHEVWKaGKzt6ABW+GA7GboyhGUWxEVZWXZwT1WURHtUwCOsSbEGPiiURs2+HzOkvLs4tkuMGCNF/9tkEnEcjOHefN1mSVLiv2poJQJQQLps1iOk8v4MwSsnZ8RxlEUET690R0TZ1FhEBJJ25CmwarsUpI3DQ==", signature);

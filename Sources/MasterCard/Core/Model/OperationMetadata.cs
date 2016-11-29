@@ -36,9 +36,9 @@ namespace MasterCard.Core.Model
     public class OperationMetadata
     {
         public string Host { get; }
+        public string Context { get; }
         public string Version { get; }
 
-        public string Environment { get; }
 
 
         public OperationMetadata(string version, string host)
@@ -47,11 +47,11 @@ namespace MasterCard.Core.Model
             this.Host = host;
         }
 
-        public OperationMetadata(string version, string host, string environment)
+        public OperationMetadata(string version, string host, string context)
         {
             this.Version = version;
             this.Host = host;
-            this.Environment = environment;
+            this.Context = context;
         }
     }
 }

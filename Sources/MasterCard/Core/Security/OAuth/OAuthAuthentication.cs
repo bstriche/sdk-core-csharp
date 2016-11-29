@@ -40,6 +40,7 @@ namespace MasterCard.Core.Security.OAuth
 		private readonly AsymmetricAlgorithm privateKey;
 		private readonly String clientId;
 		private readonly UTF8Encoding encoder;
+        private readonly X509Certificate2 cert;
 
 		public AsymmetricAlgorithm PrivateKey {
 			get {
@@ -55,7 +56,8 @@ namespace MasterCard.Core.Security.OAuth
 
 		public OAuthAuthentication(String clientId, String filePath, String alias, String password)
 		{
-			X509Certificate2 cert = new X509Certificate2(filePath, password);
+			cert = new X509Certificate2(filePath, password, X509KeyStorageFlags.Exportable);
+
 			privateKey = cert.PrivateKey;
 			this.clientId = clientId;
 			encoder =  new UTF8Encoding();
@@ -79,13 +81,13 @@ namespace MasterCard.Core.Security.OAuth
 		public string SignMessage (string message)
 		{
 			// Hash the data
-			SHA1 sha1= new SHA1CryptoServiceProvider();
-			byte[] baseStringBytes = encoder.GetBytes(message);
-			byte[] hash = sha1.ComputeHash(baseStringBytes);
+            byte[] hash = Util.Sha256Encode(message);
 
-			// Sign the hash
-			RSACryptoServiceProvider csp = (RSACryptoServiceProvider)privateKey;
-			byte[] SignedHashValue = csp.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
+            // Sign the hash
+            RSACryptoServiceProvider aescsp = new RSACryptoServiceProvider();
+            aescsp.FromXmlString(cert.PrivateKey.ToXmlString(true));
+
+            byte[] SignedHashValue = aescsp.SignHash(hash, CryptoConfig.MapNameToOID("SHA256"));
 			return Convert.ToBase64String(SignedHashValue);
 		}
 	}

@@ -83,14 +83,14 @@ namespace MasterCard.Core.Security.OAuth
             //oAuthParameters.setOAuthNonce("ssxECu3Ww1rURm2tM");
             oAuthParameters.setOAuthTimestamp(OAuthUtil.GetTimestamp());
             //oAuthParameters.setOAuthTimestamp("1466961120");
-			oAuthParameters.setOAuthSignatureMethod("RSA-SHA1");
+			oAuthParameters.setOAuthSignatureMethod("RSA-SHA256");
             oAuthParameters.setOAuthVersion("1.0");
 
             //Console.WriteLine("body: " + body);
 
             if (!String.IsNullOrEmpty(body))
             {
-                String encodedHash = Util.Base64Encode(Util.Sha1Encode(body));
+                String encodedHash = Util.Base64Encode(Util.Sha256Encode(body));
                 //Console.WriteLine("bodyHash: " + encodedHash);
                 oAuthParameters.setOAuthBodyHash(encodedHash);
             }
