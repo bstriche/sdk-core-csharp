@@ -224,10 +224,9 @@ namespace TestMasterCard
 
 			ApiController controller = new ApiController();
 
+
             ResourceConfig instance = ResourceConfig.Instance;
-            instance.clearHostOverride();
-            instance.SetEnvironment(ApiConfig.GetEnvironment());
-            ApiConfig.RegisterResourceConfig(instance);
+            ApiConfig.SetEnvironment(Environment.SANDBOX);
 
 			// new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/atms/v1/{:env}/locations", "read", headerList, queryList);

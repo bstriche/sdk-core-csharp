@@ -51,6 +51,8 @@ namespace MasterCard.Core.Model
                 if (instance == null)
                 {
                     instance = new ResourceConfig();
+                    ApiConfig.RegisterResourceConfig(instance);
+                    instance.SetEnvironment(ApiConfig.GetEnvironment());
                 }
                 return instance;
             }
