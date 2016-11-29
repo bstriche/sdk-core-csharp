@@ -28,6 +28,9 @@
 using System;
 using MasterCard.Core.Security;
 using System.Collections.Generic;
+using MasterCard.Core.Model;
+
+using Environment = MasterCard.Core.Model.Constants.Environment;
 
 namespace MasterCard.Core
 {
@@ -36,37 +39,33 @@ namespace MasterCard.Core
     /// </summary>
     public static class ApiConfig
     {
-        private static Boolean SANDBOX = true;
+        private static Environment environment = Environment.SANDBOX;
         private static Boolean DEBUG = false;
         private static AuthenticationInterface authentication;
         private static Dictionary<String, Object> cryptographyMap = new Dictionary<String, Object>();
+        private static Dictionary<String, ResourceConfigInterface> registeredInstances = new Dictionary<String, ResourceConfigInterface>();
+                
+
+
 
         /// <summary>
-        /// The AP i BAS e LIV e UR.
+        /// This is the method to set the environment 
         /// </summary>
-        private static string API_BASE_LIVE_URL = "https://api.mastercard.com";
-
-        /// <summary>
-        /// The AP i BAS e SANDBO x UR.
-        /// </summary>
-        private static string API_BASE_SANDBOX_URL = "https://sandbox.api.mastercard.com";
-
-        /// <summary>
-        /// Gets the live URL.
-        /// </summary>
-        /// <returns>The live URL.</returns>
-        public static string GetLiveUrl()
+        /// <param name="environment"></param>
+        public static void SetEnvironment(Environment environment)
         {
-            return API_BASE_LIVE_URL;
+            foreach( ResourceConfigInterface instance in registeredInstances.Values)
+            {
+                instance.SetEnvironment(environment);
+            }
+            ApiConfig.environment = environment;
         }
 
         /// <summary>
-        /// Gets the sandbox URL.
+        /// This is the method to return the environment
         /// </summary>
-        /// <returns>The sandbox URL.</returns>
-        public static string GetSandboxUrl()
-        {
-            return API_BASE_SANDBOX_URL;
+        public static Environment GetEnvironment() {
+            return ApiConfig.environment;
         }
 
         /// <summary>
@@ -93,7 +92,14 @@ namespace MasterCard.Core
         /// <param name="debug">If set to <c>true</c> debug.</param>
         public static void SetSandbox(Boolean sandbox)
         {
-            ApiConfig.SANDBOX = sandbox;
+            if (sandbox)
+            {
+                ApiConfig.environment = Environment.SANDBOX;
+            } else
+            {
+                ApiConfig.environment = Environment.PRODUCTION;
+            }
+            
         }
 
         /// <summary>
@@ -102,17 +108,7 @@ namespace MasterCard.Core
         /// <returns><c>true</c>, if sandbox was ised, <c>false</c> otherwise.</returns>
         public static Boolean IsSandbox()
         {
-            return ApiConfig.SANDBOX;
-        }
-
-
-        /// <summary>
-        /// get the production
-        /// </summary>
-        /// <returns></returns>
-        public static Boolean IsProduction()
-        {
-            return !ApiConfig.SANDBOX;
+            return ApiConfig.environment != null && ApiConfig.environment == Environment.SANDBOX;
         }
 
 
@@ -158,6 +154,16 @@ namespace MasterCard.Core
                 }
             }
             return null;
+        }
+
+
+        public static void RegisterResourceConfig(ResourceConfigInterface instance)
+        {
+            String className = instance.GetType().FullName;
+            if (!registeredInstances.ContainsKey(className))
+            {
+                registeredInstances.Add(className, instance);
+            }
         }
 
 

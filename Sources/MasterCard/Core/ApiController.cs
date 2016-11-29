@@ -38,6 +38,7 @@ using log4net.Config;
 using System.Linq;
 using System.IO;
 using MasterCard.Core.Security;
+using Environment = MasterCard.Core.Model.Constants.Environment;
 
 namespace MasterCard.Core
 {
@@ -60,27 +61,26 @@ namespace MasterCard.Core
 
 		}
 
-		String hostUrl;
-        String apiVersion;
 		IRestClient restClient;
 
-		public ApiController(string apiVersion) {
-
-            //arizzini: making sure to propagate the version.
-            this.apiVersion = apiVersion;
+		public ApiController() {
 
 			CheckState ();
-
-			hostUrl =  ApiConfig.GetLiveUrl();
-
-			//ApiConfig.sandbox
-			if (ApiConfig.IsSandbox()) {
-				hostUrl = ApiConfig.GetSandboxUrl();
-			}
-
 			
 		}
 
+
+/*		public String GenerateHost() {
+			String hostUrl =  "https://";
+			if (ApiConfig.GetSubDomain() != null) {
+				hostUrl += ApiConfig.GetSubDomain();
+				hostUrl += ".";
+			}
+			hostUrl += "api.mastercard.com";
+			
+			return hostUrl;
+		}
+    */
 
 
 		/// <summary>
@@ -247,20 +247,6 @@ namespace MasterCard.Core
 			if (ApiConfig.GetAuthentication() == null) {
 				throw new System.InvalidOperationException ("No ApiConfig.authentication has been configured");
 			}
-
-			try {
-				new Uri (ApiConfig.GetLiveUrl());
-			} catch (UriFormatException e) {
-				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_LIVE_URL", e);
-			}
-
-			try {
-				new Uri (ApiConfig.GetSandboxUrl());
-			} catch (UriFormatException e) {
-				throw new System.InvalidOperationException ("Invalid URL supplied for API_BASE_SANDBOX_URL", e);
-
-
-			}
 		}
 
 		/// <summary>
@@ -298,15 +284,32 @@ namespace MasterCard.Core
         /// <param name="metadata"></param>
         /// <param name="inputMap"></param>
         /// <returns></returns>
-		Uri GetURL (OperationConfig config, OperationMetadata metadata, IDictionary<String, Object> inputMap)
+		public Uri GetURL (OperationConfig config, OperationMetadata metadata, IDictionary<String, Object> inputMap)
 		{
 			Uri uri;
 
 
             List<string> additionalQueryParametersList = config.QueryParams;
 
-            String resolvedHost = (metadata.Host == null) ? this.hostUrl : metadata.Host;
-            String path = resolvedHost + config.ResourcePath;
+            String resolvedHost = metadata.Host;
+
+            if (resolvedHost == null)
+            {
+                throw new System.InvalidOperationException("Host is '', empty");
+            }
+
+			String resourcePath = config.ResourcePath;
+			if (resourcePath.Contains("{:env}")) 
+			{
+				String context = "";
+				if (metadata.Context != null) {
+                    context = metadata.Context;
+				} 
+				resourcePath = resourcePath.Replace("{:env}", context);
+				resourcePath = resourcePath.Replace("//", "/");
+			}
+
+            String path = resolvedHost + resourcePath;
 			String resolvedPath = Util.GetReplacedPath (path, inputMap);
 
 			int parameters = 0;
@@ -425,7 +428,7 @@ namespace MasterCard.Core
 
 			request.AddHeader ("Accept", "application/json");
 			request.AddHeader ("Content-Type", "application/json");
-			request.AddHeader ("User-Agent", "CSharp-SDK/" + this.apiVersion);
+			request.AddHeader ("User-Agent", "CSharp-SDK/" + metadata.Version);
 
 			//arizzini: adding the header paramter support.
 			foreach (KeyValuePair<string, object> entry in headerMap) {
