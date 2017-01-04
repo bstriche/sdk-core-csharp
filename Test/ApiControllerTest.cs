@@ -229,17 +229,17 @@ namespace TestMasterCard
             ApiConfig.SetEnvironment(Environment.SANDBOX);
 
 			// new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
-            var config = new OperationConfig("/atms/v1/{:env}/locations", "read", headerList, queryList);
+            var config = new OperationConfig("/atms/v1/#env/locations", "read", headerList, queryList);
             var metadata = new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext());
 
 			//default
 			Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
-            ApiConfig.SetEnvironment(Environment.ITF);
-            Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/itf/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
+            ApiConfig.SetEnvironment(Environment.PRODUCTION_ITF);
+            Assert.AreEqual("https://api.mastercard.com/atms/v1/itf/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
-            ApiConfig.SetEnvironment(Environment.MTF);
-            Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/mtf/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
+            ApiConfig.SetEnvironment(Environment.PRODUCTION_MTF);
+            Assert.AreEqual("https://api.mastercard.com/atms/v1/mtf/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
             ApiConfig.SetEnvironment(Environment.SANDBOX);
             Assert.AreEqual("https://sandbox.api.mastercard.com/atms/v1/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());

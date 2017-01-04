@@ -32,7 +32,7 @@ namespace MasterCard.Core.Model
 {
     public class Constants {
 
-        public enum Environment {PRODUCTION,SANDBOX,STAGE,DEV,MTF,ITF,LOCALHOST,DEVCLOUD,LABSCLOUD,OTHER1,OTHER2,OTHER3};
+        public enum Environment {PRODUCTION,SANDBOX,STAGE,DEV,PRODUCTION_MTF,PRODUCTION_ITF,STAGE_MTF,STAGE_ITF,LOCALHOST,OTHER};
 
         public static readonly Dictionary<Environment, List<string>> MAPPINGS = new Dictionary<Environment, List<string>>
         {
@@ -40,8 +40,10 @@ namespace MasterCard.Core.Model
         {Environment.SANDBOX, new List<String> { "https://sandbox.api.mastercard.com", null } },
         {Environment.STAGE, new List<String> { "https://stage.api.mastercard.com", null } },
         {Environment.DEV, new List<String> { "https://dev.api.mastercard.com", null } },
-        {Environment.MTF, new List<String> { "https://sandbox.api.mastercard.com", "mtf" } },
-        {Environment.ITF, new List<String> { "https://sandbox.api.mastercard.com", "itf" } },
+        {Environment.PRODUCTION_MTF, new List<String> { "https://api.mastercard.com", "mtf" } },
+        {Environment.PRODUCTION_ITF, new List<String> { "https://api.mastercard.com", "itf" } },
+        {Environment.STAGE_MTF, new List<String> { "https://stage.api.mastercard.com", "mtf" } },
+        {Environment.STAGE_ITF, new List<String> { "https://stage.api.mastercard.com", "itf" } },
         {Environment.LOCALHOST, new List<String> { "http://localhost:8081", null } }
         };
 

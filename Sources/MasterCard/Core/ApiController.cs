@@ -47,6 +47,7 @@ namespace MasterCard.Core
 	{
 
 		private static readonly ILog log = LogManager.GetLogger(typeof(ApiController));
+		private static readonly string EnvironmentIdentifier = "#env";
 		static ApiController() {
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -299,13 +300,13 @@ namespace MasterCard.Core
             }
 
 			String resourcePath = config.ResourcePath;
-			if (resourcePath.Contains("{:env}")) 
+			if (resourcePath.Contains(ApiController.EnvironmentIdentifier)) 
 			{
 				String context = "";
 				if (metadata.Context != null) {
                     context = metadata.Context;
 				} 
-				resourcePath = resourcePath.Replace("{:env}", context);
+				resourcePath = resourcePath.Replace(ApiController.EnvironmentIdentifier, context);
 				resourcePath = resourcePath.Replace("//", "/");
 			}
 
