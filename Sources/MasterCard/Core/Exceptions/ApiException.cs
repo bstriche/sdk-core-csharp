@@ -44,6 +44,7 @@ namespace MasterCard.Core.Exceptions
 		protected String reasonCode;
 		protected Boolean recoverable;
 		protected String description;
+		protected int httpStatus = 0;
 
 
 		private SmartMap rawErrorData;
@@ -100,6 +101,7 @@ namespace MasterCard.Core.Exceptions
 		///  <code>"code"</code> and <code>"message"</code>. </param>
 		public ApiException(int status, IDictionary<String,Object> errorData) : base()
 		{
+			this.httpStatus = status;
 			this.rawErrorData = new SmartMap(errorData, true);
 			if (rawErrorData.ContainsKey ("Errors.Error")) {
 					// this is a dictionary
@@ -164,6 +166,18 @@ namespace MasterCard.Core.Exceptions
 			get
 			{
 				return reasonCode;
+			}
+		}
+
+
+		/// <summary>
+		/// Returns the HTTP status code for this exception. </summary>
+		/// <returns>  an integer representing the HTTP status code for this API error (or 0 if there is no status) </returns>
+		public virtual int HttpStatus
+		{
+			get
+			{
+				return httpStatus;
 			}
 		}
 
