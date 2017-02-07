@@ -38,6 +38,7 @@ using log4net.Config;
 using System.Linq;
 using System.IO;
 using MasterCard.Core.Security;
+using MasterCard.Core.Exceptions;
 using Environment = MasterCard.Core.Model.Constants.Environment;
 
 namespace MasterCard.Core
@@ -127,7 +128,7 @@ namespace MasterCard.Core
 
 
             } catch (Exception e) {
-				throw new MasterCard.Core.Exceptions.ApiException (e.Message, e);
+				throw new ApiException (e.Message, e);
 			}
 
 			try {
@@ -144,7 +145,7 @@ namespace MasterCard.Core
 				log.Debug("Execute(), response.Body=");
                 log.Debug(response.Content.ToString());
 			} catch (Exception e) {
-				Exception wrapper = new MasterCard.Core.Exceptions.ApiCommunicationException (e.Message, e);
+				Exception wrapper = new ApiException (e.Message, e);
 				log.Error (wrapper.Message, wrapper);
 				throw wrapper;
 			}
@@ -159,7 +160,7 @@ namespace MasterCard.Core
 							responseObj = interceptor.Encrypt(responseObj);
 						} 
 					} catch (Exception) {
-						throw new MasterCard.Core.Exceptions.SystemException ("Error: parsing JSON response", response.Content);
+						throw new ApiException ("Error: parsing JSON response", response.Content);
 					}
 				} 
 				 
@@ -167,16 +168,12 @@ namespace MasterCard.Core
 					log.Debug ("<<Execute()");
 					return responseObj;
 				} else {
-					try {
-						ThrowException (responseObj, response);
-					} catch (Exception e) {
-						log.Error (e.Message, e);
-						throw e;
-					}
-					return null;
+					ApiException e = GenerateException (responseObj, response);
+					log.Error (e.Message, e);
+					throw e;
 				}
 			} else {
-				Exception wrapper = new MasterCard.Core.Exceptions.SystemException (response.ErrorMessage, response.ErrorException);
+				Exception wrapper = new ApiException (response.ErrorMessage, response.ErrorException);
 				log.Error (wrapper.Message, wrapper);
 				throw wrapper;
 			}
@@ -191,50 +188,12 @@ namespace MasterCard.Core
 		/// </summary>
 		/// <param name="responseObj">Response object.</param>
 		/// <param name="response">Response.</param>
-		private static void ThrowException(IDictionary<String,Object> responseObj, IRestResponse response) {
+		private static ApiException GenerateException(IDictionary<String,Object> responseObj, IRestResponse response) {
 			int status = (int)response.StatusCode;
-			if (status == (int)HttpStatusCode.BadRequest) {
-				if (responseObj != null) {
-					throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
-				} else {
-					throw new MasterCard.Core.Exceptions.InvalidRequestException (status.ToString(), response.Content);
-				}
-			} else if (status == (int)HttpStatusCode.Redirect) {
-				if (responseObj != null) {
-					throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
-				} else {
-					throw new MasterCard.Core.Exceptions.InvalidRequestException (status.ToString(), response.Content);
-				}
-			} else if (status == (int)HttpStatusCode.Unauthorized) {
-				if (responseObj != null) {
-					throw new MasterCard.Core.Exceptions.AuthenticationException (status, responseObj);
-				} else {
-					throw new MasterCard.Core.Exceptions.AuthenticationException (status.ToString(), response.Content);
-				}
-			} else if (status == (int)HttpStatusCode.NotFound) {
-				if (responseObj != null) {
-					throw new MasterCard.Core.Exceptions.ObjectNotFoundException (status, responseObj);
-				} else {
-					throw new MasterCard.Core.Exceptions.ObjectNotFoundException (status.ToString(), response.Content);
-				}
-			} else if (status == (int)HttpStatusCode.MethodNotAllowed) {
-				if (responseObj != null) {
-					throw new MasterCard.Core.Exceptions.NotAllowedException (status, responseObj);
-				} else {
-					throw new MasterCard.Core.Exceptions.NotAllowedException (status.ToString(), response.Content);
-				}
-			} else if (status < (int)HttpStatusCode.InternalServerError) {
-				if (responseObj != null) {
-					throw new MasterCard.Core.Exceptions.InvalidRequestException (status, responseObj);
-				} else {
-					throw new MasterCard.Core.Exceptions.InvalidRequestException (status.ToString(), response.Content);
-				}
+			if (responseObj != null) {
+				return new ApiException (status, responseObj);
 			} else {
-				if (responseObj != null) {
-					throw new MasterCard.Core.Exceptions.SystemException (status, responseObj);
-				} else {
-					throw new MasterCard.Core.Exceptions.SystemException (status.ToString(), response.Content);
-				}
+				return new ApiException (status.ToString(), response.Content);
 			}
 		}
 

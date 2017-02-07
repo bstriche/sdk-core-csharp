@@ -25,6 +25,7 @@
  *
  */
 
+using MasterCard.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,19 +34,20 @@ namespace MasterCard.Core.Exceptions
 {
 
 
-	/// <summary>
-	/// Base class for all API exceptions.
-	/// </summary>
-	public class ApiException : Exception
+    /// <summary>
+    /// Base class for all API exceptions.
+    /// </summary>
+    public class ApiException : Exception
 	{
 
 		protected String source;
 		protected String reasonCode;
-		protected String recoverable;
+		protected Boolean recoverable;
 		protected String description;
+		protected int httpStatus = 0;
 
 
-		private IDictionary<String, Object> errorData;
+		private SmartMap rawErrorData;
 
 		/// <summary>
 		///  Constructs an <code>ApiException</code> with no detail message.
@@ -99,36 +101,49 @@ namespace MasterCard.Core.Exceptions
 		///  <code>"code"</code> and <code>"message"</code>. </param>
 		public ApiException(int status, IDictionary<String,Object> errorData) : base()
 		{
-			this.errorData = errorData;
-			if (errorData.ContainsKey ("Errors")) {
-				IDictionary<String,Object> errors = (IDictionary<String,Object>) errorData ["Errors"];
-				if (errors.ContainsKey ("Error")) {
+			this.httpStatus = status;
+			this.rawErrorData = new SmartMap(errorData, true);
+			if (rawErrorData.ContainsKey ("Errors.Error")) {
 					// this is a dictionary
 					IDictionary<String, Object> error;
 
-					if (errors ["Error"].GetType() == typeof(List<Dictionary<String,Object>>))
+					if (rawErrorData["Errors.Error"].GetType() == typeof(List<Dictionary<String,Object>>))
 					{
-						error = ((List<Dictionary<String,Object>>) errors ["Error"])[0];
+						error = ((Dictionary<String,Object>)rawErrorData["Errors.Error[0]"]);
 					} else {
-						error = (Dictionary<String,Object>) errors ["Error"];
+						error = (Dictionary<String,Object>)rawErrorData["Errors.Error"];
 					}
 
-					this.source = error ["Source"].ToString ();
-					this.reasonCode = error ["ReasonCode"].ToString ();
-					this.description = error ["Description"].ToString ();
-					this.recoverable = error ["Recoverable"].ToString();
-				}
-			}
+                    SmartMap errorMap = new SmartMap(error, true);
+
+                    if (errorMap.ContainsKey("Source"))
+                    {
+                        this.source = errorMap.Get("Source").ToString();
+                    }
+                    if (errorMap.ContainsKey("ReasonCode"))
+                    {
+                        this.reasonCode = errorMap.Get("ReasonCode").ToString();
+                    }
+                    if (errorMap.ContainsKey("Description"))
+                    {
+                        this.description = errorMap.Get("Description").ToString();
+                    }
+                    if (errorMap.ContainsKey("Recoverable"))
+                    {
+                        this.recoverable = Boolean.Parse(errorMap.Get("Recoverable").ToString());
+                    }
+
+            }
 		}
 
 		/// <summary>
 		/// Returns the API error data for this exception. </summary>
 		/// <returns> a map representing the error data for this exception (which may be <code>null</code>). </returns>
-		public virtual IDictionary<String, Object> ErrorData
+		public virtual SmartMap RawErrorData
 		{
 			get
 			{
-				return errorData;
+				return rawErrorData;
 			}
 		}
 
@@ -154,10 +169,22 @@ namespace MasterCard.Core.Exceptions
 			}
 		}
 
+
 		/// <summary>
 		/// Returns the HTTP status code for this exception. </summary>
 		/// <returns>  an integer representing the HTTP status code for this API error (or 0 if there is no status) </returns>
-		public virtual string Recoverable
+		public virtual int HttpStatus
+		{
+			get
+			{
+				return httpStatus;
+			}
+		}
+
+		/// <summary>
+		/// Returns the HTTP status code for this exception. </summary>
+		/// <returns>  an integer representing the HTTP status code for this API error (or 0 if there is no status) </returns>
+		public virtual Boolean Recoverable
 		{
 			get
 			{
@@ -185,7 +212,7 @@ namespace MasterCard.Core.Exceptions
 		/// <summary>
 		/// Returns a string describing the exception. </summary>
 		/// <returns> a string describing the exception. </returns>
-		public virtual string describe()
+		public virtual string Describe()
 		{
 			StringBuilder sb = new StringBuilder();
 			return sb.Append(this.GetType().Name).Append(": \"").Append(Message).Append("\" (Source: ").Append(Source).Append(", ReasonCode: ").Append(ReasonCode).Append(", Recoverable: ").Append(Recoverable).Append(")").ToString();

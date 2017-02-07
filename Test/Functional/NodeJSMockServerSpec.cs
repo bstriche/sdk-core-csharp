@@ -4,7 +4,7 @@ using MasterCard.Core.Security.OAuth;
 using MasterCard.Core;
 using System.Collections.Generic;
 using MasterCard.Core.Model;
-
+using MasterCard.Core.Exceptions;
 
 namespace TestMasterCard
 {
@@ -48,7 +48,7 @@ namespace TestMasterCard
 		[Test]
 		public void testActionReadPostEqual500()
 		{
-			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => Post.Read("aaa"), "500");
+			Assert.Throws<MasterCard.Core.Exceptions.ApiException> (() => Post.Read("aaa"), "500");
 		}
 
 
@@ -201,7 +201,7 @@ namespace TestMasterCard
 		public void testActionListWithUserHdearPath500()
 		{
 
-			Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => UserPostHeader.List());
+			ApiException ex = Assert.Throws<ApiException> (() => UserPostHeader.List());
 
 
 		}
