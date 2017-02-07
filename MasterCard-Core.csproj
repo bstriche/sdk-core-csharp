@@ -69,19 +69,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sources\MasterCard\Core\Exceptions\ApiCommunicationException.cs" />
     <Compile Include="Sources\MasterCard\Core\Exceptions\ApiException.cs" />
-    <Compile Include="Sources\MasterCard\Core\Exceptions\AuthenticationException.cs" />
-    <Compile Include="Sources\MasterCard\Core\Exceptions\InvalidRequestException.cs" />
-    <Compile Include="Sources\MasterCard\Core\Exceptions\NotAllowedException.cs" />
-    <Compile Include="Sources\MasterCard\Core\Exceptions\ObjectNotFoundException.cs" />
-    <Compile Include="Sources\MasterCard\Core\Exceptions\SystemException.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\BaseObject.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\Constants.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\OperationMetadata.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\OperationConfig.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\ResourceConfigInterface.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\RestyRequest.cs" />
+    <Compile Include="Sources\MasterCard\Core\Model\SmartMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\AuthenticationInterface.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthAuthentication.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthParameters.cs" />

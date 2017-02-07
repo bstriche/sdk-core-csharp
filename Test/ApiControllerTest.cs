@@ -138,12 +138,41 @@ namespace TestMasterCard
             var config = new OperationConfig("/test1", "create", headerList, queryList);
             var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
-            Assert.Throws<NotAllowedException> (() => controller.Execute(config, metadata, new TestBaseObject(responseMap)), "Method not Allowed");
-		}
+            ApiException ex = Assert.Throws<ApiException> (() => controller.Execute(config, metadata, new TestBaseObject(responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("Method not Allowed"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("METHOD_NOT_ALLOWED"));
+            Assert.That(ex.Source, Is.EqualTo("System"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
 
 
-		[Test]
-		public void Test40O_InvalidRequestException ()
+        }
+
+
+        [Test]
+        public void Test405_NotAllowedExceptionCaseInsensitive()
+        {
+
+            RequestMap responseMap = new RequestMap("{\"errors\":{\"error\":{\"source\":\"System\",\"reasonCode\":\"METHOD_NOT_ALLOWED\",\"description\":\"Method not Allowed\",\"Recoverable\":\"false\"}}}");
+            ApiController controller = new ApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.MethodNotAllowed, responseMap));
+
+            //new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            ApiException ex = Assert.Throws<ApiException>(() => controller.Execute(config, metadata, new TestBaseObject(responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("Method not Allowed"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("METHOD_NOT_ALLOWED"));
+            Assert.That(ex.Source, Is.EqualTo("System"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+
+
+        }
+
+
+        [Test]
+		public void Test400_InvalidRequestException ()
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"Validation\",\"ReasonCode\":\"INVALID_TYPE\",\"Description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
@@ -156,11 +185,36 @@ namespace TestMasterCard
             var config = new OperationConfig("/test1", "create", headerList, queryList);
             var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
-            Assert.Throws<InvalidRequestException> (() => controller.Execute (config, metadata, new TestBaseObject (responseMap)), "The supplied field: 'date' is of an unsupported format");
-		}
+            ApiException ex = Assert.Throws<ApiException> (() => controller.Execute (config, metadata, new TestBaseObject (responseMap)), "The supplied field: 'date' is of an unsupported format");
+            Assert.That(ex.Message, Is.EqualTo("The supplied field: 'date' is of an unsupported format"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
+            Assert.That(ex.Source, Is.EqualTo("Validation"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void Test400_InvalidRequestExceptionCaseInsensitive()
+        {
+
+            RequestMap responseMap = new RequestMap("{\"errors\":{\"error\":[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
+
+            ApiController controller = new ApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, responseMap));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            ApiException ex = Assert.Throws<ApiException>(() => controller.Execute(config, metadata, new TestBaseObject(responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("The supplied field: 'date' is of an unsupported format"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
+            Assert.That(ex.Source, Is.EqualTo("validation"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
 
 
-		[Test]
+        [Test]
 		public void Test401_AuthenticationException ()
 		{
 
@@ -173,8 +227,12 @@ namespace TestMasterCard
             var config = new OperationConfig("/test1", "create", headerList, queryList);
             var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
-            Assert.Throws<AuthenticationException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)), "Oauth customer key invalid");
-		}
+            ApiException ex = Assert.Throws<ApiException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("Oauth customer key invalid"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_CLIENT_ID"));
+            Assert.That(ex.Source, Is.EqualTo("OAuth.ConsumerKey"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
 
 
 		[Test]
@@ -190,8 +248,12 @@ namespace TestMasterCard
             var config = new OperationConfig("/test1", "create", headerList, queryList);
             var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
-            Assert.Throws<MasterCard.Core.Exceptions.SystemException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)), "Something went wrong");
-		}
+            ApiException ex = Assert.Throws<ApiException> (() => controller.Execute ( config, metadata, new TestBaseObject (responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("Something went wrong"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_CLIENT_ID"));
+            Assert.That(ex.Source, Is.EqualTo("OAuth.ConsumerKey"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
 
 
 		[Test]
