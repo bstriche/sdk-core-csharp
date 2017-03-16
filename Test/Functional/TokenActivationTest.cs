@@ -80,19 +80,25 @@ namespace TestMasterCard
         public void example_test_tokenization()
         {
             RequestMap parameters = new RequestMap();
-            
-			parameters.Set("tokenRequestorId", "12345678901" );
-			parameters.Set("requestId", "123456");
-			parameters.Set("cardInfo.accountNumber", "5123456789012345");
-			parameters.Set("cardInfo.expiryMonth", "12");
-			parameters.Set("cardInfo.expiryYear", "16");
-			parameters.Set("cardInfo.securityCode", "123");
-			parameters.Set("cardInfo.billingAddress.line", "100 1st Street");
-			parameters.Set("cardInfo.billingAddress.line2", "Apt. 4B");
-			parameters.Set("cardInfo.billingAddress.city", "St. Louis");
-			parameters.Set("cardInfo.billingAddress.countrySubdivision", "MO");
-			parameters.Set("cardInfo.billingAddress.postalCode", "61000");
-			parameters.Set("cardInfo.billingAddress.country", "USA");
+
+            parameters.Set("tokenRequestorId", "12345678901");
+            parameters.Set("requestId", "123456");
+            parameters.Set("tokenType", "CLOUD");
+            parameters.Set("taskId", "123456");
+
+            parameters.Set("cardInfo.encryptedData.source", "CARD_ON_FILE");
+            parameters.Set("cardInfo.encryptedData.accountNumber", "5123456789012345");
+            parameters.Set("cardInfo.encryptedData.expiryMonth", "12");
+            parameters.Set("cardInfo.encryptedData.expiryYear", "18");
+            parameters.Set("cardInfo.encryptedData.securityCode", "123");
+            parameters.Set("cardInfo.encryptedData.billingAddress.line", "100 1st Street");
+            parameters.Set("cardInfo.encryptedData.billingAddress.line2", "Apt. 4B");
+            parameters.Set("cardInfo.encryptedData.billingAddress.city", "St. Louis");
+            parameters.Set("cardInfo.encryptedData.billingAddress.countrySubdivision", "MO");
+            parameters.Set("cardInfo.encryptedData.billingAddress.postalCode", "61000");
+            parameters.Set("cardInfo.encryptedData.billingAddress.country", "USA");
+
+
             
             
 

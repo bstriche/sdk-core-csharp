@@ -28,12 +28,14 @@
 
 using System;
 using System.Collections.Generic;
+using MasterCard.Core.Security.Fle;
 
 namespace MasterCard.Core.Security
 {
-	public interface CryptographyInterceptor
-	{
-		String GetTriggeringPath();
+	public interface CryptographyInterceptor : IEquatable<CryptographyInterceptor>
+    {
+		List<String> GetTriggeringPath();
+        Config GetConfig();
 		IDictionary<String,Object> Encrypt(IDictionary<String,Object> map);
 		IDictionary<String,Object> Decrypt(IDictionary<String,Object> map);
 	}

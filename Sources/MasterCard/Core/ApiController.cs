@@ -318,7 +318,11 @@ namespace MasterCard.Core
                 }
             }
 
-			AppendToQueryString (s, "Format=JSON");
+			if (!metadata.JsonNative) 
+			{
+				AppendToQueryString (s, "Format=JSON");
+			}
+			
 
 			try {
 				uri = new Uri (String.Format (s.ToString (), objectList.ToArray()));
@@ -363,7 +367,6 @@ namespace MasterCard.Core
 				if (interceptor != null) {
                     paramterMap = interceptor.Encrypt (paramterMap);
 				}
-
 				request.AddJsonBody (paramterMap);
 				break;
 			case "delete":
@@ -376,7 +379,6 @@ namespace MasterCard.Core
 				if (interceptor != null) {
                     paramterMap = interceptor.Encrypt (paramterMap);
 				}
-
 				request.AddJsonBody (paramterMap);
 				break;
 			case "read":
@@ -386,8 +388,10 @@ namespace MasterCard.Core
 				break;
 			}
 
-			request.AddHeader ("Accept", "application/json");
-			request.AddHeader ("Content-Type", "application/json");
+			request.AddHeader ("Accept", "application/json; charset=utf-8");
+			if (request.HasBody) {
+				request.AddHeader ("Content-Type", "application/json; charset=utf-8");
+			}
 			request.AddHeader ("User-Agent", "CSharp-SDK/" + metadata.Version);
 
 			//arizzini: adding the header paramter support.

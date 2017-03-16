@@ -78,6 +78,8 @@
     <Compile Include="Sources\MasterCard\Core\Model\RestyRequest.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\SmartMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\AuthenticationInterface.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\Fle\Config.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\Fle\FieldLevelEncryption.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthAuthentication.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthParameters.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthUtil.cs" />

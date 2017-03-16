@@ -42,7 +42,7 @@ namespace MasterCard.Core
         private static Environment environment = Environment.SANDBOX;
         private static Boolean DEBUG = false;
         private static AuthenticationInterface authentication;
-        private static Dictionary<String, Object> cryptographyMap = new Dictionary<String, Object>();
+        private static HashSet<CryptographyInterceptor> cryptographyMap = new HashSet<CryptographyInterceptor>();
         private static Dictionary<String, ResourceConfigInterface> registeredInstances = new Dictionary<String, ResourceConfigInterface>();
                 
 
@@ -138,19 +138,23 @@ namespace MasterCard.Core
         /// <param name="cryptographyInterceptor">Cryptography interceptor.</param>
         public static void AddCryptographyInterceptor(CryptographyInterceptor cryptographyInterceptor)
         {
-            if (!cryptographyMap.ContainsKey(cryptographyInterceptor.GetTriggeringPath()))
+            if (!cryptographyMap.Contains(cryptographyInterceptor))
             {
-                cryptographyMap.Add(cryptographyInterceptor.GetTriggeringPath(), cryptographyInterceptor);
+                cryptographyMap.Add(cryptographyInterceptor);
             }
         }
 
         public static CryptographyInterceptor GetCryptographyInterceptor(String basePath)
         {
-            foreach (var entry in cryptographyMap)
+            foreach (CryptographyInterceptor entry in cryptographyMap)
             {
-                if (entry.Key.Contains(basePath) || basePath.Contains(entry.Key))
+                foreach (String triggeringPath in entry.GetTriggeringPath())
                 {
-                    return (CryptographyInterceptor)entry.Value;
+                    if (triggeringPath.CompareTo(basePath) == 0 || basePath.EndsWith(triggeringPath))
+                    {
+                        return entry;
+                    }
+                    
                 }
             }
             return null;
