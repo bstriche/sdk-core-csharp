@@ -53,7 +53,7 @@ namespace TestMasterCard
             switch (operationUUID)
             {
                 case "uuid":
-                    return new OperationConfig("/mdes/tokenization/1/0/token/tokenize", "create", new List<string>(), new List<string>());
+                    return new OperationConfig("/mdes/digitization/static/1/0/tokenize", "create", new List<string>(), new List<string>());
                 default:
                     throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }

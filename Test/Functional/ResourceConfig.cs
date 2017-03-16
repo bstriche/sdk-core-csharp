@@ -28,9 +28,11 @@
 
 using System;
 using System.Collections.Generic;
+using MasterCard.Core.Model;
+using MasterCard.Core;
 using Environment = MasterCard.Core.Model.Constants.Environment;
 
-namespace MasterCard.Core.Model
+namespace TestMasterCard
 {
     public class ResourceConfig : ResourceConfigInterface
     {

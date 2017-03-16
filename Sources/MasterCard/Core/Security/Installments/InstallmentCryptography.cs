@@ -29,11 +29,11 @@
 using System;
 using MasterCard.Core.Security.Fle;
 
-namespace MasterCard.Core.Security.MDES
+namespace MasterCard.Core.Security.Installments
 {
-	public class MDESCryptography : FieldLevelEncryption
+	public class InstallmentCryptography : FieldLevelEncryption
 	{
-		public MDESCryptography(String publicKeyLocation, String privateKeyLocation): base(publicKeyLocation, privateKeyLocation, Config.MDES()){
+		public InstallmentCryptography(String publicKeyLocation, String privateKeyLocation): base(publicKeyLocation, privateKeyLocation, Config.Installments()){
 
 		}
 
