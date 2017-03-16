@@ -312,6 +312,10 @@ namespace TestMasterCard
             ApiConfig.SetEnvironment(Environment.STAGE);
             Assert.AreEqual("https://stage.api.mastercard.com/atms/v1/locations?Format=JSON", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext()), new RequestMap()).ToString());
 
+
+            ApiConfig.SetEnvironment(Environment.STAGE);
+            Assert.AreEqual("https://stage.api.mastercard.com/atms/v1/locations", controller.GetURL(config, new OperationMetadata("0.0.1", instance.GetHost(), instance.GetContext(), true), new RequestMap()).ToString());
+
             instance.setHostOverride();
 
         }
