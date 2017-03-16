@@ -53,26 +53,43 @@ namespace MasterCard.Core.Security.Fle
         public String PublicKeyFingerprintFiledName { get; protected set; }
         public DataEncoding DataEncoding { get; protected set; }
 
-        private Config() {
+        
 
+        public bool Equals(Config other)
+        {
+            return this.TriggeringEndPath.Equals(other.TriggeringEndPath) &&
+                this.FieldsToEncrypt.Equals(other.FieldsToEncrypt) &&
+                this.FieldsToDecrypt.Equals(other.FieldsToDecrypt) &&
+                this.SymmetricMode == other.SymmetricMode &&
+                this.SymmetricPadding == other.SymmetricPadding &&
+                this.SymmetricKeysize == other.SymmetricKeysize &&
+                this.OaepEncryptionPadding == other.OaepEncryptionPadding &&
+                this.OaepHashingAlgorithm.Equals(other.OaepHashingAlgorithm) &&
+                this.PublicKeyFingerprintHashing == other.PublicKeyFingerprintHashing &&
+                this.IvFieldName.Equals(other.IvFieldName) &&
+                this.OaepHashingAlgorithmFieldName.Equals(other.OaepHashingAlgorithmFieldName) &&
+                this.EncryptedKeyFiledName.Equals(other.EncryptedKeyFiledName) &&
+                this.EncryptedDataFieldName.Equals(other.EncryptedDataFieldName) &&
+                this.PublicKeyFingerprintFiledName.Equals(other.PublicKeyFingerprintFiledName) &&
+                this.DataEncoding == other.DataEncoding;
         }
 
-
-        public static Config MDES() {
+        public static Config MDES()
+        {
             Config tmpConfig = new Config();
-            tmpConfig.TriggeringEndPath = new List<String>(new String[] {"/tokenize", "/searchTokens", "/getToken", "/transact", "/notifyTokenUpdated"});
-            tmpConfig.FieldsToEncrypt = new List<String>(new String[] {"cardInfo.encryptedData", "encryptedPayload.encryptedData"});
-            tmpConfig.FieldsToDecrypt = new List<String>(new String[] {"encryptedPayload.encryptedData", "tokenDetail.encryptedData"});
+            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/tokenize", "/searchTokens", "/getToken", "/transact", "/notifyTokenUpdated" });
+            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "cardInfo.encryptedData", "encryptedPayload.encryptedData" });
+            tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "encryptedPayload.encryptedData", "tokenDetail.encryptedData" });
 
             tmpConfig.SymmetricMode = CipherMode.CBC;
             tmpConfig.SymmetricPadding = PaddingMode.PKCS7;
             tmpConfig.SymmetricKeysize = 256;
 
-            tmpConfig.OaepEncryptionPadding = RSAEncryptionPadding.OaepSHA256;
-            tmpConfig.OaepHashingAlgorithm = "SHA256";
-            
+            tmpConfig.OaepEncryptionPadding = RSAEncryptionPadding.OaepSHA512;
+            tmpConfig.OaepHashingAlgorithm = "SHA512";
+
             tmpConfig.PublicKeyFingerprintHashing = HashingAlgorithm.SHA256;
-            
+
             tmpConfig.IvFieldName = "iv";
             tmpConfig.OaepHashingAlgorithmFieldName = "oaepHashingAlgorithm";
             tmpConfig.EncryptedKeyFiledName = "encryptedKey";
@@ -84,11 +101,12 @@ namespace MasterCard.Core.Security.Fle
         }
 
 
-        public static Config Installments() {
+        public static Config Installments()
+        {
             Config tmpConfig = new Config();
-            tmpConfig.TriggeringEndPath = new List<String>(new String[] {"/instalmentConfigdata","/calculateInstalment", "/processInstalment"});
-            tmpConfig.FieldsToEncrypt = new List<String>(new String[] {"configReqData.primaryAccountNumber", "calculatorReqData.primaryAccountNumber", "processInstalmentReqData.primaryAccountNumber"});
-            tmpConfig.FieldsToDecrypt = new List<String>(new String[] {""});
+            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/instalmentConfigdata", "/calculateInstalment", "/processInstalment" });
+            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "configReqData.primaryAccountNumber", "calculatorReqData.primaryAccountNumber", "processInstalmentReqData.primaryAccountNumber" });
+            tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "" });
 
             tmpConfig.SymmetricMode = CipherMode.CBC;
             tmpConfig.SymmetricPadding = PaddingMode.PKCS7;
@@ -108,25 +126,6 @@ namespace MasterCard.Core.Security.Fle
 
 
             return tmpConfig;
-        }
-
-        public bool Equals(Config other)
-        {
-            return this.TriggeringEndPath.Equals(other.TriggeringEndPath) &&
-                this.FieldsToEncrypt.Equals(other.FieldsToEncrypt) &&
-                this.FieldsToDecrypt.Equals(other.FieldsToDecrypt) &&
-                this.SymmetricMode == other.SymmetricMode &&
-                this.SymmetricPadding == other.SymmetricPadding &&
-                this.SymmetricKeysize == other.SymmetricKeysize &&
-                this.OaepEncryptionPadding == other.OaepEncryptionPadding &&
-                this.OaepHashingAlgorithm.Equals(other.OaepHashingAlgorithm) &&
-                this.PublicKeyFingerprintHashing == other.PublicKeyFingerprintHashing &&
-                this.IvFieldName.Equals(other.IvFieldName) &&
-                this.OaepHashingAlgorithmFieldName.Equals(other.OaepHashingAlgorithmFieldName) &&
-                this.EncryptedKeyFiledName.Equals(other.EncryptedKeyFiledName) &&
-                this.EncryptedDataFieldName.Equals(other.EncryptedDataFieldName) &&
-                this.PublicKeyFingerprintFiledName.Equals(other.PublicKeyFingerprintFiledName) &&
-                this.DataEncoding == other.DataEncoding;
         }
     }
 

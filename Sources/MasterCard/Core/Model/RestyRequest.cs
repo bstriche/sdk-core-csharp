@@ -20,7 +20,7 @@ namespace MasterCard.Core.Model
         {
         }
 
-        public RestyRequest AddJsonBody(object obj) {
+        public new RestyRequest AddJsonBody(object obj) {
             HasBody = true;
             return (RestyRequest) base.AddJsonBody(obj);
         }

@@ -143,8 +143,10 @@ namespace MasterCard.Core.Security
 
 		public static Tuple<byte[], byte[], byte[]> EncryptAES(byte[] toEncrypt, int keySize, CipherMode mode, PaddingMode padding)
 		{
-			var toEncryptBytes = toEncrypt;
-			using (var provider = new AesCryptoServiceProvider())
+            byte[] iv;
+            byte[] key;
+            byte[] data;
+            using (var provider = new AesCryptoServiceProvider())
 			{
 				provider.KeySize = keySize;
 				provider.GenerateKey ();
@@ -153,22 +155,24 @@ namespace MasterCard.Core.Security
 				provider.Padding = padding;
 				using (var encryptor = provider.CreateEncryptor(provider.Key, provider.IV))
 				{
-					using (var ms = new MemoryStream())
+                    var ms = new MemoryStream();
+					using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
 					{
-						using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-						{
-							cs.Write(toEncryptBytes, 0, toEncryptBytes.Length);
-							cs.FlushFinalBlock();
-						}
-
-						return new Tuple<byte[], byte[], byte[]> (provider.IV, provider.Key, ms.ToArray ());
+					    cs.Write(toEncrypt, 0, toEncrypt.Length);
+						cs.FlushFinalBlock();
 					}
+                    iv = provider.IV; ;
+                    key = provider.Key;
+                    data = ms.ToArray();
 				}
 			}
-		}
+
+            return new Tuple<byte[], byte[], byte[]>(iv, key, data);
+        }
 
 
 		public static byte[] DecryptAES(byte[] iv, byte[] encryptionKey, byte[] encryptedData, int keySize, CipherMode mode, PaddingMode padding) {
+            byte[] result;
 			using (var provider = new AesCryptoServiceProvider())
 			{
 				provider.KeySize = keySize;
@@ -176,23 +180,21 @@ namespace MasterCard.Core.Security
 				provider.Key = encryptionKey;
 				provider.Mode = mode;
 				provider.Padding = padding;
-				using (var ms = new MemoryStream(encryptedData))
+				using (var decryptor = provider.CreateDecryptor(provider.Key, provider.IV))
 				{
-					using (var decryptor = provider.CreateDecryptor(provider.Key, provider.IV))
+					using (var cs = new CryptoStream(new MemoryStream(encryptedData), decryptor, CryptoStreamMode.Read))
 					{
-						using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-						{
-							MemoryStream output = new MemoryStream();
-							byte[] decrypted = new byte[1024];
-							int byteCount = 0;
-							while ((byteCount = cs.Read (decrypted, 0, decrypted.Length)) > 0) {
-								output.Write(decrypted, 0, byteCount);
-							}
-							return output.ToArray ();
+						MemoryStream output = new MemoryStream();
+						byte[] decrypted = new byte[1024];
+						int byteCount = 0;
+						while ((byteCount = cs.Read (decrypted, 0, decrypted.Length)) > 0) {
+							output.Write(decrypted, 0, byteCount);
 						}
+						result= output.ToArray ();
 					}
 				}
 			}
+            return result;
 		}
 
 		public static RSACryptoServiceProvider GetRSAFromPrivateKeyString(string privateKey)
@@ -283,20 +285,13 @@ namespace MasterCard.Core.Security
 
         public static byte[] EncrytptRSA(byte[] data, RSA publicKey, RSAEncryptionPadding padding)
         {
-            using (RSA rsa = publicKey)
-            {
-                return rsa.Encrypt(data, padding);
-            }
-
+            return publicKey.Encrypt(data, padding);
         }
 
 
         public static byte[] DecryptRSA(byte[] data, RSA privateKey, RSAEncryptionPadding padding)
         {
-            using (RSA rsa = privateKey)
-            {
-                return rsa.Decrypt(data, padding);
-            }
+            return privateKey.Decrypt(data, padding);
         }
     }
 }

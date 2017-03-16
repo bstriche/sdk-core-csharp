@@ -46,13 +46,18 @@ namespace MasterCard.Core.Security.Fle
 
         public FieldLevelEncryption (String publicKeyLocation, String privateKeyLocation, Config config)
 		{
-			
-			var tmpPublicCertificate = new X509Certificate2(publicKeyLocation);
-            this.publicKey = tmpPublicCertificate.GetRSAPublicKey();
-			this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
+
+            if (publicKeyLocation != null) {
+                var tmpPublicCertificate = new X509Certificate2(publicKeyLocation);
+                this.publicKey = tmpPublicCertificate.GetRSAPublicKey();
+			    this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
+            }
                    
-			string fullText = File.ReadAllText (privateKeyLocation);
-			this.privateKey = CryptUtil.GetRSAFromPrivateKeyString (fullText) as RSA;
+            if (privateKeyLocation != null) {
+                string fullText = File.ReadAllText (privateKeyLocation);
+			    this.privateKey = CryptUtil.GetRSAFromPrivateKeyString (fullText) as RSA;
+            }
+			
 
             this.Config = config;
 			
@@ -68,58 +73,64 @@ namespace MasterCard.Core.Security.Fle
 
             //requestMap is a SmartMap it offers a easy way to do nested lookups.
             SmartMap smartMap = new SmartMap(map);
-            foreach (String fieldToEncrypt in Config.FieldsToEncrypt) {
-                if (smartMap.ContainsKey (fieldToEncrypt)) 
+            if (this.publicKey != null) 
+            {
+                foreach (String fieldToEncrypt in Config.FieldsToEncrypt) 
                 {
-                    String payload = null;
+                    if (smartMap.ContainsKey (fieldToEncrypt)) 
+                    {
+                        String payload = null;
 
-                    // 1) extract the encryptedData from map
-                    Object tmpObjectToEncrypt =  smartMap.Remove(fieldToEncrypt);
+                        // 1) extract the encryptedData from map
+                        Object tmpObjectToEncrypt = smartMap.Get(fieldToEncrypt);
+                        smartMap.Remove(fieldToEncrypt);
 
-                    if (tmpObjectToEncrypt.GetType() == typeof(Dictionary<String,Object>)) {
-                        // 2) create json string
-                        payload = JsonConvert.SerializeObject(tmpObjectToEncrypt);
-                        // 3) escaping the string
-                        payload = CryptUtil.SanitizeJson(payload);
-                    } else {
-                        payload = tmpObjectToEncrypt.ToString();
+                        if (tmpObjectToEncrypt.GetType() == typeof(Dictionary<String,Object>)) {
+                            // 2) create json string
+                            payload = JsonConvert.SerializeObject(tmpObjectToEncrypt);
+                            // 3) escaping the string
+                            payload = CryptUtil.SanitizeJson(payload);
+                        } else {
+                            payload = tmpObjectToEncrypt.ToString();
+                        }
+
+                        Tuple<byte[], byte[], byte[]> aesResult = CryptUtil.EncryptAES(System.Text.Encoding.UTF8.GetBytes(payload), Config.SymmetricKeysize, Config.SymmetricMode, Config.SymmetricPadding);
+
+                        // 4) generate random iv
+                        byte[] ivBytes = aesResult.Item1;
+                        // 5) generate AES SecretKey
+                        byte[] secretKeyBytes = aesResult.Item2;
+                        // 6) encrypt payload
+                        byte[] encryptedDataBytes = aesResult.Item3;
+
+                        String ivValue = CryptUtil.Encode(ivBytes, Config.DataEncoding);
+                        String encryptedDataValue = CryptUtil.Encode(encryptedDataBytes, Config.DataEncoding);
+
+                        // 7) encrypt secretKey with issuer key
+                        byte[] encryptedSecretKey = CryptUtil.EncrytptRSA(secretKeyBytes, this.publicKey, Config.OaepEncryptionPadding);
+                        String encryptedKeyValue = CryptUtil.Encode(encryptedSecretKey, Config.DataEncoding);
+
+                        String fingerprintHexString = publicKeyFingerPrint;
+
+                        String baseKey = "";
+                        if (fieldToEncrypt.IndexOf(".") > 0 ) {
+                            baseKey = fieldToEncrypt.Substring(0, fieldToEncrypt.IndexOf("."));
+                            baseKey += ".";
+                        }
+
+                        if (Config.PublicKeyFingerprintFiledName != null) {
+                            smartMap.Add(baseKey+Config.PublicKeyFingerprintFiledName, fingerprintHexString);
+                        }
+                        if (Config.OaepHashingAlgorithmFieldName != null) {
+                            smartMap.Add(baseKey+Config.OaepHashingAlgorithmFieldName, Config.OaepHashingAlgorithm);
+                        }
+                        smartMap.Add(baseKey+Config.IvFieldName, ivValue);
+                        smartMap.Add(baseKey+Config.EncryptedKeyFiledName, encryptedKeyValue);
+                        smartMap.Add(baseKey+Config.EncryptedDataFieldName, encryptedDataValue);
+
+                        break;
                     }
-
-                    Tuple<byte[], byte[], byte[]> aesResult = CryptUtil.EncryptAES(System.Text.Encoding.UTF8.GetBytes(payload), Config.SymmetricKeysize, Config.SymmetricMode, Config.SymmetricPadding);
-
-                    // 4) generate random iv
-                    byte[] ivBytes = aesResult.Item1;
-                    // 5) generate AES SecretKey
-                    byte[] secretKeyBytes = aesResult.Item2;
-                    // 6) encrypt payload
-                    byte[] encryptedDataBytes = aesResult.Item3;
-
-                    String ivValue = CryptUtil.Encode(ivBytes, Config.DataEncoding);
-                    String encryptedDataValue = CryptUtil.Encode(encryptedDataBytes, Config.DataEncoding);
-
-                    // 7) encrypt secretKey with issuer key
-                    byte[] encryptedSecretKey = CryptUtil.EncrytptRSA(secretKeyBytes, this.publicKey, Config.OaepEncryptionPadding);
-                    String encryptedKeyValue = CryptUtil.Encode(encryptedSecretKey, Config.DataEncoding);
-
-                    String fingerprintHexString = publicKeyFingerPrint;
-
-                    String baseKey = "";
-                    if (fieldToEncrypt.IndexOf(".") > 0 ) {
-                        baseKey = fieldToEncrypt.Substring(0, fieldToEncrypt.IndexOf("."));
-                        baseKey += ".";
-                    }
-
-                    if (Config.PublicKeyFingerprintFiledName != null) {
-                        smartMap.Add(baseKey+Config.PublicKeyFingerprintFiledName, fingerprintHexString);
-                    }
-                    if (Config.OaepHashingAlgorithmFieldName != null) {
-                        smartMap.Add(baseKey+Config.OaepHashingAlgorithmFieldName, Config.OaepHashingAlgorithm);
-                    }
-                    smartMap.Add(baseKey+Config.IvFieldName, ivValue);
-                    smartMap.Add(baseKey+Config.EncryptedKeyFiledName, encryptedKeyValue);
-                    smartMap.Add(baseKey+Config.EncryptedDataFieldName, encryptedDataValue);
                 }
-                
             }
             return smartMap;
 			
@@ -131,11 +142,9 @@ namespace MasterCard.Core.Security.Fle
                 if (smartMap.ContainsKey (fieldToDecrypt)) 
                 {
                     String baseKey = "";
-                    String encryptedDataMapField = fieldToDecrypt;
                     if (fieldToDecrypt.IndexOf(".")> 0) {
                         baseKey = fieldToDecrypt.Substring(0, fieldToDecrypt.LastIndexOf("."));
                         baseKey = ".";
-                        encryptedDataMapField = fieldToDecrypt.Substring(fieldToDecrypt.LastIndexOf(".")+1);
                     }
 
 
@@ -159,8 +168,6 @@ namespace MasterCard.Core.Security.Fle
                         smartMap.Remove(Config.PublicKeyFingerprintFiledName);
                     }
 
-                    
-
                     //need to decrypt the data
                     String encryptedData = (String) smartMap.Get(baseKey+Config.EncryptedDataFieldName);
                     byte[] encryptedDataByteArray = CryptUtil.Decode(encryptedData, Config.DataEncoding);
@@ -171,12 +178,13 @@ namespace MasterCard.Core.Security.Fle
                     if (decryptedDataString.StartsWith("{")) {
                         Dictionary<String,Object> decryptedDataMap =JsonConvert.DeserializeObject<Dictionary<String, Object>>(decryptedDataString);
                         foreach(KeyValuePair<String, Object> entry in decryptedDataMap) {
-                            smartMap.Add(baseKey+entry.Key, entry.Value);
+                            smartMap.Add(baseKey+Config.EncryptedDataFieldName+"."+entry.Key, entry.Value);
                         }
                     } else {
                         smartMap.Add(baseKey+Config.EncryptedDataFieldName, decryptedDataString);
                     }
-                    
+
+                    break;
                 }
             }
 			return smartMap;

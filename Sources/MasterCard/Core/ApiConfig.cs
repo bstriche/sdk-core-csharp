@@ -108,7 +108,7 @@ namespace MasterCard.Core
         /// <returns><c>true</c>, if sandbox was ised, <c>false</c> otherwise.</returns>
         public static Boolean IsSandbox()
         {
-            return ApiConfig.environment != null && ApiConfig.environment == Environment.SANDBOX;
+            return ApiConfig.environment == Environment.SANDBOX;
         }
 
 

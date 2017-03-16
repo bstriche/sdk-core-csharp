@@ -127,9 +127,9 @@ namespace MasterCard.Core.Model
 		/// <returns> this map </returns>
 		/// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
 		/// <exception cref="IndexOutOfBoundsException"> if using an array index in the key path is out of bounds. </exception>
-		public virtual RequestMap Set (string key, object value)
+		public new virtual RequestMap Set (string key, object value)
 		{
-			Add (key, value);
+			base.Add (key, value);
 			return this;
 		}
 
