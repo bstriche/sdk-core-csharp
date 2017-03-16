@@ -76,7 +76,8 @@ namespace TestMasterCard
             
                         
 
-        [Test ()]
+        /*
+
         public void example_test_tokenization()
         {
             RequestMap parameters = new RequestMap();
@@ -108,6 +109,7 @@ namespace TestMasterCard
             
 
         }
+        */
         
             
         

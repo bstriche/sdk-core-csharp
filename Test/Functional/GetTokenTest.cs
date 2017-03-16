@@ -69,7 +69,7 @@ namespace TestMasterCard
 
 		}
 
-		[Test ()]
+		/*
 		public void Test_example_get_token()
 		{
 			// 
@@ -117,7 +117,7 @@ namespace TestMasterCard
 			
 		}
 
-
+    */
 
 
 
