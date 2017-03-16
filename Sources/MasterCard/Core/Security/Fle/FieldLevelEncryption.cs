@@ -144,8 +144,11 @@ namespace MasterCard.Core.Security.Fle
                     String baseKey = "";
                     if (fieldToDecrypt.IndexOf(".")> 0) {
                         baseKey = fieldToDecrypt.Substring(0, fieldToDecrypt.LastIndexOf("."));
-                        baseKey = ".";
+                        baseKey += ".";
                     }
+
+
+
 
 
                     //need to read the key
