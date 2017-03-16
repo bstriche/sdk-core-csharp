@@ -39,7 +39,7 @@ namespace MasterCard.Core.Model
         {Environment.PRODUCTION, new List<String> { "https://api.mastercard.com", null } },
         {Environment.SANDBOX, new List<String> { "https://sandbox.api.mastercard.com", null } },
         {Environment.SANDBOX_STATIC, new List<String> { "https://sandbox.api.mastercard.com", "static" } },
-        {Environment.SANDBOX_MTF, new List<String> { "https://sandbox.api.mastercard.com", "mft" } },
+        {Environment.SANDBOX_MTF, new List<String> { "https://sandbox.api.mastercard.com", "mtf" } },
         {Environment.SANDBOX_ITF, new List<String> { "https://sandbox.api.mastercard.com", "itf" } },
         {Environment.STAGE, new List<String> { "https://stage.api.mastercard.com", null } },
         {Environment.DEV, new List<String> { "https://dev.api.mastercard.com", null } },

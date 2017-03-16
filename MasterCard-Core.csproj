@@ -101,6 +101,8 @@
     <Compile Include="Test\Functional\AudiencesSegment.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\AudiencesSegmentTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\BaseTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\GetToken.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Compile Include="Test\Functional\GetTokenTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategories.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategoriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -133,7 +135,6 @@
     <Compile Include="Test\CryptUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\TokenActivation.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\TokenActivationTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -152,5 +153,10 @@
     <Content Include="Test\mastercard_public.crt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Test\installments_public.crt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

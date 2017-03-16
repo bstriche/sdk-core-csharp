@@ -156,12 +156,20 @@ namespace MasterCard.Core
 				if (response.Content.Length > 0) {
 					try {
 						responseObj = RequestMap.AsDictionary (response.Content);
-						if (interceptor != null) {
-							responseObj = interceptor.Encrypt(responseObj);
-						} 
 					} catch (Exception) {
 						throw new ApiException ("Error: parsing JSON response", response.Content);
 					}
+
+                    try
+                    {
+                        if (interceptor != null)
+                        {
+                            responseObj = interceptor.Decrypt(responseObj);
+                        }
+                    } catch (Exception e)
+                    {
+                        throw new ApiException("Error: decrypting payload", e);
+                    }
 				} 
 				 
 				if (response.StatusCode < HttpStatusCode.Ambiguous) {
