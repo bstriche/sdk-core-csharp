@@ -38,9 +38,9 @@ namespace MasterCard.Core.Security.Fle
 {
     public class FieldLevelEncryption : CryptographyInterceptor
 	{
-		private RSA publicKey;
+		private RSACng publicKey;
 		private String publicKeyFingerPrint;
-		private RSA privateKey;
+		private RSACng privateKey;
 
         internal readonly Config Config;
 
@@ -49,13 +49,13 @@ namespace MasterCard.Core.Security.Fle
 
             if (publicKeyLocation != null) {
                 var tmpPublicCertificate = new X509Certificate2(publicKeyLocation);
-                this.publicKey = tmpPublicCertificate.GetRSAPublicKey();
+                this.publicKey = (RSACng) tmpPublicCertificate.GetRSAPublicKey();
 			    this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
             }
                    
             if (privateKeyLocation != null) {
                 string fullText = File.ReadAllText (privateKeyLocation);
-			    this.privateKey = CryptUtil.GetRSAFromPrivateKeyString (fullText) as RSA;
+			    this.privateKey = CryptUtil.GetRSAFromPrivateKeyString (fullText);
             }
 			
 
@@ -147,10 +147,6 @@ namespace MasterCard.Core.Security.Fle
                         baseKey += ".";
                     }
 
-
-
-
-
                     //need to read the key
                     String encryptedKey = (String) smartMap.Get(baseKey + Config.EncryptedKeyFiledName);
                     smartMap.Remove(baseKey + Config.EncryptedKeyFiledName);
@@ -158,7 +154,23 @@ namespace MasterCard.Core.Security.Fle
                     byte[] encryptedKeyByteArray = CryptUtil.Decode(encryptedKey, Config.DataEncoding);
 
                     //need to decryt with RSA
-                    byte[] secretKeyBytes = CryptUtil.DecryptRSA(encryptedKeyByteArray, this.privateKey, Config.OaepEncryptionPadding);
+                    byte[] secretKeyBytes = null;
+                    if (smartMap.ContainsKey(baseKey + Config.OaepHashingAlgorithmFieldName)) {
+                        string oaepHashingAlgorithm = (String) smartMap.Get(baseKey + Config.OaepHashingAlgorithmFieldName);
+                        oaepHashingAlgorithm = oaepHashingAlgorithm.Replace("SHA", "SHA-");
+                        RSAEncryptionPadding customEncryptionPadding = Config.OaepEncryptionPadding;
+                        if (oaepHashingAlgorithm.Equals("SHA-256")) {
+                            customEncryptionPadding = RSAEncryptionPadding.OaepSHA256;
+                        } else if (oaepHashingAlgorithm.Equals("SHA-512")) {
+                            customEncryptionPadding = RSAEncryptionPadding.OaepSHA512;
+                        }
+                        secretKeyBytes = CryptUtil.DecryptRSA(encryptedKeyByteArray, this.privateKey, customEncryptionPadding);
+
+                    } else {
+                        secretKeyBytes = CryptUtil.DecryptRSA(encryptedKeyByteArray, this.privateKey, Config.OaepEncryptionPadding);
+                    }
+
+                     
 
                     //need to read the iv
                     String ivString = (String) smartMap.Get(baseKey + Config.IvFieldName);
@@ -173,6 +185,7 @@ namespace MasterCard.Core.Security.Fle
 
                     //need to decrypt the data
                     String encryptedData = (String) smartMap.Get(baseKey+Config.EncryptedDataFieldName);
+                    smartMap.Remove(baseKey + Config.EncryptedDataFieldName);
                     byte[] encryptedDataByteArray = CryptUtil.Decode(encryptedData, Config.DataEncoding);
 
                     byte[] decryptedDataByteArray = CryptUtil.DecryptAES (ivByteArray, secretKeyBytes, encryptedDataByteArray, Config.SymmetricKeysize, Config.SymmetricMode, Config.SymmetricPadding);

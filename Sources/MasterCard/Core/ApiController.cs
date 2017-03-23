@@ -72,19 +72,6 @@ namespace MasterCard.Core
 		}
 
 
-/*		public String GenerateHost() {
-			String hostUrl =  "https://";
-			if (ApiConfig.GetSubDomain() != null) {
-				hostUrl += ApiConfig.GetSubDomain();
-				hostUrl += ".";
-			}
-			hostUrl += "api.mastercard.com";
-			
-			return hostUrl;
-		}
-    */
-
-
 		/// <summary>
 		/// Sets the rest client.
 		/// </summary>
@@ -126,12 +113,6 @@ namespace MasterCard.Core
                     client = new RestClient(request.BaseUrl);
                 }
 
-
-            } catch (Exception e) {
-				throw new ApiException (e.Message, e);
-			}
-
-			try {
 				log.Debug(">>Execute(action='"+config.Action+"', resourcePaht='"+config.ResourcePath+"', requestMap='"+requestMap+"'");
 				log.Debug("excute(), request.Method='"+request.Method+"'");
                 log.Debug("excute(), request.URL=" + request.AbsoluteUrl.ToString());
@@ -144,47 +125,50 @@ namespace MasterCard.Core
                 log.Debug(response.Headers);
 				log.Debug("Execute(), response.Body=");
                 log.Debug(response.Content.ToString());
-			} catch (Exception e) {
-				Exception wrapper = new ApiException (e.Message, e);
-				log.Error (wrapper.Message, wrapper);
-				throw wrapper;
-			}
 
-			if (response.ErrorException == null && response.Content != null) {
-				IDictionary<String,Object> responseObj = new Dictionary<String,Object>();
 
-				if (response.Content.Length > 0) {
-					try {
-						responseObj = RequestMap.AsDictionary (response.Content);
-					} catch (Exception) {
-						throw new ApiException ("Error: parsing JSON response", response.Content);
+				if (response.ErrorException == null && response.Content != null) {
+					IDictionary<String,Object> responseObj = new Dictionary<String,Object>();
+					if (response.Content.Length > 0) {
+						try {
+							responseObj = RequestMap.AsDictionary (response.Content);
+						} catch (Exception) {
+							throw new ApiException ("Error: parsing JSON response", response.Content);
+						}
+
+						if (interceptor != null)
+						{
+							try
+							{
+								responseObj = interceptor.Decrypt(responseObj);
+							} 
+							catch (Exception e)
+							{
+								throw new ApiException("Error: decrypting payload", e);
+							}
+						}
+					} 
+					
+					if (response.StatusCode < HttpStatusCode.Ambiguous) {
+						log.Debug ("<<Execute()");
+						return responseObj;
+					} else {
+						throw GenerateException (responseObj, response);
 					}
-
-                    try
-                    {
-                        if (interceptor != null)
-                        {
-                            responseObj = interceptor.Decrypt(responseObj);
-                        }
-                    } catch (Exception e)
-                    {
-                        throw new ApiException("Error: decrypting payload", e);
-                    }
-				} 
-				 
-				if (response.StatusCode < HttpStatusCode.Ambiguous) {
-					log.Debug ("<<Execute()");
-					return responseObj;
 				} else {
-					ApiException e = GenerateException (responseObj, response);
-					log.Error (e.Message, e);
-					throw e;
+					throw new ApiException (response.ErrorMessage, response.ErrorException);
 				}
-			} else {
-				Exception wrapper = new ApiException (response.ErrorMessage, response.ErrorException);
+
+			} catch (ApiException apiE) {
+				log.Error (apiE.Message, apiE);
+				throw apiE;
+			} catch (Exception genE) {
+				ApiException wrapper = new ApiException (genE.Message, genE);
 				log.Error (wrapper.Message, wrapper);
 				throw wrapper;
 			}
+
+
 
 
 

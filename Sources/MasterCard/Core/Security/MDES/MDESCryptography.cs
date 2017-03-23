@@ -27,15 +27,43 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 using MasterCard.Core.Security.Fle;
 
 namespace MasterCard.Core.Security.MDES
 {
 	public class MDESCryptography : FieldLevelEncryption
 	{
-		public MDESCryptography(String publicKeyLocation, String privateKeyLocation): base(publicKeyLocation, privateKeyLocation, Config.MDES()){
+		public MDESCryptography(String publicKeyLocation, String privateKeyLocation): base(publicKeyLocation, privateKeyLocation, MDES()){
 
 		}
+
+		private static Config MDES()
+        {
+            Config tmpConfig = new Config();
+            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/tokenize", "/searchTokens", "/getToken", "/transact", "/notifyTokenUpdated" });
+            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "cardInfo.encryptedData", "encryptedPayload.encryptedData" });
+            tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "encryptedPayload.encryptedData", "tokenDetail.encryptedData" });
+
+            tmpConfig.SymmetricMode = CipherMode.CBC;
+            tmpConfig.SymmetricPadding = PaddingMode.PKCS7;
+            tmpConfig.SymmetricKeysize = 128;
+
+            tmpConfig.OaepEncryptionPadding = RSAEncryptionPadding.OaepSHA256;
+            tmpConfig.OaepHashingAlgorithm = "SHA256";
+
+            tmpConfig.PublicKeyFingerprintHashing = HashingAlgorithm.SHA256;
+
+            tmpConfig.IvFieldName = "iv";
+            tmpConfig.OaepHashingAlgorithmFieldName = "oaepHashingAlgorithm";
+            tmpConfig.EncryptedKeyFiledName = "encryptedKey";
+            tmpConfig.EncryptedDataFieldName = "encryptedData";
+            tmpConfig.PublicKeyFingerprintFiledName = "publicKeyFingerprint";
+            tmpConfig.DataEncoding = DataEncoding.HEX;
+
+            return tmpConfig;
+        }
 
 	}
 }

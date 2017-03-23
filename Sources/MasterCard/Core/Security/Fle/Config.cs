@@ -34,26 +34,28 @@ namespace MasterCard.Core.Security.Fle
 {
     public class Config : IEquatable<Config>
 	{
-        public List<String> TriggeringEndPath { get; protected set; }
-        public List<String> FieldsToEncrypt { get; protected set; }
-        public List<String> FieldsToDecrypt { get; protected set; }
+        public List<String> TriggeringEndPath { get;   set; }
+        public List<String> FieldsToEncrypt { get;   set; }
+        public List<String> FieldsToDecrypt { get;   set; }
 
-        public CipherMode SymmetricMode { get; protected set; }
-        public PaddingMode SymmetricPadding { get; protected set; }
-        public int SymmetricKeysize { get; protected set; }
+        public CipherMode SymmetricMode { get;   set; }
+        public PaddingMode SymmetricPadding { get;   set; }
+        public int SymmetricKeysize { get;   set; }
 
-        public RSAEncryptionPadding OaepEncryptionPadding { get; protected set; }
-        public String OaepHashingAlgorithm { get; protected set; }
+        public RSAEncryptionPadding OaepEncryptionPadding { get;   set; }
+        public String OaepHashingAlgorithm { get;   set; }
 
-        public HashingAlgorithm PublicKeyFingerprintHashing { get; protected set; }
-        public String IvFieldName { get; protected set; }
-        public String OaepHashingAlgorithmFieldName { get; protected set; }
-        public String EncryptedKeyFiledName { get; protected set; }
-        public String EncryptedDataFieldName { get; protected set; }
-        public String PublicKeyFingerprintFiledName { get; protected set; }
-        public DataEncoding DataEncoding { get; protected set; }
+        public HashingAlgorithm PublicKeyFingerprintHashing { get;   set; }
+        public String IvFieldName { get;   set; }
+        public String OaepHashingAlgorithmFieldName { get;   set; }
+        public String EncryptedKeyFiledName { get;   set; }
+        public String EncryptedDataFieldName { get;   set; }
+        public String PublicKeyFingerprintFiledName { get;   set; }
+        public DataEncoding DataEncoding { get;   set; }
 
-        
+        public Config() {
+
+        }
 
         public bool Equals(Config other)
         {
@@ -74,31 +76,7 @@ namespace MasterCard.Core.Security.Fle
                 this.DataEncoding == other.DataEncoding;
         }
 
-        public static Config MDES()
-        {
-            Config tmpConfig = new Config();
-            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/tokenize", "/searchTokens", "/getToken", "/transact", "/notifyTokenUpdated" });
-            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "cardInfo.encryptedData", "encryptedPayload.encryptedData" });
-            tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "encryptedPayload.encryptedData", "tokenDetail.encryptedData" });
 
-            tmpConfig.SymmetricMode = CipherMode.CBC;
-            tmpConfig.SymmetricPadding = PaddingMode.PKCS7;
-            tmpConfig.SymmetricKeysize = 256;
-
-            tmpConfig.OaepEncryptionPadding = RSAEncryptionPadding.OaepSHA512;
-            tmpConfig.OaepHashingAlgorithm = "SHA512";
-
-            tmpConfig.PublicKeyFingerprintHashing = HashingAlgorithm.SHA256;
-
-            tmpConfig.IvFieldName = "iv";
-            tmpConfig.OaepHashingAlgorithmFieldName = "oaepHashingAlgorithm";
-            tmpConfig.EncryptedKeyFiledName = "encryptedKey";
-            tmpConfig.EncryptedDataFieldName = "encryptedData";
-            tmpConfig.PublicKeyFingerprintFiledName = "publicKeyFingerprint";
-            tmpConfig.DataEncoding = DataEncoding.HEX;
-
-            return tmpConfig;
-        }
 
 
         public static Config Installments()
