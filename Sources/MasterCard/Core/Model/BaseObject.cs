@@ -58,7 +58,7 @@ namespace MasterCard.Core.Model
         /// <param name="operationUUID"></param>
         /// <param name="inputObject"></param>
         /// <returns></returns>
-        protected static ResourceList<T> ExecuteForList<T>(string operationUUID, T inputObject) where T : BaseObject
+        protected static ResourceList<T> ExecuteForList<T>(string operationUUID, T inputObject) where T : BaseObject, new()
         {
             T tmpObjectWithList = Execute(operationUUID, inputObject);
             return new ResourceList<T>(tmpObjectWithList);
@@ -73,23 +73,22 @@ namespace MasterCard.Core.Model
         /// <param name="operationUUID"></param>
         /// <param name="inputObject"></param>
         /// <returns></returns>
-        protected static T Execute<T>(string operationUUID, T inputObject) where T : BaseObject {
+        protected static T Execute<T>(string operationUUID, T inputObject) where T : BaseObject, new() {
             ApiController apiController = new ApiController();
-
-            IDictionary<String,Object> response = apiController.Execute (inputObject.GetOperationConfig(operationUUID), inputObject.GetOperationMetadata(), inputObject);
-
-			if (response != null) {
-				inputObject.Clear ();
-				inputObject.AddAll (response);
-			} else {
-				inputObject = (T) Activator.CreateInstance (inputObject.GetType ());
-				inputObject.AddAll (response);
-			}
-			return inputObject;
-		}
-
-
-			
+            
+            // if it is null, then set it to an new instance of the object
+            inputObject = inputObject ?? new T();
+            
+            // because we use methods in inputObject on this line, we must ensure that inputObject != null before we call this
+            IDictionary<String,Object> response = apiController.Execute(inputObject.GetOperationConfig(operationUUID), inputObject.GetOperationMetadata(), inputObject);
+	        
+            // if response is null, then set it to be an empty dictionary
+            response = response ?? new Dictionary<String, Object>();
+            
+            inputObject.Clear();
+            inputObject.AddAll(response);
+            
+            return inputObject;
+        }	
 	}
-
 }
