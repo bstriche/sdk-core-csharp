@@ -12,10 +12,17 @@ namespace MasterCard.Core.Model
     {
         public Uri AbsoluteUrl { get; set; }
         public Uri BaseUrl { get; set; }
+
+        public bool HasBody { get; private set; }
         public CryptographyInterceptor interceptor { get; set; }
 
         public RestyRequest(Uri url, Method method) : base(url,method)
         {
+        }
+
+        public new RestyRequest AddJsonBody(object obj) {
+            HasBody = true;
+            return (RestyRequest) base.AddJsonBody(obj);
         }
 
     }

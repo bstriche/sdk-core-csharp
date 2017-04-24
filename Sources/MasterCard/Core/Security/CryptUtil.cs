@@ -29,6 +29,9 @@
 using System;
 using System.Text;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using MasterCard.Core.Security.Fle;
+using System.Security.Authentication;
 using System.IO;
 using System.Linq;
 
@@ -46,12 +49,58 @@ namespace MasterCard.Core.Security
 			return payload.Replace ("\n", "").Replace ("\t", "").Replace ("\r", "").Replace (" ", "");
 		}
 
+		/// <summary>
+		/// function to encode a byte array to a string representation.
+		/// </summary>
+		/// <returns>The string.</returns>
+		/// <param name="bytes">Byte array containing the value to be encoded</param>
+		/// <param name="encoding">Type of encoding</param>
+		public static String Encode(byte[] bytes, DataEncoding encoding) {
+			if (encoding == DataEncoding.HEX) {
+				return HexEncode(bytes);
+			} else {
+				return Base64Encode(bytes);
+			}
+		}
+
+		/// <summary>
+		/// function to decode a String value to a byte[] representation.
+		/// </summary>
+		/// <returns>The byte[].</returns>
+		/// <param name="value">String value to be decoded</param>
+		/// <param name="decoding">Type of decoding</param>
+		public static byte[] Decode(String value, DataEncoding decoding) {
+			if (decoding == DataEncoding.HEX) {
+				return HexDecode(value);
+			} else {
+				return Base64Decode(value);
+			}
+		}
+
+		/// <summary>
+		/// Bytes the array to base64 string.
+		/// </summary>
+		/// <returns>The string.</returns>
+		/// <param name="bytes">Byte array containing the value to be encoded</param>
+		public static String Base64Encode(byte[] bytes) {
+			return System.Convert.ToBase64String(bytes);
+		}
+
+		/// <summary>
+		/// Base64 string to byte array
+		/// </summary>
+		/// <returns>The string.</returns>
+		/// <param name="bytes">Byte array containing the value to be encoded</param>
+		public static byte[] Base64Decode(String base64String) {
+			return System.Convert.FromBase64String(base64String);
+		}
+
 
 		/// <summary>
 		/// Bytes the array to hex string.
 		/// </summary>
 		/// <returns>The array to hex string.</returns>
-		/// <param name="ba">Ba.</param>
+		/// <param name="hex">Hex.</param>
 		public static byte[] HexDecode(String hex) 
 		{
 			return Enumerable.Range(0, hex.Length)
@@ -83,59 +132,69 @@ namespace MasterCard.Core.Security
 			return hexString.Replace ("-", "");
 		}
 
+		public static String GetPublicCertFingerprint(X509Certificate2 cert) {
+            Byte[] hashBytes;
+            using (var hasher = new SHA256Managed()) {
+                hashBytes = hasher.ComputeHash(cert.RawData);
+            }
+            return hashBytes.Aggregate(String.Empty, (str, hashByte) => str + hashByte.ToString("x2"));
+        }
 
-		public static Tuple<byte[], byte[], byte[]> EncryptAES(byte[] toEncrypt)
+
+		public static Tuple<byte[], byte[], byte[]> EncryptAES(byte[] toEncrypt, int keySize, CipherMode mode, PaddingMode padding)
 		{
-			var toEncryptBytes = toEncrypt;
-			using (var provider = new AesCryptoServiceProvider())
+            byte[] iv;
+            byte[] key;
+            byte[] data;
+            using (var provider = new AesCryptoServiceProvider())
 			{
-				provider.KeySize = 256;
+				provider.KeySize = keySize;
 				provider.GenerateKey ();
 				provider.GenerateIV ();
-				provider.Mode = CipherMode.CBC;
-				provider.Padding = PaddingMode.PKCS7;
+				provider.Mode = mode;
+				provider.Padding = padding;
 				using (var encryptor = provider.CreateEncryptor(provider.Key, provider.IV))
 				{
-					using (var ms = new MemoryStream())
+                    var ms = new MemoryStream();
+					using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
 					{
-						using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-						{
-							cs.Write(toEncryptBytes, 0, toEncryptBytes.Length);
-							cs.FlushFinalBlock();
-						}
-
-						return new Tuple<byte[], byte[], byte[]> (provider.IV, provider.Key, ms.ToArray ());
+					    cs.Write(toEncrypt, 0, toEncrypt.Length);
+						cs.FlushFinalBlock();
 					}
+                    iv = provider.IV; ;
+                    key = provider.Key;
+                    data = ms.ToArray();
 				}
 			}
-		}
+
+            return new Tuple<byte[], byte[], byte[]>(iv, key, data);
+        }
 
 
-		public static byte[] DecryptAES(byte[] iv, byte[] encryptionKey, byte[] encryptedData) {
+		public static byte[] DecryptAES(byte[] iv, byte[] encryptionKey, byte[] encryptedData, int keySize, CipherMode mode, PaddingMode padding) {
+            byte[] result;
 			using (var provider = new AesCryptoServiceProvider())
 			{
-				provider.KeySize = 256;
+				provider.KeySize = keySize;
 				provider.IV = iv;
 				provider.Key = encryptionKey;
-				provider.Mode = CipherMode.CBC;
-				provider.Padding = PaddingMode.PKCS7;
-				using (var ms = new MemoryStream(encryptedData))
+				provider.Mode = mode;
+				provider.Padding = padding;
+				using (var decryptor = provider.CreateDecryptor(provider.Key, provider.IV))
 				{
-					using (var decryptor = provider.CreateDecryptor(provider.Key, provider.IV))
+					using (var cs = new CryptoStream(new MemoryStream(encryptedData), decryptor, CryptoStreamMode.Read))
 					{
-						using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-						{
-							MemoryStream output = new MemoryStream();
-							byte[] decrypted = new byte[1024];
-							int byteCount = 0;
-							while ((byteCount = cs.Read (decrypted, 0, decrypted.Length)) > 0) {
-								output.Write(decrypted, 0, byteCount);
-							}
-							return output.ToArray ();
+						MemoryStream output = new MemoryStream();
+						byte[] decrypted = new byte[1024];
+						int byteCount = 0;
+						while ((byteCount = cs.Read (decrypted, 0, decrypted.Length)) > 0) {
+							output.Write(decrypted, 0, byteCount);
 						}
+						result= output.ToArray ();
 					}
 				}
 			}
+            return result;
 		}
 
 		public static RSACryptoServiceProvider GetRSAFromPrivateKeyString(string privateKey)
@@ -224,164 +283,16 @@ namespace MasterCard.Core.Security
 
 
 
-        public static byte[] EncrytptRSA(byte[] data, RSA publicKey)
+        public static byte[] EncrytptRSA(byte[] data, RSA publicKey, RSAEncryptionPadding padding)
         {
-            using (RSA rsa = publicKey)
-            {
-                return rsa.Encrypt(data, RSAEncryptionPadding.OaepSHA256);
-            }
-
+            return publicKey.Encrypt(data, padding);
         }
 
 
-        public static byte[] DecryptRSA(byte[] data, RSA privateKey)
+        public static byte[] DecryptRSA(byte[] data, RSA privateKey, RSAEncryptionPadding padding)
         {
-            using (RSA rsa = privateKey)
-            {
-                return rsa.Decrypt(data, RSAEncryptionPadding.OaepSHA256);
-            }
+            return privateKey.Decrypt(data, padding);
         }
-
-
-        /*
-                public static byte[] EncrytptRSA(byte[] data, AsymmetricKeyParameter publicKey) {
-
-                    String algorithm = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
-                    IBufferedCipher cipher = CipherUtilities.GetCipher (algorithm);
-                    cipher.Init (true, publicKey);
-                    return cipher.DoFinal (data);
-
-                }
-
-
-                public static byte[] DecryptRSA(byte[] data, AsymmetricKeyParameter privateKey) {
-                    String algorithm = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
-                    IBufferedCipher cipher = CipherUtilities.GetCipher (algorithm);
-                    cipher.Init (false, privateKey);
-                    return cipher.DoFinal (data);
-                }
-        */
-
-        //		private static byte[] ExportPrivateKey(RSACryptoServiceProvider csp)
-        //		{
-        //			if (csp.PublicOnly) throw new ArgumentException("CSP does not contain a private key", "csp");
-        //			var parameters = csp.ExportParameters(true);
-        //			using (var stream = new MemoryStream())
-        //			{
-        //				var writer = new BinaryWriter(stream);
-        //				writer.Write((byte)0x30); // SEQUENCE
-        //				using (var innerStream = new MemoryStream())
-        //				{
-        //					var innerWriter = new BinaryWriter(innerStream);
-        //					EncodeIntegerBigEndian(innerWriter, new byte[] { 0x00 }); // Version
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Modulus);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.D);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.P);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Q);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.DP);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.DQ);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.InverseQ);
-        //					var length = (int)innerStream.Length;
-        //					EncodeLength(writer, length);
-        //					writer.Write(innerStream.GetBuffer(), 0, length);
-        //				}
-        //
-        //				stream.Position = 0;
-        //				return stream.ToArray ();
-        //			}
-        //		}
-        //
-        //
-        //		public static byte[] ExportPublicKey(RSACryptoServiceProvider csp)
-        //		{
-        //			var parameters = csp.ExportParameters(false);
-        //			using (var stream = new MemoryStream())
-        //			{
-        //				var writer = new BinaryWriter(stream);
-        //				writer.Write((byte)0x30); // SEQUENCE
-        //				using (var innerStream = new MemoryStream())
-        //				{
-        //					var innerWriter = new BinaryWriter(innerStream);
-        //					EncodeIntegerBigEndian(innerWriter, new byte[] { 0x00 }); // Version
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Modulus);
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent);
-        //
-        //					//All Parameter Must Have Value so Set Other Parameter Value Whit Invalid Data  (for keeping Key Structure  use "parameters.Exponent" value for invalid data)
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent); // instead of parameters.D
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent); // instead of parameters.P
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent); // instead of parameters.Q
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent); // instead of parameters.DP
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent); // instead of parameters.DQ
-        //					EncodeIntegerBigEndian(innerWriter, parameters.Exponent); // instead of parameters.InverseQ
-        //
-        //					var length = (int)innerStream.Length;
-        //					EncodeLength(writer, length);
-        //					writer.Write(innerStream.GetBuffer(), 0, length);
-        //				}
-        //				stream.Position = 0;
-        //				return stream.ToArray ();
-        //			}
-        //		}
-        //
-        //		private static void EncodeIntegerBigEndian(BinaryWriter stream, byte[] value, bool forceUnsigned = true)
-        //		{
-        //			stream.Write((byte)0x02); // INTEGER
-        //			var prefixZeros = 0;
-        //			for (var i = 0; i < value.Length; i++)
-        //			{
-        //				if (value[i] != 0) break;
-        //				prefixZeros++;
-        //			}
-        //			if (value.Length - prefixZeros == 0)
-        //			{
-        //				EncodeLength(stream, 1);
-        //				stream.Write((byte)0);
-        //			}
-        //			else
-        //			{
-        //				if (forceUnsigned && value[prefixZeros] > 0x7f)
-        //				{
-        //					// Add a prefix zero to force unsigned if the MSB is 1
-        //					EncodeLength(stream, value.Length - prefixZeros + 1);
-        //					stream.Write((byte)0);
-        //				}
-        //				else
-        //				{
-        //					EncodeLength(stream, value.Length - prefixZeros);
-        //				}
-        //				for (var i = prefixZeros; i < value.Length; i++)
-        //				{
-        //					stream.Write(value[i]);
-        //				}
-        //			}
-        //		}
-        //
-        //		private static void EncodeLength(BinaryWriter stream, int length)
-        //		{
-        //			if (length < 0) throw new ArgumentOutOfRangeException("length", "Length must be non-negative");
-        //			if (length < 0x80)
-        //			{
-        //				// Short form
-        //				stream.Write((byte)length);
-        //			}
-        //			else
-        //			{
-        //				// Long form
-        //				var temp = length;
-        //				var bytesRequired = 0;
-        //				while (temp > 0)
-        //				{
-        //					temp >>= 8;
-        //					bytesRequired++;
-        //				}
-        //				stream.Write((byte)(bytesRequired | 0x80));
-        //				for (var i = bytesRequired - 1; i >= 0; i--)
-        //				{
-        //					stream.Write((byte)(length >> (8 * i) & 0xff));
-        //				}
-        //			}
-        //		}
     }
 }
 

@@ -34,10 +34,10 @@ namespace TestMasterCard
 		public void TestEncryptDecryptAES ()
 		{
 			String data = "andrea_rizzini@mastercard.com";
-			Tuple<byte[], byte[], byte[]> tuple = CryptUtil.EncryptAES (System.Text.Encoding.UTF8.GetBytes(data));
+			Tuple<byte[], byte[], byte[]> tuple = CryptUtil.EncryptAES (System.Text.Encoding.UTF8.GetBytes(data), 128, CipherMode.CBC, PaddingMode.PKCS7);
 
 
-			byte[] decryptedData = CryptUtil.DecryptAES (tuple.Item1, tuple.Item2, tuple.Item3);
+			byte[] decryptedData = CryptUtil.DecryptAES (tuple.Item1, tuple.Item2, tuple.Item3, 128, CipherMode.CBC, PaddingMode.PKCS7);
 			String data2 = System.Text.Encoding.UTF8.GetString (decryptedData);
 
 			Assert.AreEqual (data, data2);
@@ -55,11 +55,11 @@ namespace TestMasterCard
 
 			String data = "andrea_rizzini@mastercard.com";
 
-			byte[] encryptedData = CryptUtil.EncrytptRSA (Encoding.UTF8.GetBytes (data), publicKey);
+			byte[] encryptedData = CryptUtil.EncrytptRSA (Encoding.UTF8.GetBytes (data), publicKey, RSAEncryptionPadding.OaepSHA256);
 
 			Assert.NotNull (encryptedData);
 
-			byte[] decryptedData = CryptUtil.DecryptRSA (encryptedData, privateKey);
+			byte[] decryptedData = CryptUtil.DecryptRSA (encryptedData, privateKey, RSAEncryptionPadding.OaepSHA256);
 
 			String dataOut = System.Text.Encoding.UTF8.GetString (decryptedData);
 

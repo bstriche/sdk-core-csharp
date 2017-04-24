@@ -118,6 +118,21 @@ namespace MasterCard.Core.Model
 		{
 		}
 
+
+		/// <summary>
+		/// Associates the specified value to the specified key path and returns a reference to
+		/// this map. </summary>
+		/// <param name="key"> key path to which the specified value is to be associated. </param>
+		/// <param name="value"> the value which is to be associated with the specified key path. </param>
+		/// <returns> this map </returns>
+		/// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
+		/// <exception cref="IndexOutOfBoundsException"> if using an array index in the key path is out of bounds. </exception>
+		public new virtual RequestMap Set (string key, object value)
+		{
+			base.Add (key, value);
+			return this;
+		}
+
 	}
 
 }

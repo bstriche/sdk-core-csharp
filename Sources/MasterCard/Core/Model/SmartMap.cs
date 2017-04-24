@@ -245,8 +245,7 @@ namespace MasterCard.Core.Model
 		{
 			string[] properties = keyPath.Split ('.');
 			Dictionary<string,object> destinationObject = __storage;
-			SmartMap parsedMap = null;
-
+			
             for (int i = 0; i < properties.Length; i++) {
 				bool isLastOne = ((i+1) == properties.Length);
 				string property = properties [i];
@@ -654,57 +653,9 @@ namespace MasterCard.Core.Model
 		}
 
 
-		/// <summary>
-		/// Gets the enumerator.
-		/// </summary>
-		/// <returns>The enumerator.</returns>
-		public IEnumerator GetEnumerator ()
-		{
-			//throw new NotImplementedException ();
-			return GetEnumerator();
-		}
 
-		/// <summary>
-		/// Gets the enumerator.
-		/// </summary>
-		/// <returns>The enumerator.</returns>
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			//throw new NotImplementedException ();
-			return __storage.GetEnumerator ();
-		}
 
-		/// <summary>
-		/// Gets the keys.
-		/// </summary>
-		/// <value>The keys.</value>
-		ICollection<string> IDictionary<string, object>.Keys {
-			get {
-				return __storage.Keys;
-			}
-		}
 
-		/// <summary>
-		/// Gets the values.
-		/// </summary>
-		/// <value>The values.</value>
-		ICollection<object> IDictionary<string, object>.Values {
-			get {
-				return __storage.Values;
-			}
-		}
-
-		/// <summary>
-		/// Tries the get value.
-		/// </summary>
-		/// <returns><c>true</c>, if get value was tryed, <c>false</c> otherwise.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		bool IDictionary<string, object>.TryGetValue (string key, out object value)
-		{
-				value = Get (key) ;
-				return true;
-		}
 
 		/// <summary>
 		/// Add the specified item.
@@ -723,44 +674,55 @@ namespace MasterCard.Core.Model
 			__storage.Clear ();
 		}
 
-		/// <summary>
-		/// Contains the specified item.
-		/// </summary>
-		/// <param name="item">Item.</param>
-		bool ICollection<KeyValuePair<string, object>>.Contains (KeyValuePair<string, object> item)
-		{
-			return __storage.ContainsKey (item.Key);
-		}
+        public bool TryGetValue(string key, out object value)
+        {
+            return ((IDictionary<string, object>)__storage).TryGetValue(key, out value);
+        }
 
-		/// <summary>
-		/// Copies to.
-		/// </summary>
-		/// <param name="array">Array.</param>
-		/// <param name="arrayIndex">Array index.</param>
-		void ICollection<KeyValuePair<string, object>>.CopyTo (KeyValuePair<string, object>[] array, int arrayIndex)
-		{
-			((ICollection<KeyValuePair<string, object>>)__storage).CopyTo (array, arrayIndex);
-		}
+        public bool Contains(KeyValuePair<string, object> item)
+        {
+            return ((IDictionary<string, object>)__storage).Contains(item);
+        }
 
-		/// <summary>
-		/// Remove the specified item.
-		/// </summary>
-		/// <param name="item">Item.</param>
-		bool ICollection<KeyValuePair<string, object>>.Remove (KeyValuePair<string, object> item)
-		{
-			return ((ICollection<KeyValuePair<string, object>>)__storage).Remove (item);
-		}
+        public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        {
+            ((IDictionary<string, object>)__storage).CopyTo(array, arrayIndex);
+        }
 
-		/// <summary>
-		/// Gets a value indicating whether this instance is read only.
-		/// </summary>
-		/// <value><c>true</c> if this instance is read only; otherwise, <c>false</c>.</value>
-		bool ICollection<KeyValuePair<string, object>>.IsReadOnly {
-			get {
-				return ((ICollection<KeyValuePair<string, object>>)__storage).IsReadOnly;
-			}
-		}
-	}
+        public bool Remove(KeyValuePair<string, object> item)
+        {
+            return ((IDictionary<string, object>)__storage).Remove(item);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return ((IDictionary<string, object>)__storage).GetEnumerator();
+        }
+
+        public ICollection<string> Keys
+        {
+            get
+            {
+                return ((IDictionary<string, object>)__storage).Keys;
+            }
+        }
+
+        public ICollection<object> Values
+        {
+            get
+            {
+                return ((IDictionary<string, object>)__storage).Values;
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                return ((IDictionary<string, object>)__storage).IsReadOnly;
+            }
+        }
+    }
 
 
 }

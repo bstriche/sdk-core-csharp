@@ -78,6 +78,9 @@
     <Compile Include="Sources\MasterCard\Core\Model\RestyRequest.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\SmartMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\AuthenticationInterface.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\Fle\Config.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\Fle\FieldLevelEncryption.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\Installments\InstallmentCryptography.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthAuthentication.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthParameters.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\OAuth\OAuthUtil.cs" />
@@ -86,7 +89,11 @@
     <Compile Include="Sources\MasterCard\Core\Model\RequestMap.cs" />
     <Compile Include="Sources\MasterCard\Core\Util.cs" />
     <Compile Include="Sources\MasterCard\Core\Model\ResourceList.cs" />
-    <Compile Include="Test\BaseObjectTest.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\MDES\MDESCryptography.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
+    <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
+
+    <Compile Include="Test\BaseObjectTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
     <Compile Include="Test\Functional\ATMCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ATMCountriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ATMCountrySubdivisions.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -96,6 +103,8 @@
     <Compile Include="Test\Functional\AudiencesSegment.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\AudiencesSegmentTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\BaseTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\GetToken.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Compile Include="Test\Functional\GetTokenTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategories.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategoriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -129,9 +138,6 @@
     <Compile Include="Test\CryptUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\TokenActivation.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\TokenActivationTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Sources\MasterCard\Core\Security\MDES\MDESCryptography.cs" />
-    <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
-    <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -150,5 +156,10 @@
     <Content Include="Test\mastercard_public.crt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Test\installments_public.crt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 MasterCard International.
  *
  * Redistribution and use in source and binary forms, with or without modification, are 
@@ -25,17 +25,63 @@
  *
  */
 
-
 using System;
-using MasterCard.Core.Security.Fle;
+using System.Collections.Generic;
+using MasterCard.Core;
+using MasterCard.Core.Exceptions;
+using MasterCard.Core.Model;
+using MasterCard.Core.Security;
 
-namespace MasterCard.Core.Security.MDES
+
+namespace TestMasterCard
 {
-	public class MDESCryptography : FieldLevelEncryption
+	public class GetToken : BaseObject
 	{
-		public MDESCryptography(String publicKeyLocation, String privateKeyLocation): base(publicKeyLocation, privateKeyLocation, Config.MDES()){
 
+		public GetToken(RequestMap bm) : base(bm)
+		{
 		}
+
+		public GetToken() : base()
+		{
+		}
+
+		private static readonly Dictionary<string, OperationConfig> _store = new Dictionary<string, OperationConfig>
+		{
+			{"61d50f85-0aca-4946-99f6-8822effae8b0", new OperationConfig("/mdes/digitization/#env/1/0/getToken", "create", new List<String> {  }, new List<String> {  })},
+			
+		};
+
+		protected override OperationConfig GetOperationConfig(string operationUUID)
+		{
+			if (!_store.ContainsKey(operationUUID))
+			{
+				throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
+			}
+			return _store[operationUUID];
+		}
+
+		protected override OperationMetadata GetOperationMetadata()
+		{
+			return new OperationMetadata("0.0.1", "https://sandbox.api.mastercard.com", "static");
+		}
+
+		/// <summary>
+		/// Creates an object of type <code>GetToken</code>
+		/// </summary>
+		/// <param name="map">A RequestMap containing the required parameters to create a new object</praram>
+		/// <returns> A GetToken object </returns>
+        /// <exception cref="ApiException"> </exception>
+		public static GetToken Create(RequestMap map)
+		{
+			return BaseObject.Execute("61d50f85-0aca-4946-99f6-8822effae8b0", new GetToken(map));
+		}
+
+
+
+
 
 	}
 }
+
+
