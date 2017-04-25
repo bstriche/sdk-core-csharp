@@ -27,15 +27,22 @@
 
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 using MasterCard.Core.Security.Fle;
 
 namespace MasterCard.Core.Security.Installments
 {
 	public class InstallmentCryptography : FieldLevelEncryption
 	{
-		public InstallmentCryptography(String publicKeyLocation, String privateKeyLocation): base(publicKeyLocation, privateKeyLocation, Config.Installments()){
+		public InstallmentCryptography(String publicKeyLocation, String privateKeyLocation, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+      : base(publicKeyLocation, privateKeyLocation, Config.Installments(), keyStorageFlags){
 
 		}
+
+    public InstallmentCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+      : base(rawPublicKeyData, rawPrivateKeyData, Config.Installments(), keyStorageFlags) {
+
+    }
 
 	}
 }
