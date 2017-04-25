@@ -45,6 +45,7 @@ namespace MasterCard.Core.Exceptions
 		protected Boolean recoverable;
 		protected String description;
 		protected int httpStatus = 0;
+		protected List<Dictionary<String,Object>> errors = new List<Dictionary<String,Object>>();
 
 
 		private SmartMap rawErrorData;
@@ -99,41 +100,106 @@ namespace MasterCard.Core.Exceptions
 		///  a map containing the detailed error data for the key <code>"key"</code>.  This map in turn
 		///  is expected to contain <code>String</code> values for the keys
 		///  <code>"code"</code> and <code>"message"</code>. </param>
-		public ApiException(int status, IDictionary<String,Object> errorData) : base()
+		public ApiException(int status, Object errorData) : base()
 		{
 			this.httpStatus = status;
-			this.rawErrorData = new SmartMap(errorData, true);
-			if (rawErrorData.ContainsKey ("Errors.Error")) {
-					// this is a dictionary
-					IDictionary<String, Object> error;
+			ParseErrors(errorData);
+			ParseFirstErrorToMemberVariables();
+		}
 
-					if (rawErrorData["Errors.Error"].GetType() == typeof(List<Dictionary<String,Object>>))
-					{
-						error = ((Dictionary<String,Object>)rawErrorData["Errors.Error[0]"]);
-					} else {
-						error = (Dictionary<String,Object>)rawErrorData["Errors.Error"];
+
+		protected void ParseErrors(Object response) {
+			List<Dictionary<String,Object>> tmpList = new List<Dictionary<String,Object>>();
+			
+			if (response is IList<Dictionary<String,Object>>) {
+				tmpList.AddRange((List<Dictionary<String,Object>>) response );
+			} else {
+				tmpList.Add((Dictionary<String,Object>) response);
+			}
+
+			foreach (Dictionary<String,Object> tmpErrorMap in tmpList) {
+
+				SmartMap tmpCaseInsensitiveMap = new SmartMap(tmpErrorMap, true);
+				try {
+					if (tmpCaseInsensitiveMap.ContainsKey("Errors.Error.Description")) {
+						//errors object with a list of error object
+						Dictionary<String,Object> tmpErrorObj = (Dictionary<String,Object>) tmpCaseInsensitiveMap.Get("Errors.Error");
+						AddError(tmpErrorObj);
+						continue;
 					}
+				} catch (Exception) {
 
-                    SmartMap errorMap = new SmartMap(error, true);
+				}
 
-                    if (errorMap.ContainsKey("Source"))
-                    {
-                        this.source = errorMap.Get("Source").ToString();
-                    }
-                    if (errorMap.ContainsKey("ReasonCode"))
-                    {
-                        this.reasonCode = errorMap.Get("ReasonCode").ToString();
-                    }
-                    if (errorMap.ContainsKey("Description"))
-                    {
-                        this.description = errorMap.Get("Description").ToString();
-                    }
-                    if (errorMap.ContainsKey("Recoverable"))
-                    {
-                        this.recoverable = Boolean.Parse(errorMap.Get("Recoverable").ToString());
-                    }
+				try {
+					if (tmpCaseInsensitiveMap.ContainsKey("Errors.Error[0].Description")) {
+						//errors object with a list of error object
+						List<Dictionary<String,Object>> tmpErrorList = (List<Dictionary<String,Object>>) tmpCaseInsensitiveMap.Get("Errors.Error");
+						AddError(tmpErrorList);
+						continue;
+					}
+				} catch (Exception) {
 
+				}
+
+				try {
+					if (tmpCaseInsensitiveMap.ContainsKey("Errors[0].Description")) {
+						List<Dictionary<String,Object>> tmpErrorList = (List<Dictionary<String,Object>>) tmpCaseInsensitiveMap.Get("Errors");
+						AddError(tmpErrorList);
+						continue;
+					}
+				} catch (Exception) {
+
+				}
+
+				try {
+
+					if (tmpCaseInsensitiveMap.ContainsKey("Description")) {
+						AddError(tmpErrorMap);
+						continue;
+					}
+				} catch (Exception) {
+
+				}
+        	}
+		}
+
+
+		protected void AddError(List<Dictionary<String,Object>> errors) {
+			foreach(Dictionary<String,Object> error in errors) {
+				AddError(error);
+			}
+		}
+
+		protected void AddError(Dictionary<String,Object> error) {
+			errors.Add(error);
+		}
+
+		protected void ParseFirstErrorToMemberVariables() {
+        if (errors.Count > 0) {
+            Dictionary<String,Object> tmpErrorMap = errors[0];
+            rawErrorData = new SmartMap(tmpErrorMap, true);
+            if (rawErrorData.Get("Source") != null) {
+                source = rawErrorData.Get("Source").ToString();
             }
+            if (rawErrorData.Get("ReasonCode") != null) {
+                reasonCode = rawErrorData.Get("ReasonCode").ToString();
+            }
+            if (rawErrorData.Get("Description") != null) {
+                description = rawErrorData.Get("Description").ToString();
+            }
+        }
+    }
+
+		/// <summary>
+		/// Returns the API error exception list. </summary>
+		/// <returns> a list representing the error data for this exception (which may be a empty list) </returns>
+		public virtual List<Dictionary<String,Object>> ListErrors
+		{
+			get
+			{
+				return errors;
+			}
 		}
 
 		/// <summary>

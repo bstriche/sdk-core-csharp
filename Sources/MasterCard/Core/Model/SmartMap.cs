@@ -565,6 +565,28 @@ namespace MasterCard.Core.Model
 			}
 		}
 
+
+        /// <summary>
+        /// Deserializes json nested maps in a object>.
+        /// </summary>
+        /// <returns>The deep.</returns>
+        /// <param name="json">Json.</param>
+        public static Object AsObject(String json)
+        {
+            try
+            {
+                IDictionary<string, object> tmpDict = JsonConvert.DeserializeObject<IDictionary<string, object>>(json);
+                return ParseDictionary(tmpDict);
+
+
+            }
+            catch (Exception)
+            {
+                IList<Object> intermediaryResult = JsonConvert.DeserializeObject<List<Object>>(json);
+                return ParseListOfDictionary(intermediaryResult);
+            }
+        }
+
         private static List<Object> ParseListOfObjects(IList<Object> input, bool caseInsensitive = false)
         {
             List<Object> tmpList = new List<object>();
@@ -612,24 +634,24 @@ namespace MasterCard.Core.Model
             foreach (KeyValuePair<string,object> pair in input)  {
 
                 Object convertedValue = null;
-                if (pair.Value is IDictionary)
-                {
-                    convertedValue = ParseDictionary((IDictionary < string, object > )pair.Value, caseInsensitive);
-                }
-                else if (pair.Value is JObject)
+
+                if (pair.Value.GetType() == typeof(JObject))
                 {
                     convertedValue = ParseDictionary(((JObject)pair.Value).ToObject<IDictionary<string, object>>(), caseInsensitive);
                 }
-                else if (pair.Value is JArray)
+                else if (pair.Value.GetType() == typeof(JArray))
                 {
-                    var listItem = ((JArray)pair.Value)[0];
-                    if (listItem is JObject || listItem is IDictionary) {
-                        convertedValue = ParseListOfDictionary(((JArray)pair.Value).ToObject<List<Object>>(), caseInsensitive);
-                    } else
-                    {
-                        convertedValue = ParseListOfObjects(((JArray)pair.Value).ToObject<List<Object>>(), caseInsensitive);
-                    }
+                    convertedValue = ParseListOfDictionary(((JArray)pair.Value).ToObject<List<Object>>(), caseInsensitive);
+                } 
+				else  if (pair.Value is IDictionary)
+                {
+                    convertedValue = ParseDictionary((IDictionary < string, object > )pair.Value, caseInsensitive);
                 }
+                else if (pair.Value is IList)
+                {
+                    convertedValue = ParseListOfDictionary(((List<Object>)pair.Value), caseInsensitive);
+                }
+
                 else
                 {
                     convertedValue = pair.Value;

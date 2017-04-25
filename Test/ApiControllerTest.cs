@@ -215,6 +215,49 @@ namespace TestMasterCard
 
 
         [Test]
+        public void Test400_InvalidRequestExceptionCaseInsensitive_ListOfErrors()
+        {
+
+            RequestMap responseMap = new RequestMap("{\"errors\":[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}\n");
+
+            ApiController controller = new ApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, responseMap));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            ApiException ex = Assert.Throws<ApiException>(() => controller.Execute(config, metadata, new TestBaseObject(responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("The supplied field: 'date' is of an unsupported format"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
+            Assert.That(ex.Source, Is.EqualTo("validation"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
+
+                [Test]
+        public void Test400_InvalidRequestExceptionCaseInsensitive_JSONNative()
+        {
+
+            RequestMap responseMap = new RequestMap("[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]");
+
+            ApiController controller = new ApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, responseMap));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            ApiException ex = Assert.Throws<ApiException>(() => controller.Execute(config, metadata, new TestBaseObject(responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("The supplied field: 'date' is of an unsupported format"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
+            Assert.That(ex.Source, Is.EqualTo("validation"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
+
+
+        [Test]
 		public void Test401_AuthenticationException ()
 		{
 

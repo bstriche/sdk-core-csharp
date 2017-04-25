@@ -127,34 +127,51 @@ namespace MasterCard.Core
                 log.Debug(response.Content.ToString());
 
 
-				if (response.ErrorException == null && response.Content != null) {
-					IDictionary<String,Object> responseObj = new Dictionary<String,Object>();
-					if (response.Content.Length > 0) {
-						try {
-							responseObj = RequestMap.AsDictionary (response.Content);
-						} catch (Exception) {
-							throw new ApiException ("Error: parsing JSON response", response.Content);
-						}
+                if (response.ErrorException == null && response.Content != null) {
+                    IDictionary<String, Object> responseObj = new Dictionary<String, Object>();
 
-						if (interceptor != null)
-						{
-							try
-							{
-								responseObj = interceptor.Decrypt(responseObj);
-							} 
-							catch (Exception e)
-							{
-								throw new ApiException("Error: decrypting payload", e);
-							}
-						}
-					} 
-					
-					if (response.StatusCode < HttpStatusCode.Ambiguous) {
-						log.Debug ("<<Execute()");
-						return responseObj;
-					} else {
-						throw GenerateException (responseObj, response);
-					}
+
+                    if (response.Content.Length > 0)
+                    {
+                        Object tmpObj = SmartMap.AsObject(response.Content);
+
+                        if (response.StatusCode < HttpStatusCode.Ambiguous)
+                        {
+                            if (tmpObj is IList)
+                            {
+                                responseObj.Add("list", tmpObj);
+                            }
+                            else
+                            {
+                                responseObj = (Dictionary<String, Object>)tmpObj;
+                            }
+
+                            if (interceptor != null)
+                            {
+                                try
+                                {
+                                    responseObj = interceptor.Decrypt(responseObj);
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new ApiException("Error: decrypting payload", e);
+                                }
+                            }
+
+
+                            log.Debug("<<Execute()");
+                            return responseObj;
+                        }
+                        else
+                        {
+                            int status = (int)response.StatusCode;
+                            throw new ApiException(status, tmpObj);
+                        }
+                    } else
+                    {
+                        return responseObj;
+                    }
+                    
 				} else {
 					throw new ApiException (response.ErrorMessage, response.ErrorException);
 				}
@@ -174,20 +191,6 @@ namespace MasterCard.Core
 
 		}
 
-
-		/// <summary>
-		/// Throws the exception.
-		/// </summary>
-		/// <param name="responseObj">Response object.</param>
-		/// <param name="response">Response.</param>
-		private static ApiException GenerateException(IDictionary<String,Object> responseObj, IRestResponse response) {
-			int status = (int)response.StatusCode;
-			if (responseObj != null) {
-				return new ApiException (status, responseObj);
-			} else {
-				return new ApiException (status.ToString(), response.Content);
-			}
-		}
 
 
 		/// <summary>

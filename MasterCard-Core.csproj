@@ -93,6 +93,8 @@
     <Compile Include="Sources\MasterCard\Core\Security\MDES\MDESCryptography.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
+
+    <Compile Include="Test\BaseObjectTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
     <Compile Include="Test\Functional\ATMCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ATMCountriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ATMCountrySubdivisions.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -131,6 +133,7 @@
     <Compile Include="Test\OAuthUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\TestBaseObject.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\TestPathBaseObject.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\TestReadBaseObject.cs" />
     <Compile Include="Test\TestUtil.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\UtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\CryptUtilTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
