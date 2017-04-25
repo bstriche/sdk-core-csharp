@@ -55,7 +55,30 @@ namespace TestMasterCard
 		}
 
 
-		[Test]
+        /// <summary>
+        /// Mocks the client.
+        /// </summary>
+        /// <returns>The client.</returns>
+        /// <param name="responseCode">Response code.</param>
+        /// <param name="responseMap">Response map.</param>
+        public IRestClient mockClient(HttpStatusCode responseCode, String response)
+        {
+
+            var restClient = new Mock<IRestClient>();
+
+            restClient.Setup(x => x.Execute(It.IsAny<IRestRequest>()))
+                .Returns(new RestResponse
+                {
+                    StatusCode = responseCode,
+                    Content = response
+                });
+
+            return restClient.Object;
+
+        }
+
+
+        [Test]
 		public void Test200WithMap ()
 		{
 
@@ -112,7 +135,7 @@ namespace TestMasterCard
 			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
 			ApiController controller = new ApiController ();
 
-			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, null));
+			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, ""));
 
             // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
             var config = new OperationConfig("/test1", "create", headerList, queryList);
@@ -207,6 +230,49 @@ namespace TestMasterCard
             var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
 
             ApiException ex = Assert.Throws<ApiException>(() => controller.Execute(config, metadata, new TestBaseObject(responseMap)));
+            Assert.That(ex.Message, Is.EqualTo("The supplied field: 'date' is of an unsupported format"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
+            Assert.That(ex.Source, Is.EqualTo("validation"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
+
+
+        [Test]
+        public void Test400_InvalidRequestExceptionCaseInsensitive_ListOfErrors()
+        {
+
+            String response = "{\"errors\":[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}\n";
+
+            ApiController controller = new ApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, response));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            ApiException ex = Assert.Throws<ApiException>(() => controller.Execute(config, metadata, new TestBaseObject()));
+            Assert.That(ex.Message, Is.EqualTo("The supplied field: 'date' is of an unsupported format"));
+            Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
+            Assert.That(ex.Source, Is.EqualTo("validation"));
+            Assert.That(ex.Recoverable, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void Test400_InvalidRequestExceptionCaseInsensitive_JSONNative()
+        {
+
+            String response = "[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]";
+
+            ApiController controller = new ApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, response));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            ApiException ex = Assert.Throws<ApiException>(() => controller.Execute(config, metadata, new TestBaseObject()));
             Assert.That(ex.Message, Is.EqualTo("The supplied field: 'date' is of an unsupported format"));
             Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
             Assert.That(ex.Source, Is.EqualTo("validation"));

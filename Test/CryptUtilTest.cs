@@ -44,14 +44,16 @@ namespace TestMasterCard
 
 		}
 
-		[Test]
+
+
+        [Test]
 		public void TestEncryptDecryptRSA () {
 
             string certPath = MasterCard.Core.Util.GetCurrenyAssemblyPath() + "\\Test\\certificate.p12";
             X509Certificate2 cert = new X509Certificate2(certPath , "", X509KeyStorageFlags.Exportable);
 
-            var publicKey = cert.GetRSAPublicKey();
-            var privateKey = cert.GetRSAPrivateKey();
+            var publicKey = cert.GetRSAPublicKey() as RSACng;
+            var privateKey = cert.GetRSAPrivateKey() as RSACng;
 
 			String data = "andrea_rizzini@mastercard.com";
 
@@ -72,11 +74,46 @@ namespace TestMasterCard
 		}
 
 
+		[Test]
+		public void TestFullEndToEndEncryptDecrypt () {
 
+            string certPath = MasterCard.Core.Util.GetCurrenyAssemblyPath() + "\\Test\\certificate.p12";
+            X509Certificate2 cert = new X509Certificate2(certPath , "", X509KeyStorageFlags.Exportable);
 
-	
+            var publicKey = cert.GetRSAPublicKey() as RSACng;
+            var privateKey = cert.GetRSAPrivateKey() as RSACng;
 
+			String data = "andrea_rizzini@mastercard.com";
 
+			Tuple<byte[], byte[], byte[]> aesResult = CryptUtil.EncryptAES(Encoding.UTF8.GetBytes (data), 128, CipherMode.CBC, PaddingMode.PKCS7);
+			byte[] ivBytes = aesResult.Item1;
+			// 5) generate AES SecretKey
+			byte[] secretKeyBytes = aesResult.Item2;
+			// 6) encrypt payload
+			byte[] encryptedDataBytes = aesResult.Item3;
+
+			byte[] encryptedSecretKey = CryptUtil.EncrytptRSA (secretKeyBytes, publicKey, RSAEncryptionPadding.OaepSHA256);
+			
+			byte[] decryptedSecretKey = CryptUtil.DecryptRSA (encryptedSecretKey, privateKey, RSAEncryptionPadding.OaepSHA256);
+
+			byte[] decryptedDataBytes = CryptUtil.DecryptAES(ivBytes, decryptedSecretKey, encryptedDataBytes, 128, CipherMode.CBC, PaddingMode.PKCS7);
+
+			String dataOut = System.Text.Encoding.UTF8.GetString (decryptedDataBytes);
+
+			Assert.AreEqual (data, dataOut);
+		}
+
+		[Test]
+		public void TestHexEncodeDecode () {
+				String data = "andrea_rizzini@mastercard.com";
+
+				String encodeData =CryptUtil.Encode(Encoding.UTF8.GetBytes (data), MasterCard.Core.Security.Fle.DataEncoding.HEX);
+				byte[] decodeDataBytes = CryptUtil.Decode(encodeData,MasterCard.Core.Security.Fle.DataEncoding.HEX);
+
+				String dataOut = System.Text.Encoding.UTF8.GetString (decodeDataBytes);
+
+				Assert.AreEqual (data, dataOut);
+		}
 
 
 	}

@@ -153,7 +153,7 @@ namespace MasterCard.Core.Security
 				provider.GenerateIV ();
 				provider.Mode = mode;
 				provider.Padding = padding;
-				using (var encryptor = provider.CreateEncryptor(provider.Key, provider.IV))
+				using (var encryptor = provider.CreateEncryptor())
 				{
                     var ms = new MemoryStream();
 					using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
@@ -175,12 +175,13 @@ namespace MasterCard.Core.Security
             byte[] result;
 			using (var provider = new AesCryptoServiceProvider())
 			{
-				provider.KeySize = keySize;
 				provider.IV = iv;
 				provider.Key = encryptionKey;
 				provider.Mode = mode;
 				provider.Padding = padding;
-				using (var decryptor = provider.CreateDecryptor(provider.Key, provider.IV))
+
+
+				using (var decryptor = provider.CreateDecryptor())
 				{
 					using (var cs = new CryptoStream(new MemoryStream(encryptedData), decryptor, CryptoStreamMode.Read))
 					{
@@ -197,7 +198,26 @@ namespace MasterCard.Core.Security
             return result;
 		}
 
-		public static RSACryptoServiceProvider GetRSAFromPrivateKeyString(string privateKey)
+
+
+		static byte[] ConvertHexStringToByteArray(string hexString)
+        {
+            if (hexString.Length % 2 != 0)
+            {
+                throw new ArgumentException(String.Format(System.Globalization.CultureInfo.InvariantCulture, "The binary key cannot have an odd number of digits: {0}", hexString));
+            }
+
+            byte[] HexAsBytes = new byte[hexString.Length / 2];
+            for (int index = 0; index < HexAsBytes.Length; index++)
+            {
+                string byteValue = hexString.Substring(index * 2, 2);
+                HexAsBytes[index] = byte.Parse(byteValue, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            return HexAsBytes;
+        }
+
+		public static RSACng GetRSAFromPrivateKeyString(string privateKey)
 		{
 
 			if (!privateKey.Contains ("-----BEGIN RSA PRIVATE KEY-----")) {
@@ -241,10 +261,12 @@ namespace MasterCard.Core.Security
 				RSAparams.DP = binr.ReadBytes(GetIntegerSize(binr));
 				RSAparams.DQ = binr.ReadBytes(GetIntegerSize(binr));
 				RSAparams.InverseQ = binr.ReadBytes(GetIntegerSize(binr));
+                
 			}
 
-			RSA.ImportParameters(RSAparams);
-			return RSA;
+            var rsa = new RSACng();
+            rsa.ImportParameters(RSAparams);
+            return rsa;
 		}
 
 		private static int GetIntegerSize(BinaryReader binr)
@@ -283,15 +305,25 @@ namespace MasterCard.Core.Security
 
 
 
-        public static byte[] EncrytptRSA(byte[] data, RSA publicKey, RSAEncryptionPadding padding)
+        public static byte[] EncrytptRSA(byte[] data, RSACng publicKey, RSAEncryptionPadding padding)
         {
+            //using (RSACng instance = new RSACng()) {
+            //	instance.ImportParameters(publicKey.ExportParameters(false));
+            //	return instance.Encrypt(data, padding);
+            //}
             return publicKey.Encrypt(data, padding);
+            
         }
 
 
-        public static byte[] DecryptRSA(byte[] data, RSA privateKey, RSAEncryptionPadding padding)
+        public static byte[] DecryptRSA(byte[] data, RSACng privateKey, RSAEncryptionPadding padding)
         {
+            //using (RSACng instance = new RSACng()) {
+            //instance.ImportParameters(privateKey.ExportParameters(true));
+            //return instance.Encrypt(data, padding);
+            //}
             return privateKey.Decrypt(data, padding);
+
         }
     }
 }

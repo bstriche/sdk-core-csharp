@@ -72,19 +72,6 @@ namespace MasterCard.Core
 		}
 
 
-/*		public String GenerateHost() {
-			String hostUrl =  "https://";
-			if (ApiConfig.GetSubDomain() != null) {
-				hostUrl += ApiConfig.GetSubDomain();
-				hostUrl += ".";
-			}
-			hostUrl += "api.mastercard.com";
-			
-			return hostUrl;
-		}
-    */
-
-
 		/// <summary>
 		/// Sets the rest client.
 		/// </summary>
@@ -126,12 +113,6 @@ namespace MasterCard.Core
                     client = new RestClient(request.BaseUrl);
                 }
 
-
-            } catch (Exception e) {
-				throw new ApiException (e.Message, e);
-			}
-
-			try {
 				log.Debug(">>Execute(action='"+config.Action+"', resourcePaht='"+config.ResourcePath+"', requestMap='"+requestMap+"'");
 				log.Debug("excute(), request.Method='"+request.Method+"'");
                 log.Debug("excute(), request.URL=" + request.AbsoluteUrl.ToString());
@@ -144,66 +125,60 @@ namespace MasterCard.Core
                 log.Debug(response.Headers);
 				log.Debug("Execute(), response.Body=");
                 log.Debug(response.Content.ToString());
-			} catch (Exception e) {
-				Exception wrapper = new ApiException (e.Message, e);
-				log.Error (wrapper.Message, wrapper);
-				throw wrapper;
-			}
 
-			if (response.ErrorException == null && response.Content != null) {
-				IDictionary<String,Object> responseObj = new Dictionary<String,Object>();
 
-				if (response.Content.Length > 0) {
-					try {
-						responseObj = RequestMap.AsDictionary (response.Content);
-					} catch (Exception) {
-						throw new ApiException ("Error: parsing JSON response", response.Content);
-					}
+                if (response.ErrorException == null && response.Content != null) {
+                    IDictionary<String, Object> responseObj = new Dictionary<String, Object>();
 
-                    try
+                    if (response.Content.Length > 0)
                     {
-                        if (interceptor != null)
+                        if (response.StatusCode < HttpStatusCode.Ambiguous)
                         {
-                            responseObj = interceptor.Decrypt(responseObj);
+							responseObj = SmartMap.AsDictionary(response.Content);
+                            if (interceptor != null)
+                            {
+                                try
+                                {
+                                    responseObj = interceptor.Decrypt(responseObj);
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new ApiException("Error: decrypting payload", e);
+                                }
+                            }
+
+                            log.Debug("<<Execute()");
+                            return responseObj;
                         }
-                    } catch (Exception e)
+                        else
+                        {
+                            int status = (int)response.StatusCode;
+                            throw new ApiException(status, SmartMap.AsObject(response.Content));
+                        }
+                    } else
                     {
-                        throw new ApiException("Error: decrypting payload", e);
+                        return responseObj;
                     }
-				} 
-				 
-				if (response.StatusCode < HttpStatusCode.Ambiguous) {
-					log.Debug ("<<Execute()");
-					return responseObj;
+                    
 				} else {
-					ApiException e = GenerateException (responseObj, response);
-					log.Error (e.Message, e);
-					throw e;
+					throw new ApiException (response.ErrorMessage, response.ErrorException);
 				}
-			} else {
-				Exception wrapper = new ApiException (response.ErrorMessage, response.ErrorException);
+
+			} catch (ApiException apiE) {
+				log.Error (apiE.Message, apiE);
+				throw apiE;
+			} catch (Exception genE) {
+				ApiException wrapper = new ApiException (genE.Message, genE);
 				log.Error (wrapper.Message, wrapper);
 				throw wrapper;
 			}
 
 
 
-		}
 
 
-		/// <summary>
-		/// Throws the exception.
-		/// </summary>
-		/// <param name="responseObj">Response object.</param>
-		/// <param name="response">Response.</param>
-		private static ApiException GenerateException(IDictionary<String,Object> responseObj, IRestResponse response) {
-			int status = (int)response.StatusCode;
-			if (responseObj != null) {
-				return new ApiException (status, responseObj);
-			} else {
-				return new ApiException (status.ToString(), response.Content);
-			}
 		}
+
 
 
 		/// <summary>

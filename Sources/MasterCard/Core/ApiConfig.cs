@@ -92,12 +92,13 @@ namespace MasterCard.Core
         /// <param name="debug">If set to <c>true</c> debug.</param>
         public static void SetSandbox(Boolean sandbox)
         {
+            
             if (sandbox)
             {
-                ApiConfig.environment = Environment.SANDBOX;
+                SetEnvironment(Environment.SANDBOX);
             } else
             {
-                ApiConfig.environment = Environment.PRODUCTION;
+                SetEnvironment(Environment.PRODUCTION);
             }
             
         }

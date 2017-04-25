@@ -54,7 +54,7 @@ namespace TestMasterCard
 		public void setup ()
 		{
 			ApiConfig.SetDebug(true);
-			ResourceConfig.Instance.SetEnvironment((Environment) Enum.Parse(typeof(Environment), "SANDBOX_STATIC".ToUpper()));
+			ResourceConfig.Instance.SetEnvironment(Environment.SANDBOX_STATIC);
 
             var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
 
@@ -69,7 +69,7 @@ namespace TestMasterCard
 
 		}
 
-		/*
+		[Test()]
 		public void Test_example_get_token()
 		{
 			// 
@@ -117,7 +117,7 @@ namespace TestMasterCard
 			
 		}
 
-    */
+    
 
 
 
