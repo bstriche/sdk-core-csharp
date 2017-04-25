@@ -33,6 +33,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
 using MasterCard.Core.Model;
 using System.IO;
+using System.Text;
 
 namespace MasterCard.Core.Security.Fle
 {
@@ -44,11 +45,11 @@ namespace MasterCard.Core.Security.Fle
 
         internal readonly Config Config;
 
-        public FieldLevelEncryption (String publicKeyLocation, String privateKeyLocation, Config config)
+        public FieldLevelEncryption (String publicKeyLocation, String privateKeyLocation, Config config, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
 		{
 
             if (publicKeyLocation != null) {
-                var tmpPublicCertificate = new X509Certificate2(publicKeyLocation);
+                var tmpPublicCertificate = new X509Certificate2(publicKeyLocation, String.Empty, keyStorageFlags);
                 this.publicKey = (RSACng) tmpPublicCertificate.GetRSAPublicKey();
 			    this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
             }
@@ -63,6 +64,23 @@ namespace MasterCard.Core.Security.Fle
 			
 
 		}
+
+        public FieldLevelEncryption(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, Config config, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) {
+
+            if(rawPublicKeyData != null && rawPublicKeyData.LongLength > 0L) {
+                var tmpPublicCertificate = new X509Certificate2(rawPublicKeyData, String.Empty, keyStorageFlags);
+                this.publicKey = (RSACng) tmpPublicCertificate.GetRSAPublicKey();
+                this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
+            }
+
+            if(rawPrivateKeyData != null) {
+                string fullText = Encoding.UTF8.GetString(rawPrivateKeyData);
+                this.privateKey = CryptUtil.GetRSAFromPrivateKeyString(fullText);
+            }
+
+
+            this.Config = config;
+        }
 
         public List<String> GetTriggeringPath() {
 			return Config.TriggeringEndPath;
