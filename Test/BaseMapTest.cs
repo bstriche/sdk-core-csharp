@@ -424,7 +424,7 @@ namespace TestMasterCard
 			Assert.AreEqual (1000, map ["long"]);
 			Assert.AreEqual (16, map ["int"]);
 			Assert.AreEqual (3, ((List<String>) map ["list"]).Count);
-			Assert.AreEqual (3, ((Dictionary<String, String>) map ["map"]).Count);
+			Assert.AreEqual (3, ((Dictionary<String, Object>) map ["map"]).Count);
 
 		}
 
@@ -588,7 +588,7 @@ namespace TestMasterCard
 
 			String tmpDict = "{\n  \"mapName\": \"name\",\n  \"list\": [\n    {\n      \"itemId\": 1,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    },\n    {\n      \"itemId\": 2,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    },\n    {\n      \"itemId\": 3,\n      \"name\": \"name\",\n      \"list\": [\n         1, 2, 3, 4  \n      ]\n    }\n  ]\n}";
 
-			IDictionary<String,Object> dict = RequestMap.AsDictionary(tmpDict);
+			SmartMap dict = new SmartMap(tmpDict);
 			Assert.IsTrue (dict.ContainsKey ("mapName"));
 			Assert.IsTrue (dict.ContainsKey ("list"));
 

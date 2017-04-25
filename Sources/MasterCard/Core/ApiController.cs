@@ -130,22 +130,11 @@ namespace MasterCard.Core
                 if (response.ErrorException == null && response.Content != null) {
                     IDictionary<String, Object> responseObj = new Dictionary<String, Object>();
 
-
                     if (response.Content.Length > 0)
                     {
-                        Object tmpObj = SmartMap.AsObject(response.Content);
-
                         if (response.StatusCode < HttpStatusCode.Ambiguous)
                         {
-                            if (tmpObj is IList)
-                            {
-                                responseObj.Add("list", tmpObj);
-                            }
-                            else
-                            {
-                                responseObj = (Dictionary<String, Object>)tmpObj;
-                            }
-
+							responseObj = SmartMap.AsDictionary(response.Content);
                             if (interceptor != null)
                             {
                                 try
@@ -158,14 +147,13 @@ namespace MasterCard.Core
                                 }
                             }
 
-
                             log.Debug("<<Execute()");
                             return responseObj;
                         }
                         else
                         {
                             int status = (int)response.StatusCode;
-                            throw new ApiException(status, tmpObj);
+                            throw new ApiException(status, SmartMap.AsObject(response.Content));
                         }
                     } else
                     {

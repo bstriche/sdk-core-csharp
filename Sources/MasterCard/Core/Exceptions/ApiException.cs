@@ -111,10 +111,10 @@ namespace MasterCard.Core.Exceptions
 		protected void ParseErrors(Object response) {
 			List<Dictionary<String,Object>> tmpList = new List<Dictionary<String,Object>>();
 			
-			if (response is IList<Dictionary<String,Object>>) {
-				tmpList.AddRange((List<Dictionary<String,Object>>) response );
+			if (response is List<Object>) {
+				tmpList.AddRange(SmartMap.CastToListOfDictionary(response));
 			} else {
-				tmpList.Add((Dictionary<String,Object>) response);
+				tmpList.Add(SmartMap.CastToDictionary(response));
 			}
 
 			foreach (Dictionary<String,Object> tmpErrorMap in tmpList) {
@@ -146,7 +146,7 @@ namespace MasterCard.Core.Exceptions
 					if (tmpCaseInsensitiveMap.ContainsKey("Errors[0].Description")) {
 						List<Dictionary<String,Object>> tmpErrorList = (List<Dictionary<String,Object>>) tmpCaseInsensitiveMap.Get("Errors");
 						AddError(tmpErrorList);
-						continue;
+                        continue;
 					}
 				} catch (Exception) {
 

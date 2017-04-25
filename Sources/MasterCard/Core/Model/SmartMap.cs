@@ -28,8 +28,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 
@@ -113,20 +112,11 @@ namespace MasterCard.Core.Model
 		/// <summary>
 		/// Constructs a map with the same mappings as in the specifed map. </summary>
 		/// <param name="map"> the map whose mappings are to be placed in this map </param>
-		public SmartMap (IDictionary<String, Object> map, bool caseInsensitive = false)
+		public SmartMap (IDictionary<String,Object> map, bool caseInsensitive = false)
 		{
             this.caseInsensitive = caseInsensitive;
-            __storage = SmartMap.createNewInstance(caseInsensitive);
-
-
-            if (caseInsensitive)
-            {
-                AddAll(SmartMap.ParseDictionary(map, true));
-            } else
-            {
-                AddAll(map);
-            }
-            
+			__storage = SmartMap.createNewInstance(caseInsensitive);
+			AddAll(map);
 		}
 
 		/// <summary>
@@ -135,8 +125,8 @@ namespace MasterCard.Core.Model
 		public SmartMap (string jsonMapString, bool caseInsensitive = false)
 		{
             this.caseInsensitive = caseInsensitive;
-            __storage = SmartMap.createNewInstance(caseInsensitive);
-            AddAll (SmartMap.AsDictionary(jsonMapString));
+			__storage = SmartMap.createNewInstance(caseInsensitive);
+            AddAll(DeserializeDictionary(jsonMapString));
 		}
 
 
@@ -196,10 +186,10 @@ namespace MasterCard.Core.Model
         {
             if (caseInsensitive)
             {
-                return new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                return new Dictionary<String, Object>(StringComparer.OrdinalIgnoreCase);
             } else
             {
-                return new Dictionary<string, object>();
+                return new Dictionary<String, Object>();
             }
         }
 
@@ -208,12 +198,43 @@ namespace MasterCard.Core.Model
 		/// Associates the specified value to the specified key path. </summary>
 		/// <exception cref="IllegalArgumentException"> if part of the key path does not match the expected type. </exception>
 		/// <exception cref="IndexOutOfBoundsException"> if using an array index in the key path is out of bounds. </exception>
-		public void AddAll (IDictionary<string, object> data)
+		public void AddAll (IDictionary<String,Object> data)
 		{
-			foreach (String key in data.Keys) {
-				Add (key, data [key]);
+			foreach (KeyValuePair<String,Object> pair in data)  {
+				if (pair.Value != null) {
+					if (pair.Value is IDictionary) {
+                        Add(pair.Key, new SmartMap( CastToDictionary(pair.Value), caseInsensitive).__storage);
+					} else if (pair.Value is IList) {
+						if (((IList) pair.Value)[0] is IDictionary) {
+							AddListDictionary(pair.Key, (IList) pair.Value);
+						} else {
+							Add(pair.Key, pair.Value);
+						}
+					} else {
+						Add (pair.Key, pair.Value);
+					}
+				} else {
+					Add(pair.Key, pair.Value);
+				}
 			}
 		}
+
+
+
+
+        protected void AddListDictionary(string key, IList list) {
+			List<Dictionary<String,Object>> listToInsert = new List<Dictionary<String,Object>>();
+			foreach (Object tmpVal in list)  {
+				if (tmpVal != null && tmpVal is IDictionary) {
+                    listToInsert.Add(new SmartMap( CastToDictionary(tmpVal), caseInsensitive).__storage);
+				} else {
+					listToInsert.Add(null);
+				}
+			}
+			Add(key, listToInsert);
+		}
+
+
 
 		private bool IsListKey(string key) {
 			return key.Contains("[");
@@ -554,116 +575,49 @@ namespace MasterCard.Core.Model
 		/// <param name="json">Json.</param>
 		public static IDictionary<String,Object> AsDictionary(String json)
 		{
-			try {
-				IDictionary<string,object> tmpDict = JsonConvert.DeserializeObject<IDictionary<string, object>>(json);
-                return ParseDictionary(tmpDict);
-
-
-            } catch (Exception) {
-				IList<Object> intermediaryResult = JsonConvert.DeserializeObject<List<Object>> (json);
-				return new Dictionary<String,Object>() { { "list", ParseListOfDictionary(intermediaryResult) } };
-			}
+			return DeserializeDictionary(json);
 		}
 
 
         /// <summary>
-        /// Deserializes json nested maps in a object>.
+        /// Deserializes json in a object>.
         /// </summary>
         /// <returns>The deep.</returns>
         /// <param name="json">Json.</param>
         public static Object AsObject(String json)
         {
-            try
-            {
-                IDictionary<string, object> tmpDict = JsonConvert.DeserializeObject<IDictionary<string, object>>(json);
-                return ParseDictionary(tmpDict);
-
-
-            }
-            catch (Exception)
-            {
-                IList<Object> intermediaryResult = JsonConvert.DeserializeObject<List<Object>>(json);
-                return ParseListOfDictionary(intermediaryResult);
-            }
+            return DeserializeObect(json);
         }
 
-        private static List<Object> ParseListOfObjects(IList<Object> input, bool caseInsensitive = false)
+        /// <summary>
+        /// Cast an object in Dictionary<String,Object>
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <returns></returns>
+        public static Dictionary<String, Object> CastToDictionary(object dict)
         {
-            List<Object> tmpList = new List<object>();
-            foreach (Object item in input)
+            Dictionary<String, Object> result = new Dictionary<String, Object>();
+            foreach (DictionaryEntry de in (IDictionary)dict)
             {
-                Object convertedItem = null;
-                if (item is IDictionary)
-                {
-                    convertedItem = ParseDictionary((Dictionary<string, object>)item, caseInsensitive);
-                } else if (item is JObject)
-                {
-                    convertedItem = ParseDictionary(((JObject)item).ToObject<Dictionary<string, object>>(), caseInsensitive);
-                } else
-                {
-                    convertedItem = item;
-                }
-                tmpList.Add(convertedItem);
+                result.Add((string)de.Key, (object)de.Value);
             }
-            return tmpList;
+            return result;
         }
 
-        private static List<Dictionary<string, object>> ParseListOfDictionary(IList<Object> input, bool caseInsensitive = false)
+        /// <summary>
+        /// Cast an object into a List<Dictionary<String,Object>>
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static List<Dictionary<String, Object>> CastToListOfDictionary(object list)
         {
-            List<Dictionary<string,object>> tmpList = new List<Dictionary<string,object>>();
-            foreach (Object item in input)
+            List<Dictionary<String, Object>> result = new List<Dictionary<String, Object>>();
+            foreach (Object item in (List<Object>)list)
             {
-                Dictionary<string, object> convertedItem = null;
-                if (item is IDictionary)
-                {
-                    convertedItem = ParseDictionary((IDictionary<string, object>)item, caseInsensitive);
-                }
-                else if (item is JObject)
-                {
-                    convertedItem = ParseDictionary(((JObject)item).ToObject<Dictionary<string, object>>(), caseInsensitive);
-                }
-
-                tmpList.Add(convertedItem);
+                result.Add(CastToDictionary(item));
             }
-            return tmpList;
+            return result;
         }
-
-        private static Dictionary<String, Object> ParseDictionary(IDictionary<string, object> input, bool caseInsensitive = false)
-        {
-            Dictionary<string, object> tmpDictionary = SmartMap.createNewInstance(caseInsensitive);
-            foreach (KeyValuePair<string,object> pair in input)  {
-
-                Object convertedValue = null;
-
-                if (pair.Value.GetType() == typeof(JObject))
-                {
-                    convertedValue = ParseDictionary(((JObject)pair.Value).ToObject<IDictionary<string, object>>(), caseInsensitive);
-                }
-                else if (pair.Value.GetType() == typeof(JArray))
-                {
-                    convertedValue = ParseListOfDictionary(((JArray)pair.Value).ToObject<List<Object>>(), caseInsensitive);
-                } 
-				else  if (pair.Value is IDictionary)
-                {
-                    convertedValue = ParseDictionary((IDictionary < string, object > )pair.Value, caseInsensitive);
-                }
-                else if (pair.Value is IList)
-                {
-                    convertedValue = ParseListOfDictionary(((List<Object>)pair.Value), caseInsensitive);
-                }
-
-                else
-                {
-                    convertedValue = pair.Value;
-                }
-                tmpDictionary.Add(pair.Key, convertedValue);
-            }
-
-            return tmpDictionary;
-        }
-
-
-
 
         /// <summary>
         /// Gets the enumerator.
@@ -673,11 +627,6 @@ namespace MasterCard.Core.Model
 		{
 			return __storage.GetEnumerator ();
 		}
-
-
-
-
-
 
 		/// <summary>
 		/// Add the specified item.
@@ -744,7 +693,114 @@ namespace MasterCard.Core.Model
                 return ((IDictionary<string, object>)__storage).IsReadOnly;
             }
         }
+
+		/*
+		
+		 BEGIN HELPER FUNCTIONS
+
+		 */
+
+		private static Object DeserializeObect(string json)
+		{
+			return ToObject(JToken.Parse(json));
+		}
+
+		private static Dictionary<String,Object> DeserializeDictionary(string json) {
+			Object tmpObject = AsObject(json);
+			if (tmpObject is IDictionary) {
+				return (Dictionary<String,Object>) tmpObject;
+			} else if (tmpObject is IList) {
+				return new Dictionary<String,Object>() { { "list", tmpObject} };
+			} 
+			else
+            {
+                return null;
+            }
+		}
+
+		private static object ToObject(JToken token)
+		{
+			switch (token.Type)
+			{
+				case JTokenType.Object:
+					return token.Children<JProperty>()
+								.ToDictionary(prop => prop.Name,
+											prop => ToObject(prop.Value));
+
+				case JTokenType.Array:
+					return token.Select(ToObject).ToList();
+
+				default:
+					return ((JValue)token).Value;
+			}
+		}
+
+
+		// private static List<Object> ParseList(IList<Object> input, bool caseInsensitive = false)
+		// {
+		// 	List<Object> tmpList = new List<Object>();
+		// 	foreach (Object item in input)
+		// 	{
+		// 		tmpList.Add(ParseObject(item, caseInsensitive));
+		// 	}
+		// 	return tmpList;
+		// }
+
+		// public static List<Dictionary<String,Object>> ParseListOfDictionary(IList<Object> input, bool caseInsensitive = false)
+		// {
+		// 	List<Dictionary<String,Object>> tmpList = new List<Dictionary<String,Object>>();
+		// 	foreach (Object item in input)
+		// 	{
+		// 		tmpList.Add(ParseDictionary((Dictionary<String, Object> )item, caseInsensitive));
+		// 	}
+		// 	return tmpList;
+		// }
+
+		// public static Dictionary<String, Object> ParseDictionary(IDictionary<string, object> input, bool caseInsensitive = false)
+		// {
+		// 	Dictionary<String, Object> tmpDictionary = SmartMap.createNewInstance(caseInsensitive);
+		// 	foreach (KeyValuePair<String,Object> pair in input)  {
+		// 		tmpDictionary.Add(pair.Key, ParseObject(pair.Value, caseInsensitive));
+		// 	}
+
+		// 	return tmpDictionary;
+		// }
+
+
+		// public static Object ParseObject(Object tmpVal, bool caseInsensitive = false) {
+
+		// 	if (tmpVal != null)
+		// 	{
+		// 		if (tmpVal is IDictionary)
+		// 		{
+		// 			return ParseDictionary((IDictionary<String, Object>)tmpVal, caseInsensitive);
+		// 		}
+		// 		else if (tmpVal is IList)
+		// 		{
+		// 			if (((IList)tmpVal)[0] is IDictionary) {
+		// 				return ParseListOfDictionary(((List<Object>)tmpVal), caseInsensitive);
+		// 			} else {
+		// 				return ParseList(((List<Object>)tmpVal), caseInsensitive);
+		// 			}
+		// 		}
+		// 		else
+		// 		{
+		// 			return tmpVal;
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		return null;
+		// 	}
+		// }
+
+
+
+
     }
+
+
+	
 
 
 }
