@@ -50,8 +50,8 @@ namespace MasterCard.Core.Security.Installments
 		private static Config Installments()
         {
             Config tmpConfig = new Config();
-            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/instalmentConfigdata", "/calculateInstalment", "/processInstalment" });
-            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "configReqData.primaryAccountNumber", "calculatorReqData.primaryAccountNumber", "processInstalmentReqData.primaryAccountNumber" });
+            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/instalmentConfigdata", "/calculateInstalment", "/processInstalment", "/receiveApproval" });
+            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "configReqData.primaryAccountNumber", "calculatorReqData.primaryAccountNumber", "processInstalmentReqData.primaryAccountNumber", "receiveIssuerApprReqData.primaryAccountNumber" });
             tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "" });
 
             tmpConfig.SymmetricMode = CipherMode.CBC;
