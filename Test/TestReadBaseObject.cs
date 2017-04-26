@@ -20,7 +20,7 @@ namespace TestMasterCard {
     }
 
     protected override OperationMetadata GetOperationMetadata() {
-      return new OperationMetadata(ResourceConfig.Instance.GetVersion(), ResourceConfig.Instance.GetHost(), ResourceConfig.Instance.GetContext());
+      return new OperationMetadata("0.0.1","/test", "context");
     }
 
     public static TestReadBaseObject Read() {
