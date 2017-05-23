@@ -26,6 +26,7 @@
  */
 
 using System;
+using System.Net;
 using MasterCard.Core.Security;
 using System.Collections.Generic;
 using MasterCard.Core.Model;
@@ -41,6 +42,7 @@ namespace MasterCard.Core
     {
         private static Environment environment = Environment.SANDBOX;
         private static Boolean DEBUG = false;
+		private static IWebProxy proxy = null;
         private static AuthenticationInterface authentication;
         private static HashSet<CryptographyInterceptor> cryptographyMap = new HashSet<CryptographyInterceptor>();
         private static Dictionary<String, ResourceConfigInterface> registeredInstances = new Dictionary<String, ResourceConfigInterface>();
@@ -67,6 +69,25 @@ namespace MasterCard.Core
         public static Environment GetEnvironment() {
             return ApiConfig.environment;
         }
+
+		/// <summary>
+		/// This method sets the web proxy
+		/// </summary>
+		/// <param name="proxy"></param>
+		public static void SetProxy(IWebProxy proxy)
+		{
+			ApiConfig.proxy = proxy;
+		}
+
+
+		/// <summary>
+		/// This method return the web proxy
+		/// </summary>
+		/// <returns></returns>
+		public static IWebProxy GetProxy()
+		{
+			return ApiConfig.proxy;
+		}
 
         /// <summary>
         /// Sets the debug.
