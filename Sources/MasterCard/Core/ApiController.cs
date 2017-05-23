@@ -106,12 +106,14 @@ namespace MasterCard.Core
                 if (this.restClient != null)
                 {
                     client = restClient;
-                    client.BaseUrl = request.BaseUrl;
                 }
                 else
                 {
-                    client = new RestClient(request.BaseUrl);
-                }
+                    client = new RestClient();
+				}
+
+				client.BaseUrl = request.BaseUrl;
+				client.Proxy = ApiConfig.GetProxy();
 
 				log.Debug(">>Execute(action='"+config.Action+"', resourcePaht='"+config.ResourcePath+"', requestMap='"+requestMap+"'");
 				log.Debug("excute(), request.Method='"+request.Method+"'");
