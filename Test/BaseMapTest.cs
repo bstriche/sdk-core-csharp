@@ -40,7 +40,16 @@ namespace TestMasterCard
 
 		}
 
-		[Test ()]
+        [Test()]
+        public void TestQKRFailure()
+        {
+            String jsob = "{\"automaticEmailReceipts\":false,\"cards\":[],\"countryOfResidence\":\"US\",\"defaultCardAlias\":null,\"emailAddress\":\"api3940125553341735testuser@ppol.com\",\"firstName\":\"Fred\",\"id\":\"153423\",\"lastName\":\"Smith\",\"marketingConsent\":false,\"masterPassMarketingConsent\":false,\"masterPassUser\":true,\"phoneNumber\":\"1411438513\",\"phoneNumberCountryCode\":\"1\",\"profilePhotoUrl\":\"https://sandbox.qkr.mastercard.com/qkrsandbox/api/v1/profile/image/153423\",\"requestCvcInAddCard\":\"true\",\"requestZipInAddCard\":\"REQUIRED\"}";
+            new SmartMap(jsob);
+
+        }
+
+
+        [Test ()]
 		public void TestNestedAdd(){
 			RequestMap map = new RequestMap ();
 			map.Add("key1.key2", "value1");
