@@ -168,7 +168,7 @@ namespace MasterCard.Core
 
 			} catch (ApiException apiE) {
 				log.Error (apiE.Message, apiE);
-				throw apiE;
+				throw;
 			} catch (Exception genE) {
 				ApiException wrapper = new ApiException (genE.Message, genE);
 				log.Error (wrapper.Message, wrapper);

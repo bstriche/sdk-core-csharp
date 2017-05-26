@@ -204,14 +204,17 @@ namespace MasterCard.Core.Model
 				if (pair.Value != null) {
 					if (pair.Value is IDictionary) {
                         Add(pair.Key, new SmartMap( CastToDictionary(pair.Value), caseInsensitive).__storage);
-					} else if (pair.Value is IList) {
-						if (((IList) pair.Value)[0] is IDictionary) {
-							AddListDictionary(pair.Key, (IList) pair.Value);
-						} else {
-							Add(pair.Key, pair.Value);
-						}
-					} else {
-						Add (pair.Key, pair.Value);
+					} else if (pair.Value is IList && ((IList)pair.Value).Count > 0) {
+                        if (((IList)pair.Value)[0] is IDictionary)
+                        {
+                            AddListDictionary(pair.Key, (IList)pair.Value);
+                        }
+                        else
+                        {
+                            Add(pair.Key, pair.Value);
+                        }
+                } else {
+					Add (pair.Key, pair.Value);
 					}
 				} else {
 					Add(pair.Key, pair.Value);
@@ -225,7 +228,8 @@ namespace MasterCard.Core.Model
         protected void AddListDictionary(string key, IList list) {
 			List<Dictionary<String,Object>> listToInsert = new List<Dictionary<String,Object>>();
 			foreach (Object tmpVal in list)  {
-				if (tmpVal != null && tmpVal is IDictionary) {
+				if (tmpVal != null)
+                    if (tmpVal is IDictionary) {
                     listToInsert.Add(new SmartMap( CastToDictionary(tmpVal), caseInsensitive).__storage);
 				} else {
 					listToInsert.Add(null);
