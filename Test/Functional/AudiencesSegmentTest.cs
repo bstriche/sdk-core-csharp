@@ -65,7 +65,7 @@ namespace TestMasterCard
             
                         
 
-        [Test ()]
+       //ignore test
         public void example_audience_request_Test()
         {
             RequestMap parameters = new RequestMap();
