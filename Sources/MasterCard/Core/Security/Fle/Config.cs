@@ -76,35 +76,6 @@ namespace MasterCard.Core.Security.Fle
                 this.DataEncoding == other.DataEncoding;
         }
 
-
-
-
-        public static Config Installments()
-        {
-            Config tmpConfig = new Config();
-            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/instalmentConfigdata", "/calculateInstalment", "/processInstalment", "/receiveApproval" });
-            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "configReqData.primaryAccountNumber", "calculatorReqData.primaryAccountNumber", "processInstalmentReqData.primaryAccountNumber", "receiveIssuerApprReqData.primaryAccountNumber" });
-            tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "" });
-
-            tmpConfig.SymmetricMode = CipherMode.CBC;
-            tmpConfig.SymmetricPadding = PaddingMode.PKCS7;
-            tmpConfig.SymmetricKeysize = 256;
-
-            tmpConfig.OaepEncryptionPadding = RSAEncryptionPadding.OaepSHA256;
-            tmpConfig.OaepHashingAlgorithm = "SHA256";
-
-            tmpConfig.PublicKeyFingerprintHashing = HashingAlgorithm.SHA256;
-
-            tmpConfig.IvFieldName = "iv";
-            tmpConfig.OaepHashingAlgorithmFieldName = null;
-            tmpConfig.EncryptedKeyFiledName = "wrappedKey";
-            tmpConfig.EncryptedDataFieldName = "primaryAccountNumber";
-            tmpConfig.PublicKeyFingerprintFiledName = null;
-            tmpConfig.DataEncoding = DataEncoding.BASE64;
-
-
-            return tmpConfig;
-        }
     }
 
     public enum DataEncoding {HEX, BASE64};  

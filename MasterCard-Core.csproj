@@ -103,6 +103,8 @@
     <Compile Include="Test\Functional\AudiencesSegment.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\AudiencesSegmentTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\BaseTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Compile Include="Test\Functional\EligibilityAndCalculator.cs" />
+    <Compile Include="Test\Functional\EligibilityAndCalculatorTest.cs" />
     <Compile Include="Test\Functional\GetToken.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\GetTokenTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategories.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
