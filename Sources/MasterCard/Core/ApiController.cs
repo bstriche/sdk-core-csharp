@@ -377,7 +377,7 @@ namespace MasterCard.Core
 			if (request.HasBody) {
 				request.AddHeader ("Content-Type", "application/json; charset=utf-8");
 			}
-			request.AddHeader ("User-Agent", "CSharp-SDK/" + metadata.Version);
+			request.AddHeader ("User-Agent", Constants.getCoreVersion()+"/" + metadata.Version);
 
 			//arizzini: adding the header paramter support.
 			foreach (KeyValuePair<string, object> entry in headerMap) {
