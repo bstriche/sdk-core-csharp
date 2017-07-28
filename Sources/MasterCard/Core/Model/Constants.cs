@@ -32,7 +32,7 @@ namespace MasterCard.Core.Model
 {
     public class Constants {
 
-        public const String SDK = "CSharp_SDK";
+        public const String SDK = "MasterCard-Core";
         public const String VERSION = "1.4.4";
 
         public static String getCoreVersion() {
