@@ -99,7 +99,7 @@ namespace MasterCard.Core
             try 
 			{
 
-				request = GetRequest (config, metadata, requestMap);
+				request = this.GetRequest (config, metadata, requestMap);
                 interceptor = request.interceptor;
 
                 //arizzini: create client
@@ -326,7 +326,7 @@ namespace MasterCard.Core
         /// <param name="config"></param>
         /// <param name="inputMap"></param>
         /// <returns></returns>
-		RestyRequest GetRequest (OperationConfig config, OperationMetadata metadata, RequestMap requestMap)
+		protected RestyRequest GetRequest (OperationConfig config, OperationMetadata metadata, RequestMap requestMap)
 		{
 
 			RestyRequest request = null;
@@ -377,7 +377,7 @@ namespace MasterCard.Core
 			if (request.HasBody) {
 				request.AddHeader ("Content-Type", "application/json; charset=utf-8");
 			}
-			request.AddHeader ("User-Agent", "CSharp-SDK/" + metadata.Version);
+			request.AddHeader ("User-Agent", Constants.getCoreVersion()+"/" + metadata.Version);
 
 			//arizzini: adding the header paramter support.
 			foreach (KeyValuePair<string, object> entry in headerMap) {

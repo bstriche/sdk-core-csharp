@@ -8,7 +8,7 @@ using MasterCard.Core.Security;
 
 namespace MasterCard.Core.Model
 {
-    class RestyRequest : RestRequest
+    public class RestyRequest : RestRequest
     {
         public Uri AbsoluteUrl { get; set; }
         public Uri BaseUrl { get; set; }

@@ -46,6 +46,8 @@ namespace MasterCard.Core.Model
         {
             this.Version = version;
             this.Host = host;
+            this.Context = null;
+            this.JsonNative = false;
         }
 
         public OperationMetadata(string version, string host, string context)
@@ -53,6 +55,7 @@ namespace MasterCard.Core.Model
             this.Version = version;
             this.Host = host;
             this.Context = context;
+            this.JsonNative = false;
         }
 
         public OperationMetadata(string version, string host, string context, bool jsonNative)
