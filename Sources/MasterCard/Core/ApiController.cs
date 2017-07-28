@@ -99,7 +99,7 @@ namespace MasterCard.Core
             try 
 			{
 
-				request = GetRequest (config, metadata, requestMap);
+				request = this.GetRequest (config, metadata, requestMap);
                 interceptor = request.interceptor;
 
                 //arizzini: create client
@@ -326,7 +326,7 @@ namespace MasterCard.Core
         /// <param name="config"></param>
         /// <param name="inputMap"></param>
         /// <returns></returns>
-		RestyRequest GetRequest (OperationConfig config, OperationMetadata metadata, RequestMap requestMap)
+		protected RestyRequest GetRequest (OperationConfig config, OperationMetadata metadata, RequestMap requestMap)
 		{
 
 			RestyRequest request = null;

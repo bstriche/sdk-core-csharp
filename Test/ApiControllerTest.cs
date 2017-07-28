@@ -83,7 +83,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
@@ -107,7 +107,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("[ { \"name\":\"andrea\", \"surname\":\"rizzini\" } ]");
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
@@ -133,7 +133,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap (" { \"user.name\":\"andrea\", \"user.surname\":\"rizzini\" }");
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.NoContent, ""));
 
@@ -153,7 +153,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":{\"Source\":\"System\",\"ReasonCode\":\"METHOD_NOT_ALLOWED\",\"Description\":\"Method not Allowed\",\"Recoverable\":\"false\"}}}");
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.MethodNotAllowed, responseMap));
 
@@ -176,7 +176,7 @@ namespace TestMasterCard
         {
 
             RequestMap responseMap = new RequestMap("{\"errors\":{\"error\":{\"source\":\"System\",\"reasonCode\":\"METHOD_NOT_ALLOWED\",\"description\":\"Method not Allowed\",\"Recoverable\":\"false\"}}}");
-            ApiController controller = new ApiController();
+            TestApiController controller = new TestApiController();
 
             controller.SetRestClient(mockClient(HttpStatusCode.MethodNotAllowed, responseMap));
 
@@ -200,7 +200,7 @@ namespace TestMasterCard
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"Validation\",\"ReasonCode\":\"INVALID_TYPE\",\"Description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
 
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.BadRequest, responseMap));
 
@@ -221,7 +221,7 @@ namespace TestMasterCard
 
             RequestMap responseMap = new RequestMap("{\"errors\":{\"error\":[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}}\n");
 
-            ApiController controller = new ApiController();
+            TestApiController controller = new TestApiController();
 
             controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, responseMap));
 
@@ -243,7 +243,7 @@ namespace TestMasterCard
 
             String response = "{\"errors\":[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]}\n";
 
-            ApiController controller = new ApiController();
+            TestApiController controller = new TestApiController();
 
             controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, response));
 
@@ -264,7 +264,7 @@ namespace TestMasterCard
 
             String response = "[{\"source\":\"validation\",\"reasonCode\":\"INVALID_TYPE\",\"description\":\"The supplied field: 'date' is of an unsupported format\",\"Recoverable\":false,\"Details\":null}]";
 
-            ApiController controller = new ApiController();
+            TestApiController controller = new TestApiController();
 
             controller.SetRestClient(mockClient(HttpStatusCode.BadRequest, response));
 
@@ -285,7 +285,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Oauth customer key invalid\",\"Recoverable\":false,\"Details\":null}]}}");
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.Unauthorized, responseMap));
 
@@ -306,7 +306,7 @@ namespace TestMasterCard
 		{
 
 			RequestMap responseMap = new RequestMap ("{\"Errors\":{\"Error\":[{\"Source\":\"OAuth.ConsumerKey\",\"ReasonCode\":\"INVALID_CLIENT_ID\",\"Description\":\"Something went wrong\",\"Recoverable\":false,\"Details\":null}]}}");
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.InternalServerError, responseMap));
 
@@ -328,7 +328,7 @@ namespace TestMasterCard
 
 			RequestMap requestMap = new RequestMap ("{\n\"id\":\"1\"\n}");
 			RequestMap responseMap = new RequestMap ("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
-			ApiController controller = new ApiController ();
+			TestApiController controller = new TestApiController ();
 
 			controller.SetRestClient (mockClient (HttpStatusCode.OK, responseMap));
 
@@ -344,13 +344,64 @@ namespace TestMasterCard
 			Assert.AreEqual("STOLEN", responseMapFromResponse["Account.Reason"]);
 		}
 
-		
+        [Test]
+        public void TestContentTypeOnGet()
+        {
 
-		[Test]
+            RequestMap requestMap = new RequestMap("{\n\"id\":\"1\"\n}");
+            RequestMap responseMap = new RequestMap("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
+            TestApiController controller = new TestApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.OK, responseMap));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "read", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            RestyRequest request = controller.GetRequest(config, metadata, new TestBaseObject(requestMap));
+
+            Assert.AreEqual("http://locahost:8081/test1?id=1&Format=JSON", request.AbsoluteUrl.ToString());
+            Assert.AreEqual(false, request.HasBody);
+            Assert.AreEqual("GET", request.Method.ToString());
+            Assert.AreEqual(false, request.Parameters.Exists(i => i.Name.Equals("Content-Type")));
+            Assert.AreEqual(true, request.Parameters.Exists(i => i.Name.Equals("Accept")));
+            String authentication = request.Parameters.Find(i => i.Name.Equals("Authorization")).Value.ToString();
+            Assert.AreEqual(false, authentication.Contains("oauth_body_hash"));
+        }
+
+        [Test]
+        public void TestContentTypeOnPost()
+        {
+
+            RequestMap requestMap = new RequestMap("{\n\"id\":\"1\"\n}");
+            RequestMap responseMap = new RequestMap("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
+            TestApiController controller = new TestApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.OK, responseMap));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            RestyRequest request = controller.GetRequest(config, metadata, new TestBaseObject(requestMap));
+
+            Assert.AreEqual("http://locahost:8081/test1?Format=JSON", request.AbsoluteUrl.ToString());
+            Assert.AreEqual(true, request.HasBody);
+            Assert.AreEqual("POST", request.Method.ToString());
+            Assert.AreEqual(true, request.Parameters.Exists(i => i.Name.Equals("Content-Type")));
+            Assert.AreEqual(true, request.Parameters.Exists(i => i.Name.Equals("Accept")));
+            String authentication = request.Parameters.Find(i => i.Name.Equals("Authorization")).Value.ToString();
+            Assert.AreEqual(true, authentication.Contains("oauth_body_hash"));
+        }
+
+
+
+
+        [Test]
 		public void TestEnvironments ()
 		{
 
-			ApiController controller = new ApiController();
+			TestApiController controller = new TestApiController();
 
 
             ResourceConfig instance = ResourceConfig.Instance;
