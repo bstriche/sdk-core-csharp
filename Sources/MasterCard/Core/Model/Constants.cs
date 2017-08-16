@@ -32,6 +32,13 @@ namespace MasterCard.Core.Model
 {
     public class Constants {
 
+        public const String SDK = "MasterCard-Core";
+        public const String VERSION = "1.4.9";
+
+        public static String getCoreVersion() {
+            return SDK+":"+VERSION;
+        }
+
         public enum Environment {PRODUCTION,SANDBOX,SANDBOX_STATIC,SANDBOX_MTF,SANDBOX_ITF,STAGE,DEV,PRODUCTION_MTF,PRODUCTION_ITF,STAGE_MTF,STAGE_ITF,LOCALHOST,OTHER};
 
         public static readonly Dictionary<Environment, List<string>> MAPPINGS = new Dictionary<Environment, List<string>>

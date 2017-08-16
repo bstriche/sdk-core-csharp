@@ -94,6 +94,7 @@
     <Compile Include="Sources\MasterCard\Core\Security\MDES\MDESCryptography.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptographyInterceptor.cs" />
     <Compile Include="Sources\MasterCard\Core\Security\CryptUtil.cs" />
+    <Compile Include="Test\ApiController.cs" />
     <Compile Include="Test\Functional\ATMCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ATMCountriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\ATMCountrySubdivisions.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
@@ -108,13 +109,9 @@
     <Compile Include="Test\Functional\GetToken.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\GetTokenTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCategories.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\MerchantCategoriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCountries.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\MerchantCountriesTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantCountrySubdivisions.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\MerchantCountrySubdivisionsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MerchantLocations.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Compile Include="Test\Functional\MerchantLocationsTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MultiplePathUserPost.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\MultiplePathUserPostTest.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Compile Include="Test\Functional\NodeJSMockServerSpec.cs" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
