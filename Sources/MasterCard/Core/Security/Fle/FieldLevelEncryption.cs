@@ -43,7 +43,7 @@ namespace MasterCard.Core.Security.Fle
 		private String publicKeyFingerPrint;
 		private RSACng privateKey;
 
-        internal readonly Config Config;
+        internal readonly Config configuration;
 
         public FieldLevelEncryption (String publicKeyLocation, String privateKeyLocation, Config config, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
 		{
@@ -60,7 +60,7 @@ namespace MasterCard.Core.Security.Fle
             }
 			
 
-            this.Config = config;
+            this.configuration = config;
 			
 
 		}
@@ -79,11 +79,11 @@ namespace MasterCard.Core.Security.Fle
             }
 
 
-            this.Config = config;
+            this.configuration = config;
         }
 
         public List<String> GetTriggeringPath() {
-			return Config.TriggeringEndPath;
+			return configuration.TriggeringEndPath;
 		}
 
         
@@ -93,7 +93,7 @@ namespace MasterCard.Core.Security.Fle
             SmartMap smartMap = new SmartMap(map);
             if (this.publicKey != null) 
             {
-                foreach (String fieldToEncrypt in Config.FieldsToEncrypt) 
+                foreach (String fieldToEncrypt in configuration.FieldsToEncrypt) 
                 {
                     if (smartMap.ContainsKey (fieldToEncrypt)) 
                     {
@@ -112,7 +112,7 @@ namespace MasterCard.Core.Security.Fle
                             payload = tmpObjectToEncrypt.ToString();
                         }
 
-                        Tuple<byte[], byte[], byte[]> aesResult = CryptUtil.EncryptAES(System.Text.Encoding.UTF8.GetBytes(payload), Config.SymmetricKeysize, Config.SymmetricMode, Config.SymmetricPadding);
+                        Tuple<byte[], byte[], byte[]> aesResult = CryptUtil.EncryptAES(System.Text.Encoding.UTF8.GetBytes(payload), configuration.SymmetricKeysize, configuration.SymmetricMode, configuration.SymmetricPadding);
 
                         // 4) generate random iv
                         byte[] ivBytes = aesResult.Item1;
@@ -121,12 +121,12 @@ namespace MasterCard.Core.Security.Fle
                         // 6) encrypt payload
                         byte[] encryptedDataBytes = aesResult.Item3;
 
-                        String ivValue = CryptUtil.Encode(ivBytes, Config.DataEncoding);
-                        String encryptedDataValue = CryptUtil.Encode(encryptedDataBytes, Config.DataEncoding);
+                        String ivValue = CryptUtil.Encode(ivBytes, configuration.DataEncoding);
+                        String encryptedDataValue = CryptUtil.Encode(encryptedDataBytes, configuration.DataEncoding);
 
                         // 7) encrypt secretKey with issuer key
-                        byte[] encryptedSecretKey = CryptUtil.EncrytptRSA(secretKeyBytes, this.publicKey, Config.OaepEncryptionPadding);
-                        String encryptedKeyValue = CryptUtil.Encode(encryptedSecretKey, Config.DataEncoding);
+                        byte[] encryptedSecretKey = CryptUtil.EncrytptRSA(secretKeyBytes, this.publicKey, configuration.OaepEncryptionPadding);
+                        String encryptedKeyValue = CryptUtil.Encode(encryptedSecretKey, configuration.DataEncoding);
 
                         String fingerprintHexString = publicKeyFingerPrint;
 
@@ -136,15 +136,15 @@ namespace MasterCard.Core.Security.Fle
                             baseKey += ".";
                         }
 
-                        if (Config.PublicKeyFingerprintFiledName != null) {
-                            smartMap.Add(baseKey+Config.PublicKeyFingerprintFiledName, fingerprintHexString);
+                        if (configuration.PublicKeyFingerprintFiledName != null) {
+                            smartMap.Add(baseKey+configuration.PublicKeyFingerprintFiledName, fingerprintHexString);
                         }
-                        if (Config.OaepHashingAlgorithmFieldName != null) {
-                            smartMap.Add(baseKey+Config.OaepHashingAlgorithmFieldName, Config.OaepHashingAlgorithm);
+                        if (configuration.OaepHashingAlgorithmFieldName != null) {
+                            smartMap.Add(baseKey+configuration.OaepHashingAlgorithmFieldName, configuration.OaepHashingAlgorithm);
                         }
-                        smartMap.Add(baseKey+Config.IvFieldName, ivValue);
-                        smartMap.Add(baseKey+Config.EncryptedKeyFiledName, encryptedKeyValue);
-                        smartMap.Add(baseKey+Config.EncryptedDataFieldName, encryptedDataValue);
+                        smartMap.Add(baseKey+configuration.IvFieldName, ivValue);
+                        smartMap.Add(baseKey+configuration.EncryptedKeyFiledName, encryptedKeyValue);
+                        smartMap.Add(baseKey+configuration.EncryptedDataFieldName, encryptedDataValue);
 
                         break;
                     }
@@ -156,7 +156,7 @@ namespace MasterCard.Core.Security.Fle
 
 		public IDictionary<String,Object> Decrypt(IDictionary<String,Object> map) {
 			SmartMap smartMap = new SmartMap(map);
-            foreach (String fieldToDecrypt in Config.FieldsToDecrypt) {
+            foreach (String fieldToDecrypt in configuration.FieldsToDecrypt) {
                 if (smartMap.ContainsKey (fieldToDecrypt)) 
                 {
                     String baseKey = "";
@@ -166,17 +166,17 @@ namespace MasterCard.Core.Security.Fle
                     }
 
                     //need to read the key
-                    String encryptedKey = (String) smartMap.Get(baseKey + Config.EncryptedKeyFiledName);
-                    smartMap.Remove(baseKey + Config.EncryptedKeyFiledName);
+                    String encryptedKey = (String) smartMap.Get(baseKey + configuration.EncryptedKeyFiledName);
+                    smartMap.Remove(baseKey + configuration.EncryptedKeyFiledName);
 
-                    byte[] encryptedKeyByteArray = CryptUtil.Decode(encryptedKey, Config.DataEncoding);
+                    byte[] encryptedKeyByteArray = CryptUtil.Decode(encryptedKey, configuration.DataEncoding);
 
                     //need to decryt with RSA
                     byte[] secretKeyBytes = null;
-                    if (smartMap.ContainsKey(baseKey + Config.OaepHashingAlgorithmFieldName)) {
-                        string oaepHashingAlgorithm = (String) smartMap.Get(baseKey + Config.OaepHashingAlgorithmFieldName);
+                    if (smartMap.ContainsKey(baseKey + configuration.OaepHashingAlgorithmFieldName)) {
+                        string oaepHashingAlgorithm = (String) smartMap.Get(baseKey + configuration.OaepHashingAlgorithmFieldName);
                         oaepHashingAlgorithm = oaepHashingAlgorithm.Replace("SHA", "SHA-");
-                        RSAEncryptionPadding customEncryptionPadding = Config.OaepEncryptionPadding;
+                        RSAEncryptionPadding customEncryptionPadding = configuration.OaepEncryptionPadding;
                         if (oaepHashingAlgorithm.Equals("SHA-256")) {
                             customEncryptionPadding = RSAEncryptionPadding.OaepSHA256;
                         } else if (oaepHashingAlgorithm.Equals("SHA-512")) {
@@ -185,37 +185,37 @@ namespace MasterCard.Core.Security.Fle
                         secretKeyBytes = CryptUtil.DecryptRSA(encryptedKeyByteArray, this.privateKey, customEncryptionPadding);
 
                     } else {
-                        secretKeyBytes = CryptUtil.DecryptRSA(encryptedKeyByteArray, this.privateKey, Config.OaepEncryptionPadding);
+                        secretKeyBytes = CryptUtil.DecryptRSA(encryptedKeyByteArray, this.privateKey, configuration.OaepEncryptionPadding);
                     }
 
                      
 
                     //need to read the iv
-                    String ivString = (String) smartMap.Get(baseKey + Config.IvFieldName);
-                    smartMap.Remove(baseKey + Config.IvFieldName);
+                    String ivString = (String) smartMap.Get(baseKey + configuration.IvFieldName);
+                    smartMap.Remove(baseKey + configuration.IvFieldName);
 
-                    byte[] ivByteArray = CryptUtil.Decode(ivString.ToString(), Config.DataEncoding);
+                    byte[] ivByteArray = CryptUtil.Decode(ivString.ToString(), configuration.DataEncoding);
 
                     // remove the field that are not required in the map
-                    if (smartMap.ContainsKey(Config.PublicKeyFingerprintFiledName)) {
-                        smartMap.Remove(Config.PublicKeyFingerprintFiledName);
+                    if (smartMap.ContainsKey(configuration.PublicKeyFingerprintFiledName)) {
+                        smartMap.Remove(configuration.PublicKeyFingerprintFiledName);
                     }
 
                     //need to decrypt the data
-                    String encryptedData = (String) smartMap.Get(baseKey+Config.EncryptedDataFieldName);
-                    smartMap.Remove(baseKey + Config.EncryptedDataFieldName);
-                    byte[] encryptedDataByteArray = CryptUtil.Decode(encryptedData, Config.DataEncoding);
+                    String encryptedData = (String) smartMap.Get(baseKey+configuration.EncryptedDataFieldName);
+                    smartMap.Remove(baseKey + configuration.EncryptedDataFieldName);
+                    byte[] encryptedDataByteArray = CryptUtil.Decode(encryptedData, configuration.DataEncoding);
 
-                    byte[] decryptedDataByteArray = CryptUtil.DecryptAES (ivByteArray, secretKeyBytes, encryptedDataByteArray, Config.SymmetricKeysize, Config.SymmetricMode, Config.SymmetricPadding);
+                    byte[] decryptedDataByteArray = CryptUtil.DecryptAES (ivByteArray, secretKeyBytes, encryptedDataByteArray, configuration.SymmetricKeysize, configuration.SymmetricMode, configuration.SymmetricPadding);
                     String decryptedDataString = System.Text.Encoding.UTF8.GetString (decryptedDataByteArray);
 
                     if (decryptedDataString.StartsWith("{")) {
                         Dictionary<String,Object> decryptedDataMap =JsonConvert.DeserializeObject<Dictionary<String, Object>>(decryptedDataString);
                         foreach(KeyValuePair<String, Object> entry in decryptedDataMap) {
-                            smartMap.Add(baseKey+Config.EncryptedDataFieldName+"."+entry.Key, entry.Value);
+                            smartMap.Add(baseKey+configuration.EncryptedDataFieldName+"."+entry.Key, entry.Value);
                         }
                     } else {
-                        smartMap.Add(baseKey+Config.EncryptedDataFieldName, decryptedDataString);
+                        smartMap.Add(baseKey+configuration.EncryptedDataFieldName, decryptedDataString);
                     }
 
                     break;
@@ -231,7 +231,7 @@ namespace MasterCard.Core.Security.Fle
 
         public Config GetConfig()
         {
-            return this.Config;
+            return this.configuration;
         }
     }
 }
