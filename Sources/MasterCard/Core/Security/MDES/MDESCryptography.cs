@@ -29,17 +29,24 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using MasterCard.Core.Security.Fle;
 
 namespace MasterCard.Core.Security.MDES
 {
 	public class MDESCryptography : FieldLevelEncryption
 	{
-		public MDESCryptography(String publicKeyLocation, String privateKeyLocation): base(publicKeyLocation, privateKeyLocation, MDES()){
+        public MDESCryptography(String publicKeyLocation, String privateKeyLocation, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        : base(publicKeyLocation, privateKeyLocation, config(), keyStorageFlags){
 
 		}
 
-		private static Config MDES()
+        public MDESCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        : base(rawPublicKeyData, rawPrivateKeyData, config(), keyStorageFlags) {
+
+        }
+
+		private static Config config()
         {
             Config tmpConfig = new Config();
             tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/tokenize", "/searchTokens", "/getToken", "/transact", "/notifyTokenUpdated" });

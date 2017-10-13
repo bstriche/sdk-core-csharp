@@ -32,31 +32,31 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using MasterCard.Core.Security.Fle;
 
-namespace MasterCard.Core.Security.Installments
+namespace MasterCard.Core.Security.MDES
 {
-	public class InstallmentCryptography : FieldLevelEncryption
+	public class MDESPAMCryptography : FieldLevelEncryption
 	{
-
-        public InstallmentCryptography(String publicKeyLocation, String privateKeyLocation, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        public MDESPAMCryptography(String publicKeyLocation, String privateKeyLocation, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
         : base(publicKeyLocation, privateKeyLocation, config(), keyStorageFlags){
 
 		}
 
-        public InstallmentCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        public MDESPAMCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
         : base(rawPublicKeyData, rawPrivateKeyData, config(), keyStorageFlags) {
-
+        
         }
 
 		private static Config config()
         {
+
             Config tmpConfig = new Config();
-            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/installmentConfigdata", "/calculateInstallment", "/processInstallment", "/receiveApproval" });
-            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "configReqData.primaryAccountNumber", "calculatorReqData.primaryAccountNumber", "processInstallmentReqData.primaryAccountNumber", "receiveIssuerApprReqData.primaryAccountNumber" });
-            tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "" });
+            tmpConfig.TriggeringEndPath = new List<String>(new String[] { "/closeAccount", "/addAccount", "/overrideForDeleteAccount", "/getPaymentAccountReference", "/updateAccount" });
+            tmpConfig.FieldsToEncrypt = new List<String>(new String[] { "encryptedPayload.encryptedData" });
+            tmpConfig.FieldsToDecrypt = new List<String>(new String[] { "encryptedPayload.encryptedData" });
 
             tmpConfig.SymmetricMode = CipherMode.CBC;
             tmpConfig.SymmetricPadding = PaddingMode.PKCS7;
-            tmpConfig.SymmetricKeysize = 256;
+            tmpConfig.SymmetricKeysize = 128;
 
             tmpConfig.OaepEncryptionPadding = RSAEncryptionPadding.OaepSHA256;
             tmpConfig.OaepHashingAlgorithm = "SHA256";
@@ -64,14 +64,14 @@ namespace MasterCard.Core.Security.Installments
             tmpConfig.PublicKeyFingerprintHashing = HashingAlgorithm.SHA256;
 
             tmpConfig.IvFieldName = "iv";
-            tmpConfig.OaepHashingAlgorithmFieldName = null;
-            tmpConfig.EncryptedKeyFiledName = "wrappedKey";
-            tmpConfig.EncryptedDataFieldName = "primaryAccountNumber";
-            tmpConfig.PublicKeyFingerprintFiledName = null;
-            tmpConfig.DataEncoding = DataEncoding.BASE64;
-
+            tmpConfig.OaepHashingAlgorithmFieldName = "oaepHashingAlgorithm";
+            tmpConfig.EncryptedKeyFiledName = "encryptedKey";
+            tmpConfig.EncryptedDataFieldName = "encryptedData";
+            tmpConfig.PublicKeyFingerprintFiledName = "publicKeyFingerprint";
+            tmpConfig.DataEncoding = DataEncoding.HEX;
 
             return tmpConfig;
         }
+
 	}
 }
