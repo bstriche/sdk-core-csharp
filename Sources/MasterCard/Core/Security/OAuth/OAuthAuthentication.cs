@@ -94,9 +94,16 @@ namespace MasterCard.Core.Security.OAuth
 
             String bodyString = null;
 			Parameter bodyParam = request.Parameters.FirstOrDefault (p => p.Type == ParameterType.RequestBody);
-			if (bodyParam != null) {
-				bodyString = bodyParam.Value.ToString ();
+			if (methodString != "GET" && methodString != "DELETE" && methodString != "HEAD") {
+				if (bodyParam != null) {
+					bodyString = bodyParam.Value.ToString ();
+				} else {
+					bodyString = "";
+				}
 			}
+			
+
+			
 				
 			String signature = OAuthUtil.GenerateSignature (uriString, methodString, bodyString, clientId, privateKey);
 			request.AddHeader ("Authorization", signature);

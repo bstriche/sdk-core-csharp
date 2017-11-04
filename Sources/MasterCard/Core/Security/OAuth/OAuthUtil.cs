@@ -88,7 +88,7 @@ namespace MasterCard.Core.Security.OAuth
 
             //Console.WriteLine("body: " + body);
 
-            if (!String.IsNullOrEmpty(body))
+            if (body != null)
             {
                 String encodedHash = Util.Base64Encode(Util.Sha256Encode(body));
                 //Console.WriteLine("bodyHash: " + encodedHash);
