@@ -394,7 +394,36 @@ namespace TestMasterCard
             Assert.AreEqual(true, authentication.Contains("oauth_body_hash"));
         }
 
+        [Test]
+        public void TestContentTypeOverride()
+        {
 
+            RequestMap requestMap = new RequestMap("{\n\"id\":\"1\"\n}");
+            RequestMap responseMap = new RequestMap("{\"Account\":{\"Status\":\"true\",\"Listed\":\"true\",\"ReasonCode\":\"S\",\"Reason\":\"STOLEN\"}}");
+            TestApiController controller = new TestApiController();
+
+            controller.SetRestClient(mockClient(HttpStatusCode.OK, responseMap));
+
+            // new Tuple<string, string, List<string>, List<string>>("/test1", null, headerList, queryList);
+            var config = new OperationConfig("/test1", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081", null, true, "text/json");
+
+            RestyRequest request = controller.GetRequest(config, metadata, new TestBaseObject(requestMap));
+
+            Assert.AreEqual("http://locahost:8081/test1", request.AbsoluteUrl.ToString());
+            Assert.AreEqual(true, request.HasBody);
+            Assert.AreEqual("POST", request.Method.ToString());
+            Assert.AreEqual(true, request.Parameters.Exists(i => i.Name.Equals("Content-Type")));
+            Assert.AreEqual(true, request.Parameters.Exists(i => i.Name.Equals("Content-Type")));
+
+            Assert.AreEqual("text/json; charset=utf-8", request.Parameters.Find(i => i.Name.Equals("Accept")).Value.ToString());
+            Assert.AreEqual("text/json; charset=utf-8", request.Parameters.Find(i => i.Name.Equals("Content-Type")).Value.ToString());
+
+
+
+            String authentication = request.Parameters.Find(i => i.Name.Equals("Authorization")).Value.ToString();
+            Assert.AreEqual(true, authentication.Contains("oauth_body_hash"));
+        }
 
 
         [Test]

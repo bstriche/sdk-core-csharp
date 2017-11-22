@@ -340,6 +340,11 @@ namespace MasterCard.Core
             String baseUriString = url.Scheme + "://" + url.Host + ":" + url.Port;
             Uri baseUrl = new Uri(baseUriString);
 
+			string contentType = "application/json; charset=utf-8";
+			if (metadata.ContentTypeOverride != null) {
+				contentType = metadata.ContentTypeOverride + "; charset=utf-8";
+			}
+
             CryptographyInterceptor interceptor = ApiConfig.GetCryptographyInterceptor(url.AbsolutePath);
 
 
@@ -373,9 +378,9 @@ namespace MasterCard.Core
 				break;
 			}
 
-			request.AddHeader ("Accept", "application/json; charset=utf-8");
+			request.AddHeader ("Accept", contentType);
 			if (request.HasBody) {
-				request.AddHeader ("Content-Type", "application/json; charset=utf-8");
+				request.AddHeader ("Content-Type", contentType);
 			}
 			request.AddHeader ("User-Agent", Constants.getCoreVersion()+"/" + metadata.Version);
 
