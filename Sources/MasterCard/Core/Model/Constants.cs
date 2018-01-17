@@ -39,22 +39,31 @@ namespace MasterCard.Core.Model
             return SDK+":"+VERSION;
         }
 
-        public enum Environment {PRODUCTION,SANDBOX,SANDBOX_STATIC,SANDBOX_MTF,SANDBOX_ITF,STAGE,DEV,PRODUCTION_MTF,PRODUCTION_ITF,STAGE_MTF,STAGE_ITF,LOCALHOST,OTHER};
+
+
+        public enum Environment {PRODUCTION,SANDBOX,SANDBOX_STATIC,SANDBOX_MTF,SANDBOX_ITF,STAGE,DEV,PRODUCTION_MTF,PRODUCTION_ITF,STAGE_MTF,STAGE_ITF,ITF, PERF, LOCALHOST, OTHER};
 
         public static readonly Dictionary<Environment, List<string>> MAPPINGS = new Dictionary<Environment, List<string>>
         {
         {Environment.PRODUCTION, new List<String> { "https://api.mastercard.com", null } },
+        {Environment.PRODUCTION_MTF, new List<String> { "https://api.mastercard.com", "mtf" } },
+        {Environment.PRODUCTION_ITF, new List<String> { "https://api.mastercard.com", "itf" } },
+
         {Environment.SANDBOX, new List<String> { "https://sandbox.api.mastercard.com", null } },
         {Environment.SANDBOX_STATIC, new List<String> { "https://sandbox.api.mastercard.com", "static" } },
         {Environment.SANDBOX_MTF, new List<String> { "https://sandbox.api.mastercard.com", "mtf" } },
         {Environment.SANDBOX_ITF, new List<String> { "https://sandbox.api.mastercard.com", "itf" } },
+        
         {Environment.STAGE, new List<String> { "https://stage.api.mastercard.com", null } },
-        {Environment.DEV, new List<String> { "https://dev.api.mastercard.com", null } },
-        {Environment.PRODUCTION_MTF, new List<String> { "https://api.mastercard.com", "mtf" } },
-        {Environment.PRODUCTION_ITF, new List<String> { "https://api.mastercard.com", "itf" } },
         {Environment.STAGE_MTF, new List<String> { "https://stage.api.mastercard.com", "mtf" } },
         {Environment.STAGE_ITF, new List<String> { "https://stage.api.mastercard.com", "itf" } },
-        {Environment.LOCALHOST, new List<String> { "http://localhost:8081", null } }
+
+        {Environment.DEV, new List<String> { "https://dev.api.mastercard.com", null } },
+        {Environment.LOCALHOST, new List<String> { "http://localhost:8081", null } },
+
+        //@arizzini: STP new environment
+        {Environment.ITF, new List<String>  { "https://itf.api.mastercard.com", null} },
+        {Environment.PERF, new List<String>  { "https://perf.api.mastercard.com", null} }
         };
 
     }
