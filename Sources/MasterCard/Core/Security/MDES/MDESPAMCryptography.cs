@@ -37,12 +37,22 @@ namespace MasterCard.Core.Security.MDES
 	public class MDESPAMCryptography : FieldLevelEncryption
 	{
         public MDESPAMCryptography(String publicKeyLocation, String privateKeyLocation, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
-        : base(publicKeyLocation, privateKeyLocation, config(), keyStorageFlags){
+        : base(publicKeyLocation, privateKeyLocation, config(), null, keyStorageFlags){
 
 		}
 
         public MDESPAMCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
-        : base(rawPublicKeyData, rawPrivateKeyData, config(), keyStorageFlags) {
+        : base(rawPublicKeyData, rawPrivateKeyData, config(), null, keyStorageFlags) {
+        
+        }
+
+        public MDESPAMCryptography(String publicKeyLocation, String privateKeyLocation, String publicKeyFingerprint, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        : base(publicKeyLocation, privateKeyLocation, config(), publicKeyFingerprint, keyStorageFlags){
+
+		}
+
+        public MDESPAMCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, String publicKeyFingerprint, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        : base(rawPublicKeyData, rawPrivateKeyData, config(), publicKeyFingerprint, keyStorageFlags) {
         
         }
 
