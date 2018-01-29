@@ -234,6 +234,8 @@ namespace TestMasterCard
             Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
             Assert.That(ex.Source, Is.EqualTo("validation"));
             Assert.That(ex.Recoverable, Is.EqualTo(false));
+            Assert.That(ex.RawErrorData.Get("errors.error[0].source").ToString(), Is.EqualTo("validation"));
+            Assert.That(ex.RawErrorData.Get("Errors.Error[0].Source").ToString(), Is.EqualTo("validation"));
         }
 
 
@@ -256,6 +258,8 @@ namespace TestMasterCard
             Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
             Assert.That(ex.Source, Is.EqualTo("validation"));
             Assert.That(ex.Recoverable, Is.EqualTo(false));
+            Assert.That(ex.RawErrorData.Get("errors[0].source").ToString(), Is.EqualTo("validation"));
+            Assert.That(ex.RawErrorData.Get("Errors[0].Source").ToString(), Is.EqualTo("validation"));
         }
 
         [Test]
@@ -277,6 +281,8 @@ namespace TestMasterCard
             Assert.That(ex.ReasonCode, Is.EqualTo("INVALID_TYPE"));
             Assert.That(ex.Source, Is.EqualTo("validation"));
             Assert.That(ex.Recoverable, Is.EqualTo(false));
+            Assert.That(ex.RawErrorData.Get("source").ToString(),  Is.EqualTo("validation"));
+            Assert.That(ex.RawErrorData.Get("Source").ToString(), Is.EqualTo("validation"));
         }
 
 
