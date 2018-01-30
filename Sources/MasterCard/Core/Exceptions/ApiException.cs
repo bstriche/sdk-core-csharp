@@ -45,9 +45,8 @@ namespace MasterCard.Core.Exceptions
 		protected Boolean recoverable;
 		protected String description;
 		protected int httpStatus = 0;
-		protected List<Dictionary<String,Object>> errors = new List<Dictionary<String,Object>>();
-
-
+		protected SmartMap error = null;
+		protected List<SmartMap> errors = new List<SmartMap>();
 		private SmartMap rawErrorData;
 
 		/// <summary>
@@ -103,16 +102,19 @@ namespace MasterCard.Core.Exceptions
 		public ApiException(int status, Object errorData) : base()
 		{
 			this.httpStatus = status;
+			ParseRawErrorData(errorData);
 			ParseErrors(errorData);
-			ParseFirstErrorToMemberVariables();
+			ParseError(0);
 		}
 
 
 		protected void ParseErrors(Object response) {
 			List<Dictionary<String,Object>> tmpList = new List<Dictionary<String,Object>>();
 			
-			if (response is List<Object>) {
-				tmpList.AddRange(SmartMap.CastToListOfDictionary(response));
+			if (response is List<Object> && ((List<Object>) response).Count > 0) {
+				if  (((List<Object>)response)[0] is Dictionary<String,Object> ) {
+					tmpList.AddRange(SmartMap.CastToListOfDictionary(response));
+				}
 			} else {
 				tmpList.Add(SmartMap.CastToDictionary(response));
 			}
@@ -165,36 +167,49 @@ namespace MasterCard.Core.Exceptions
 		}
 
 
-		protected void AddError(List<Dictionary<String,Object>> errors) {
+		private void AddError(List<Dictionary<String,Object>> errors) {
 			foreach(Dictionary<String,Object> error in errors) {
 				AddError(error);
 			}
 		}
 
-		protected void AddError(Dictionary<String,Object> error) {
-			errors.Add(error);
+		private void AddError(Dictionary<String,Object> error) {
+			errors.Add(new SmartMap(error, true));
 		}
 
-		protected void ParseFirstErrorToMemberVariables() {
-        if (errors.Count > 0) {
-            Dictionary<String,Object> tmpErrorMap = errors[0];
-            rawErrorData = new SmartMap(tmpErrorMap, true);
-            if (rawErrorData.Get("Source") != null) {
-                source = rawErrorData.Get("Source").ToString();
-            }
-            if (rawErrorData.Get("ReasonCode") != null) {
-                reasonCode = rawErrorData.Get("ReasonCode").ToString();
-            }
-            if (rawErrorData.Get("Description") != null) {
-                description = rawErrorData.Get("Description").ToString();
-            }
-        }
-    }
+		private void ParseRawErrorData(Object errorData) {
+			if (errorData is List<Object> && ((List<Object>)errorData).Count > 0) {
+				if  ( ((List<Object> )errorData)[0] is Dictionary<String,Object> ) {
+					this.rawErrorData = new SmartMap( (Dictionary<String,Object>) ((List<Object>)errorData)[0], true);
+				}
+			} else if (errorData is Dictionary<String,Object>) {
+				this.rawErrorData = new SmartMap((Dictionary<String, Object>)errorData, true);
+			}
+		}
+
+        /// <summary>
+        /// This is the method which parse the error from the list
+        /// </summary>
+        /// <param name="index"></param>
+		public void ParseError(int index) {
+			if (index >= 0 && index < errors.Count ) {
+				this.error = errors[index];
+				if (this.error.Get("Source") != null) {
+					source = this.error.Get("Source").ToString();
+				}
+				if (this.error.Get("ReasonCode") != null) {
+					reasonCode = this.error.Get("ReasonCode").ToString();
+				}
+				if (this.error.Get("Description") != null) {
+					description = this.error.Get("Description").ToString();
+				}
+			}
+		}
 
 		/// <summary>
 		/// Returns the API error exception list. </summary>
 		/// <returns> a list representing the error data for this exception (which may be a empty list) </returns>
-		public virtual List<Dictionary<String,Object>> ListErrors
+		public virtual List<SmartMap> ListErrors
 		{
 			get
 			{
@@ -210,6 +225,17 @@ namespace MasterCard.Core.Exceptions
 			get
 			{
 				return rawErrorData;
+			}
+		}
+
+		/// <summary>
+		/// Returns the API error data for this exception. </summary>
+		/// <returns> a map representing the error data for this exception (which may be <code>null</code>). </returns>
+		public virtual SmartMap Error
+		{
+			get
+			{
+				return error;
 			}
 		}
 
