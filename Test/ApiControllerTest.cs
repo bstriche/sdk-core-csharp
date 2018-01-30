@@ -236,6 +236,8 @@ namespace TestMasterCard
             Assert.That(ex.Recoverable, Is.EqualTo(false));
             Assert.That(ex.RawErrorData.Get("errors.error[0].source").ToString(), Is.EqualTo("validation"));
             Assert.That(ex.RawErrorData.Get("Errors.Error[0].Source").ToString(), Is.EqualTo("validation"));
+
+            Assert.That(ex.Error.Get("Recoverable").ToString(), Is.EqualTo("False"));
         }
 
 

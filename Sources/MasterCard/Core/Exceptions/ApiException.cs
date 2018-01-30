@@ -45,6 +45,7 @@ namespace MasterCard.Core.Exceptions
 		protected Boolean recoverable;
 		protected String description;
 		protected int httpStatus = 0;
+		protected SmartMap error = null;
 		protected List<SmartMap> errors = new List<SmartMap>();
 		private SmartMap rawErrorData;
 
@@ -179,10 +180,10 @@ namespace MasterCard.Core.Exceptions
 		private void ParseRawErrorData(Object errorData) {
 			if (errorData is List<Object> && ((List<Object>)errorData).Count > 0) {
 				if  ( ((List<Object> )errorData)[0] is Dictionary<String,Object> ) {
-				this.rawErrorData = new SmartMap( (Dictionary<String,Object>) ((List<Object>)errorData)[0], true);
+					this.rawErrorData = new SmartMap( (Dictionary<String,Object>) ((List<Object>)errorData)[0], true);
 				}
 			} else if (errorData is Dictionary<String,Object>) {
-					this.rawErrorData = new SmartMap((Dictionary<String, Object>)errorData, true);
+				this.rawErrorData = new SmartMap((Dictionary<String, Object>)errorData, true);
 			}
 		}
 
@@ -192,15 +193,15 @@ namespace MasterCard.Core.Exceptions
         /// <param name="index"></param>
 		public void ParseError(int index) {
 			if (index >= 0 && index < errors.Count ) {
-				SmartMap tmpErrorMap = errors[index];
-				if (tmpErrorMap.Get("Source") != null) {
-					source = tmpErrorMap.Get("Source").ToString();
+				this.error = errors[index];
+				if (this.error.Get("Source") != null) {
+					source = this.error.Get("Source").ToString();
 				}
-				if (tmpErrorMap.Get("ReasonCode") != null) {
-					reasonCode = tmpErrorMap.Get("ReasonCode").ToString();
+				if (this.error.Get("ReasonCode") != null) {
+					reasonCode = this.error.Get("ReasonCode").ToString();
 				}
-				if (tmpErrorMap.Get("Description") != null) {
-					description = tmpErrorMap.Get("Description").ToString();
+				if (this.error.Get("Description") != null) {
+					description = this.error.Get("Description").ToString();
 				}
 			}
 		}
@@ -224,6 +225,17 @@ namespace MasterCard.Core.Exceptions
 			get
 			{
 				return rawErrorData;
+			}
+		}
+
+		/// <summary>
+		/// Returns the API error data for this exception. </summary>
+		/// <returns> a map representing the error data for this exception (which may be <code>null</code>). </returns>
+		public virtual SmartMap Error
+		{
+			get
+			{
+				return error;
 			}
 		}
 
