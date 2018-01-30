@@ -95,7 +95,7 @@ namespace TestMasterCard
             BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.acqInstIdCode", "485");
             BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.cardAccpIdCode", "8692");
             BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.installmentPaymentFormatI[0].noOfInstallments", "4");
-            BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.installmentPaymentFormatI[0].apr", "5.78");
+            BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.installmentPaymentFormatI[0].apr", "5.86");
             BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.installmentPaymentFormatI[0].firstInstallmentAmount", "130.25");
             BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.installmentPaymentFormatI[0].subSeqInstallmentAmount", "125.25");
             BaseTest.assertEqual(ignoreAsserts, response, "calculatorRespData.installmentPaymentFormatI[0].totalAmountDue", "506.00");
