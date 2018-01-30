@@ -74,8 +74,6 @@ namespace TestMasterCard
 
 
 
-
-
             RequestMap map = new RequestMap();
             map.Set("calculatorReqData.primaryAccountNumber", "5204737010000412");
             map.Set("calculatorReqData.transactionAmount", "500");
