@@ -45,13 +45,18 @@ namespace MasterCard.Core.Security.Fle
 
         internal readonly Config configuration;
 
-        public FieldLevelEncryption (String publicKeyLocation, String privateKeyLocation, Config config, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
+        public FieldLevelEncryption (String publicKeyLocation, String privateKeyLocation, Config config, String publicKeyFingerprint, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet)
 		{
 
             if (publicKeyLocation != null) {
                 var tmpPublicCertificate = new X509Certificate2(publicKeyLocation, String.Empty, keyStorageFlags);
                 this.publicKey = (RSACng) tmpPublicCertificate.GetRSAPublicKey();
-			    this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
+                if (publicKeyFingerprint != null) {
+                    this.publicKeyFingerPrint = publicKeyFingerprint;
+                } else {
+                    this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
+                }
+			    
             }
                    
             if (privateKeyLocation != null) {
@@ -65,12 +70,17 @@ namespace MasterCard.Core.Security.Fle
 
 		}
 
-        public FieldLevelEncryption(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, Config config, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) {
+        public FieldLevelEncryption(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, Config config, String publicKeyFingerprint, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) {
 
             if(rawPublicKeyData != null && rawPublicKeyData.LongLength > 0L) {
                 var tmpPublicCertificate = new X509Certificate2(rawPublicKeyData, String.Empty, keyStorageFlags);
                 this.publicKey = (RSACng) tmpPublicCertificate.GetRSAPublicKey();
-                this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
+
+                if (publicKeyFingerprint != null) {
+                    this.publicKeyFingerPrint = publicKeyFingerprint;
+                } else {
+                    this.publicKeyFingerPrint = tmpPublicCertificate.Thumbprint;
+                }
             }
 
             if(rawPrivateKeyData != null) {

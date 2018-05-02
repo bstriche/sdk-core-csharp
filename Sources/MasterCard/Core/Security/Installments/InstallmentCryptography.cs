@@ -38,13 +38,19 @@ namespace MasterCard.Core.Security.Installments
 	{
 
         public InstallmentCryptography(String publicKeyLocation, String privateKeyLocation, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
-        : base(publicKeyLocation, privateKeyLocation, config(), keyStorageFlags){
-
+        : base(publicKeyLocation, privateKeyLocation, config(), null, keyStorageFlags){
 		}
 
         public InstallmentCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
-        : base(rawPublicKeyData, rawPrivateKeyData, config(), keyStorageFlags) {
+        : base(rawPublicKeyData, rawPrivateKeyData, config(), null, keyStorageFlags) {
+        }
 
+        public InstallmentCryptography(String publicKeyLocation, String privateKeyLocation, String publicKeyFingerprint, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        : base(publicKeyLocation, privateKeyLocation, config(), publicKeyFingerprint, keyStorageFlags){
+		}
+
+        public InstallmentCryptography(byte[] rawPublicKeyData, byte[] rawPrivateKeyData, String publicKeyFingerprint, X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.DefaultKeySet) 
+        : base(rawPublicKeyData, rawPrivateKeyData, config(), publicKeyFingerprint, keyStorageFlags) {
         }
 
 		private static Config config()
