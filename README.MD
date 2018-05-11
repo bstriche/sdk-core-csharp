@@ -17,4 +17,4 @@ Build the project using Microsoft Visual Studio.
 This project has NUnit tests. The dependency is indicated in `packages.config`
 
 # Usage
-For detailed usage instructions, visit [Mastercard Developer site] (https://developer.mastercard.com)
+For detailed usage instructions, visit [Mastercard Developer site](https://developer.mastercard.com)
