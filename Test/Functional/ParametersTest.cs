@@ -42,15 +42,15 @@ namespace TestMasterCard
 {
 
 
-	[TestFixture ()]
-	public class ParametersTest
+    [Ignore("Tests actual sandbox API - Change to TestFixture and enter correct creds below to test")]
+    public class ParametersTest
 	{
 
 		[SetUp]
 		public void setup ()
 		{
             var currentPath = MasterCard.Core.Util.GetCurrenyAssemblyPath();
-            var authentication = new OAuthAuthentication("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", currentPath + "\\Test\\mcapi_sandbox_key.p12", "test", "password",  System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.MachineKeySet);
+            var authentication = new OAuthAuthentication("TESTING00-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c9TEST!50596e52466e3966546d434b7354584c497569323851TEST", currentPath + "\\Test\\certs\\fake-key.p12", "fake-key", "fakepassword",  System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.MachineKeySet);
             ApiConfig.SetAuthentication (authentication);
 			ApiConfig.SetSandbox (true);
 		}

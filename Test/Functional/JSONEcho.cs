@@ -50,8 +50,8 @@ namespace TestMasterCard
         {
             switch (operationUUID)
             {
-                case "create":
-                    return new OperationConfig("/mcapitest/JsonNativePostPublic", "create", new List<string>(), new List<string>());
+                case "25cf4d3e-3606-433c-8fcc-1df3813d28d5":
+                    return new OperationConfig("/mock_crud_server/echo", "create", new List<string>(), new List<string>());
                 default:
                     throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             } 
@@ -59,7 +59,7 @@ namespace TestMasterCard
 
         protected override OperationMetadata GetOperationMetadata()
         {
-            return new OperationMetadata("0.0.1", "http://echo.jpillora.com/");
+            return new OperationMetadata("0.0.1", "http://localhost:8081/");
         }
 
 
@@ -86,7 +86,7 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static JSONEcho Create(RequestMap parameters)
         {
-            return BaseObject.Execute("create", new JSONEcho(parameters));
+            return BaseObject.Execute("25cf4d3e-3606-433c-8fcc-1df3813d28d5", new JSONEcho(parameters));
         }
     }
 }
