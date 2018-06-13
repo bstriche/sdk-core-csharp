@@ -10,23 +10,23 @@
     <iconUrl>https://github.com/MasterCard/sdk-core-csharp</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This is the core library for all the SDKs in the MasterCard developer portal</description>
-    <releaseNotes>first version release</releaseNotes>
-    <copyright>Copyright 2016</copyright>
+    <releaseNotes>Refer to MasterCard GitHub Repository for release notes.</releaseNotes>
+    <copyright>Copyright 2016 - 2018</copyright>
     <tags></tags>
     <dependencies>
         <group>
             <dependency id="log4net" version="2.0.8"  />
             <dependency id="Newtonsoft.Json" version="10.0.3" />
-            <dependency id="RestSharp" version="106.2.1"  />
+            <dependency id="RestSharp" version="106.2.2"  />
         </group>
         <group targetFramework="net461">
             <dependency id="log4net" version="2.0.8"  />
             <dependency id="Newtonsoft.Json" version="10.0.3" />
-            <dependency id="RestSharp" version="106.2.1"  />
+            <dependency id="RestSharp" version="106.2.2"  />
         </group>
 	</dependencies>
   </metadata>
 <files>
-<file src="bin\Release\*.dll" target="lib" />
+<file src="bin\Release\MasterCard-Core.dll" target="lib" />
 </files>
 </package>

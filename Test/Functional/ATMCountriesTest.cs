@@ -42,8 +42,8 @@ namespace TestMasterCard
 {
 
 
-	[TestFixture ()]
-	public class ATMCountriesTest
+    [Ignore("Tests actual sandbox API - Change to TestFixture and enter correct creds below to test")]
+    public class ATMCountriesTest
 	{
 
 		[SetUp]
@@ -55,10 +55,10 @@ namespace TestMasterCard
 
             //Console.WriteLine("path:: " + path);
 
-            var authentication = new OAuthAuthentication ("L5BsiPgaF-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c97279!50596e52466e3966546d434b7354584c4975693238513d3d", path+"\\Test\\mcapi_sandbox_key.p12", "test", "password");
+            var authentication = new OAuthAuthentication ("TESTING00-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c9TEST!50596e52466e3966546d434b7354584c497569323851TEST", path+"\\Test\\certs\\fake-key.p12", "fake-key", "fakepassword",  System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.MachineKeySet);
             ApiConfig.SetAuthentication (authentication);
 
-            var interceptor = new MDESCryptography(path+ "\\Test\\mastercard_public.crt", path+ "\\Test\\mastercard_private.pem");
+            var interceptor = new MDESCryptography(path+ "\\Test\\certs\\fake-encryption-public.crt", path+ "\\Test\\certs\\fake-encryption-private.pem");
             ApiConfig.AddCryptographyInterceptor (interceptor);
 		}
 
