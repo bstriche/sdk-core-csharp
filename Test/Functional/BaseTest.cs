@@ -51,7 +51,7 @@ namespace Test
         public static Dictionary<String,AuthenticationInterface> authentications = new Dictionary<String,AuthenticationInterface>();
 
         static BaseTest() {
-            var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
+            var path = MasterCard.Core.Util.GetAssemblyPath();
 
             authentications.Add("default", new OAuthAuthentication("TESTING00-O3qA36znUATgQXwJB6MRoMSdhjd7wt50c9TEST!50596e52466e3966546d434b7354584c497569323851TEST", path + "\\Test\\certs\\fake-key.p12", "fake-key", "fakepassword",  System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.MachineKeySet));
             

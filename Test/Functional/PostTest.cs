@@ -53,7 +53,7 @@ namespace TestMasterCard
 		{
             ApiConfig.SetDebug(true);
             ApiConfig.SetSandbox(true);
-            var path = MasterCard.Core.Util.GetCurrenyAssemblyPath();
+            var path = MasterCard.Core.Util.GetAssemblyPath();
 
             BaseTest.resetAuthentication();
 
