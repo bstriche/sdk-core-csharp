@@ -46,31 +46,23 @@ namespace TestMasterCard
         {
         }
 
-        public override string GetResourcePath(string action) {
-            
-            if (action == "query") {
-                return "/sectorinsights/v1/sectins.svc/insights";
+        protected override OperationConfig GetOperationConfig(string operationUUID)
+        {
+            switch (operationUUID)
+            {
+                case "uuid":
+                    return new OperationConfig("/sectorinsights/v1/sectins.svc/insights", "query", new List<string>(), new List<string>());
+                default:
+                    throw new System.ArgumentException("Invalid operationUUID supplied: " + operationUUID);
             }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
+        }
+
+        protected override OperationMetadata GetOperationMetadata()
+        {
+            return new OperationMetadata("0.0.1", "https://sandbox.api.mastercard.com");
         }
 
 
-        public override List<string> GetHeaderParams(string action) {
-            
-            if (action == "query") {
-                return new List<String> {  };
-            }
-            throw new System.ArgumentException("Invalid action supplied: " + action);
-        }
-
-        
-        
-        
-        
-        
-        
-        
-        
         /// <summary>
         /// Query and Returns one object of type <code>Insights</code>
         /// </summary>
@@ -84,7 +76,8 @@ namespace TestMasterCard
         /// <exception cref="SystemException"> </exception>
         public static Insights Query(RequestMap parameters)
         {
-            return (Insights) BaseObject.queryObject(new Insights(parameters));
+            return BaseObject.Execute("uuid", new Insights(parameters));
+            //return (Insights) BaseObject.query(new Insights(parameters));
         }
         
         

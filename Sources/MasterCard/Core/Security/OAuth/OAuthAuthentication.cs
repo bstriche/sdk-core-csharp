@@ -115,10 +115,13 @@ namespace MasterCard.Core.Security.OAuth
             byte[] hash = Util.Sha256Encode(message);
 
             // Sign the hash
-            RSACryptoServiceProvider aescsp = new RSACryptoServiceProvider();
-            aescsp.FromXmlString(cert.PrivateKey.ToXmlString(true));
-
-            byte[] SignedHashValue = aescsp.SignHash(hash, CryptoConfig.MapNameToOID("SHA256"));
+            RSA aescsp = RSA.Create();
+            var rsa = (RSA)cert.PrivateKey;
+            var xml = CryptUtil.ToXmlString(rsa, true);
+            CryptUtil.FromXmlString(aescsp, xml);
+           
+            byte[] SignedHashValue = aescsp.SignHash(hash, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+       
 			return Convert.ToBase64String(SignedHashValue);
 		}
 	}

@@ -37,9 +37,13 @@ using log4net;
 using log4net.Config;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 using MasterCard.Core.Security;
 using MasterCard.Core.Exceptions;
 using Environment = MasterCard.Core.Model.Constants.Environment;
+using log4net.Repository.Hierarchy;
+using log4net.Layout;
+using log4net.Appender;
 
 namespace MasterCard.Core
 {
@@ -54,11 +58,12 @@ namespace MasterCard.Core
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
 			if (ApiConfig.IsDebug ()) {
-				if (File.Exists ("log4net.xml")) {
-					XmlConfigurator.Configure (new FileInfo ("log4net.xml"));
+                var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+                if (File.Exists ("log4net.xml")) {
+                    XmlConfigurator.Configure(logRepository, new FileInfo("log4net.xml"));
 				} else {
-					BasicConfigurator.Configure();
-				}
+                    BasicConfigurator.Configure(logRepository);
+                }
 			} 
 
 		}

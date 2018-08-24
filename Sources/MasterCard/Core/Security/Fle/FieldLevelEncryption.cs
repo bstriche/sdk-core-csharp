@@ -39,9 +39,9 @@ namespace MasterCard.Core.Security.Fle
 {
     public class FieldLevelEncryption : CryptographyInterceptor
 	{
-		private RSACng publicKey;
+		private RSA publicKey;
 		private String publicKeyFingerPrint;
-		private RSACng privateKey;
+		private RSA privateKey;
 
         internal readonly Config configuration;
 
@@ -50,7 +50,7 @@ namespace MasterCard.Core.Security.Fle
 
             if (publicKeyLocation != null) {
                 var tmpPublicCertificate = new X509Certificate2(publicKeyLocation, String.Empty, keyStorageFlags);
-                this.publicKey = (RSACng) tmpPublicCertificate.GetRSAPublicKey();
+                this.publicKey = (RSA) tmpPublicCertificate.GetRSAPublicKey();
                 if (publicKeyFingerprint != null) {
                     this.publicKeyFingerPrint = publicKeyFingerprint;
                 } else {
@@ -74,7 +74,7 @@ namespace MasterCard.Core.Security.Fle
 
             if(rawPublicKeyData != null && rawPublicKeyData.LongLength > 0L) {
                 var tmpPublicCertificate = new X509Certificate2(rawPublicKeyData, String.Empty, keyStorageFlags);
-                this.publicKey = (RSACng) tmpPublicCertificate.GetRSAPublicKey();
+                this.publicKey = (RSA) tmpPublicCertificate.GetRSAPublicKey();
 
                 if (publicKeyFingerprint != null) {
                     this.publicKeyFingerPrint = publicKeyFingerprint;

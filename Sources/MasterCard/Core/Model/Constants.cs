@@ -33,7 +33,7 @@ namespace MasterCard.Core.Model
     public class Constants {
 
         public const String SDK = "MasterCard-Core";
-        public const String VERSION = "1.4.15";
+        public const String VERSION = "1.4.16";
         
         public static String getCoreVersion() {
             return SDK+":"+VERSION;
@@ -61,7 +61,6 @@ namespace MasterCard.Core.Model
         {Environment.DEV, new List<String> { "https://dev.api.mastercard.com", null } },
         {Environment.LOCALHOST, new List<String> { "http://localhost:8081", null } },
 
-        //@arizzini: STP new environment
         {Environment.ITF, new List<String>  { "https://itf.api.mastercard.com", null} },
         {Environment.PERF, new List<String>  { "https://perf.api.mastercard.com", null} }
         };

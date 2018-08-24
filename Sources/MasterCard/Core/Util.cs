@@ -52,10 +52,20 @@ namespace MasterCard.Core
 		}
 
         /// <summary>
+        /// return the current assembly path. Use GetAssemblyPath() instead 
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete("Use GetAssemblyPath() instead")]
+        public static String GetCurrenyAssemblyPath()
+        {
+            return GetAssemblyPath();
+        }
+
+        /// <summary>
         /// return the current assembly path
         /// </summary>
         /// <returns></returns>
-        public static String GetCurrenyAssemblyPath()
+        public static String GetAssemblyPath()
         {
             String tmpPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
             tmpPath = tmpPath.Remove(0, "file:\\".Length);
@@ -63,13 +73,13 @@ namespace MasterCard.Core
         }
 
 
-		/// <summary>
-		/// Returns a sub map by selecting the map items contained in the inList
-		/// </summary>
-		/// <returns>The map.</returns>
-		/// <param name="inputMap">Input map. </param>
-		/// <param name="inList">Items to select.</param>
-		public static IDictionary<String, Object> SubMap(IDictionary<String, Object> inputMap, List<String> inList) {
+        /// <summary>
+        /// Returns a sub map by selecting the map items contained in the inList
+        /// </summary>
+        /// <returns>The map.</returns>
+        /// <param name="inputMap">Input map. </param>
+        /// <param name="inList">Items to select.</param>
+        public static IDictionary<String, Object> SubMap(IDictionary<String, Object> inputMap, List<String> inList) {
 
 			IDictionary<String,Object> subMap = new Dictionary<String, Object> ();
 			foreach(String key in inList)
