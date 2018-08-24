@@ -50,7 +50,7 @@ namespace TestMasterCard
 		public void TestEncryptDecryptRSA () {
 
             string certPath = MasterCard.Core.Util.GetAssemblyPath() + "\\Test\\certs\\fake-crypt-cert.p12";
-            X509Certificate2 cert = new X509Certificate2(certPath , "password", X509KeyStorageFlags.Exportable);
+            X509Certificate2 cert = new X509Certificate2(certPath , "password", X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
 
             var publicKey = cert.GetRSAPublicKey() as RSA;
             var privateKey = cert.GetRSAPrivateKey() as RSA;
@@ -78,7 +78,7 @@ namespace TestMasterCard
 		public void TestFullEndToEndEncryptDecrypt () {
 
             string certPath = MasterCard.Core.Util.GetAssemblyPath() + "\\Test\\certs\\fake-crypt-cert.p12";
-            X509Certificate2 cert = new X509Certificate2(certPath , "password", X509KeyStorageFlags.Exportable);
+            X509Certificate2 cert = new X509Certificate2(certPath , "password", X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
 			
             var publicKey = cert.GetRSAPublicKey() as RSA;
             var privateKey = cert.GetRSAPrivateKey() as RSA;
