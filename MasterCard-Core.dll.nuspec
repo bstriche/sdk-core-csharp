@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MasterCard-Core</id>
-    <version>1.4.16</version>
+    <version>1.4.17</version>
     <authors>Mastercard Worldwide</authors>
     <owners>Mastercard Worldwide</owners>
     <licenseUrl>https://opensource.org/licenses/BSD-2-Clause</licenseUrl>
@@ -14,22 +14,23 @@
     <copyright>Copyright 2016 - 2018</copyright>
     <tags></tags>
     <dependencies>
+	   <group>
+        <dependency id="log4net" version="2.0.8" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" />
+        <dependency id="RestSharp" version="106.3.1" />
+      </group>
+
       <group targetFramework=".NETFramework4.6.1">
-        <dependency id="Moq" version="4.9.0" exclude="Build,Analyzers" />
-        <dependency id="NUnit" version="3.10.1" exclude="Build,Analyzers" />
-        <dependency id="NUnit3TestAdapter" version="3.10.0" exclude="Build,Analyzers" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" exclude="Build,Analyzers" />
-        <dependency id="RestSharp" version="106.3.1" exclude="Build,Analyzers" />
-        <dependency id="log4net" version="2.0.8" exclude="Build,Analyzers" />
+        <dependency id="log4net" version="2.0.8" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" />
+        <dependency id="RestSharp" version="106.3.1" />
       </group>
-      <group targetFramework=".NETCoreApp2.0">
-        <dependency id="Moq" version="4.9.0" exclude="Build,Analyzers" />
-        <dependency id="NUnit" version="3.10.1" exclude="Build,Analyzers" />
-        <dependency id="NUnit3TestAdapter" version="3.10.0" exclude="Build,Analyzers" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" exclude="Build,Analyzers" />
-        <dependency id="RestSharp" version="106.3.1" exclude="Build,Analyzers" />
-        <dependency id="log4net" version="2.0.8" exclude="Build,Analyzers" />
-      </group>
+	  
+	  <group targetFramework=".NETCoreApp2.0">
+        <dependency id="log4net" version="2.0.8" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" />
+        <dependency id="RestSharp" version="106.3.1" />	  
+	  </group>
     </dependencies>
   </metadata>
 <files>

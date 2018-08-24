@@ -58,8 +58,8 @@ namespace MasterCard.Core
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
 			if (ApiConfig.IsDebug ()) {
-                var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-                if (File.Exists ("log4net.xml")) {
+                var logRepository = LogManager.GetRepository(Assembly.GetExecutingAssembly());
+				if (File.Exists ("log4net.xml")) {
                     XmlConfigurator.Configure(logRepository, new FileInfo("log4net.xml"));
 				} else {
                     BasicConfigurator.Configure(logRepository);
