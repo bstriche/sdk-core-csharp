@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>sdkcorecharp</RootNamespace>
     <AssemblyName>MasterCard-Core</AssemblyName>
-    <TargetFrameworks>netcoreapp2.1;net461</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <Version>1.4.16</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Mastercard</Company>
