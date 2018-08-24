@@ -9,7 +9,7 @@ It provide:
 - smart map (for inline request creation using fluent style api)
 
 # Build
-The project requires .NET Framework 4.6.1 and .NET Core 2.1 to be installed.
+The project requires .NET Framework 4.6.1 and .NET Core 2.0 to be installed.
 
 Build the project using Microsoft Visual Studio IDE or Developer Command Prompt for Visual Studio.
 
