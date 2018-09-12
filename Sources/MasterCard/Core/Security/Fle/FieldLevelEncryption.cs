@@ -39,9 +39,9 @@ namespace MasterCard.Core.Security.Fle
 {
     public class FieldLevelEncryption : CryptographyInterceptor
 	{
-		private RSA publicKey;
-		private String publicKeyFingerPrint;
-		private RSA privateKey;
+        protected RSA publicKey;
+        protected String publicKeyFingerPrint;
+        protected RSA privateKey;
 
         internal readonly Config configuration;
 
@@ -97,7 +97,7 @@ namespace MasterCard.Core.Security.Fle
 		}
 
         
-		public IDictionary<String,Object> Encrypt(IDictionary<String,Object> map) {
+        public virtual IDictionary<String,Object> Encrypt(IDictionary<String,Object> map) {
 
             //requestMap is a SmartMap it offers a easy way to do nested lookups.
             SmartMap smartMap = new SmartMap(map);
@@ -164,7 +164,7 @@ namespace MasterCard.Core.Security.Fle
 			
 		}
 
-		public IDictionary<String,Object> Decrypt(IDictionary<String,Object> map) {
+        public virtual IDictionary<String,Object> Decrypt(IDictionary<String,Object> map) {
 			SmartMap smartMap = new SmartMap(map);
             foreach (String fieldToDecrypt in configuration.FieldsToDecrypt) {
                 if (smartMap.ContainsKey (fieldToDecrypt)) 
