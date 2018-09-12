@@ -279,8 +279,9 @@ namespace MasterCard.Core.Security
 
             }
 
-            RSA rsa = RSA.Create();
+            RSA rsa = new RSACng();
             rsa.ImportParameters(RSAparams);
+
             return rsa;
         }
 

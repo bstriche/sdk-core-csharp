@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using MasterCard.Core.Model;
 
 using Environment = MasterCard.Core.Model.Constants.Environment;
+using System.Text.RegularExpressions;
 
 namespace MasterCard.Core
 {
@@ -172,7 +173,7 @@ namespace MasterCard.Core
             {
                 foreach (String triggeringPath in entry.GetTriggeringPath())
                 {
-                    if (triggeringPath.CompareTo(basePath) == 0 || basePath.EndsWith(triggeringPath))
+                    if (triggeringPath.CompareTo(basePath) == 0 || basePath.EndsWith(triggeringPath) || Regex.IsMatch(basePath, triggeringPath))
                     {
                         return entry;
                     }
