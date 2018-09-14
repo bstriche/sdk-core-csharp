@@ -203,7 +203,7 @@ namespace MasterCard.Core.Security.MpqrMes
 
                 byte[] encryptedKeyByteArray = CryptUtil.Decode(encryptedKey, configuration.DataEncoding);
 
-                //need to decryt with RSA
+                //need to decrypt with RSA
                 byte[] secretKeyBytes = null;
                 String oaepHashingAlgorithmFieldPath = buildFieldPath(baseKey, configuration.OaepHashingAlgorithmFieldName);
                 if (smartMap.ContainsKey(oaepHashingAlgorithmFieldPath))
