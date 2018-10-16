@@ -14,6 +14,8 @@ using MasterCard.Core.Model;
 using MasterCard.Core.Security.OAuth;
 using MasterCard.Core.Exceptions;
 using Environment = MasterCard.Core.Model.Constants.Environment;
+using MasterCard.Core.Security.Send;
+using Test;
 
 namespace TestMasterCard
 {
@@ -53,6 +55,23 @@ namespace TestMasterCard
 			return restClient.Object;
 
 		}
+
+        public IRestClient mockClient(HttpStatusCode responseCode, RequestMap responseMap, IList<Parameter> headers)
+        {
+
+            var restClient = new Mock<IRestClient>();
+
+            restClient.Setup(x => x.Execute(It.IsAny<IRestRequest>()))
+                .Returns(new MockRestResponse
+                {
+                    StatusCode = responseCode,
+                    Headers = headers,
+                    Content = (responseMap != null) ? JsonConvert.SerializeObject(responseMap).ToString() : ""
+                });
+
+            return restClient.Object;
+
+        }
 
 
         /// <summary>
@@ -102,7 +121,44 @@ namespace TestMasterCard
 
 		}
 
-		[Test]
+        [Test]
+        public void TestDirectoryServicesCryptography()
+        {
+            var currentPath = MasterCard.Core.Util.GetAssemblyPath();
+
+            var interceptor = new DirectoryServicesCryptography(currentPath + "\\Test\\certs\\fake-encryption-public.crt", currentPath + "\\Test\\certs\\fake-encryption-private.pem");
+            ApiConfig.AddCryptographyInterceptor(interceptor);
+
+            RequestMap map = new RequestMap();
+            map.Set("partnerId", "ptnr_A37V2q91WUqSonkfEG29Q-Bf4s9");
+            map.Set("mapping.mapping_reference", "ref_473953414006610996347254404196297755");
+
+            //RequestMap responseMap = new RequestMap(" { \"encrypted_payload\": {\"data\":\"4j8EP/5/E0e90tQd77zvqw9MtunCs4J9p54Nxeke9GArgRgdYgEd32qJyvH1T6rtHZbJZ+oly5+jlgDpu6F48U+5KuP8c+LHGNFiLqt+Euo1q1CsFTOzRP8BdJtqUENB7kpXypeFMBgMqpuJte5Ue5Y3stWaKcAlMRIFOMwGtw5k9xtstnRP7dDaDugqoUnsEYZajLlLl96J1rKIPLf0nOPvTjYrNVsb3q6TEqmtGK/Ayk+DuGBO+6EkGxuI43ymB4kU9JQ5JGLqXSMWJLGzXDrKlsOr34s0V0wH0EYl9ZNvcr1O8H2ibLqNc6fA9V3ZHN3Zg5EPPPTd3cRsXhoGQV7GRNzAS5CsUxJ+dbGMeo7MlgC4OJooLOBYnUJjknbP/pvIlCy9bOL0z0DCLxqwKbgHmPKayWX5M1loXEjLthmG8ao0W53xTQPse0yH09PvnwsqGw+7pc0LjaCK2AE+gyDOuGPu1Prw3e8pAFR8LBT0S9Z79SxB/UgquEDW0MELgP6sCJ6fRF7li4Fimb+K7DARlJpvvZVFz2WaaWcSuVTqy4qUNwH9V2kq1BtN7v0jLBC+SWpuKvBXGEgtvuyg6uooXVn7Xqj4+AL2oyjFsY93qY0wVYUUOHD7xlT7spt5TDRRj/+RefOZJQAqr0RIN/5MqomliM62uL1Kf87ztxw61RUZVG6fjF0HEtIiQf9K\"} }");
+            RequestMap responseMap = new RequestMap(" { \"encrypted_payload\": {\"data\":\"dXEN4RzqeC7Tm9cQwVaGUW1VlHrD2mG+BTym5gfHe172RjWauJGQ28ZcZjUqYteavt7lBMtFMYhpilsf0sF8ZX63KfiE3gcrLSm89SxGu5CZdXDWZ3YeZw8PuIZjLA496cCMTpSIfDAevMfADCAflgmgV+VyGRAbF8yFrTg4ieI=\"} }");
+            IList<Parameter> responseHeaders = new List<Parameter>();
+            responseHeaders.Add(new Parameter { Name = "x-oaep-hashing-algorithm", Value = "SHA256", Type = ParameterType.HttpHeader });
+            responseHeaders.Add(new Parameter { Name = "x-public-key-fingerprint", Value = "147D98D232C088292655B8FCC02FD7258C1CEDA7", Type = ParameterType.HttpHeader });
+            responseHeaders.Add(new Parameter{Name = "x-iv", Value = "x1TqeKa4EtBh+2yov9Cm6w==", Type = ParameterType.HttpHeader});
+            responseHeaders.Add(new Parameter { Name = "x-encrypted-key", Value = "Ufpg3U39Nt0NaYah6On2WmAhA6HaSKyKhUiqFxtRwX7fIGbtX8MHaIiQrI7fMA7ZxEU8llvWe+h1W64DHwLTpX/Z4SrTRuLa/dlMxA8qNH2xqdeJ40ly1cn/+ATZL9vfSeCY3zluZmFpjqWlnTxNbYqEwWLV7u6ECeTbaUS5B+LZ3ONPtmepxiYJUHu4pnE/7yUb0toSNSDU+Qe2J8yObu5Pmu7MSa5kCC2vSI27gEPONloUZzaBixDSnxZc8zL7C8JoJ/bqng7q+8Bza4Ntuo+YRnK/xCCJ6NOQLmQh94WGkZ66I9WrR/q0WoTRYDgeKf7idO/DiJXEhTAoZcdW6w==", Type = ParameterType.HttpHeader });
+            TestApiController controller = new TestApiController();
+
+
+
+            controller.SetRestClient(mockClient(HttpStatusCode.OK, responseMap, responseHeaders));
+
+            var config = new OperationConfig("/send/mtf/v1/partners/partnerid/mappings/mappigid/accounts", "create", headerList, queryList);
+            var metadata = new OperationMetadata("0.0.1", "http://locahost:8081");
+
+            IDictionary<String, Object> result = controller.Execute(config, metadata, new TestBaseObject(map));
+            RequestMap responseMapFromResponse = new RequestMap(result);
+
+            Assert.IsTrue(responseMapFromResponse.ContainsKey("mapping"));
+
+            Assert.AreEqual("map_f21tg68mh89c376h", responseMapFromResponse["mapping.id"]);
+        }
+
+
+        [Test]
 		public void Test200WithList ()
 		{
 

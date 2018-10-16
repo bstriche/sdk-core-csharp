@@ -15,7 +15,7 @@ namespace TestMasterCard
 
         }
 
-        public RestyRequest GetRequest(OperationConfig config, OperationMetadata metadata, RequestMap requestMap)
+        public new RestyRequest GetRequest(OperationConfig config, OperationMetadata metadata, RequestMap requestMap)
         {
             return base.GetRequest(config, metadata, requestMap);
         }

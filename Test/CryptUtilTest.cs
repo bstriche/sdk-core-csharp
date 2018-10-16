@@ -55,7 +55,7 @@ namespace TestMasterCard
             var publicKey = cert.GetRSAPublicKey() as RSA;
             var privateKey = cert.GetRSAPrivateKey() as RSA;
 
-			String data = "andrea_rizzini@mastercard.com";
+			String data = "Secret Message for your eyes only";
 
 			byte[] encryptedData = CryptUtil.EncrytptRSA (Encoding.UTF8.GetBytes (data), publicKey, RSAEncryptionPadding.OaepSHA256);
 
@@ -83,7 +83,7 @@ namespace TestMasterCard
             var publicKey = cert.GetRSAPublicKey() as RSA;
             var privateKey = cert.GetRSAPrivateKey() as RSA;
 
-			String data = "andrea_rizzini@mastercard.com";
+			String data = "{ \"mapping\":\"secret message for your eyes only\" }";
 
 			Tuple<byte[], byte[], byte[]> aesResult = CryptUtil.EncryptAES(Encoding.UTF8.GetBytes (data), 128, CipherMode.CBC, PaddingMode.PKCS7);
 			byte[] ivBytes = aesResult.Item1;

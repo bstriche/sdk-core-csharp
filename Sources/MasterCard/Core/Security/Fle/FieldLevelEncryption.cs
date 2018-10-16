@@ -170,8 +170,11 @@ namespace MasterCard.Core.Security.Fle
                 if (smartMap.ContainsKey (fieldToDecrypt)) 
                 {
                     String baseKey = "";
+                    String encryptedDataMapField = fieldToDecrypt;
+
                     if (fieldToDecrypt.IndexOf(".")> 0) {
                         baseKey = fieldToDecrypt.Substring(0, fieldToDecrypt.LastIndexOf("."));
+                        encryptedDataMapField = fieldToDecrypt.Substring(fieldToDecrypt.LastIndexOf(".") + 1);
                         baseKey += ".";
                     }
 
@@ -212,20 +215,20 @@ namespace MasterCard.Core.Security.Fle
                     }
 
                     //need to decrypt the data
-                    String encryptedData = (String) smartMap.Get(baseKey+configuration.EncryptedDataFieldName);
-                    smartMap.Remove(baseKey + configuration.EncryptedDataFieldName);
+                    String encryptedData = (String) smartMap.Get(baseKey + encryptedDataMapField);
+                    smartMap.Remove(baseKey + encryptedDataMapField);
                     byte[] encryptedDataByteArray = CryptUtil.Decode(encryptedData, configuration.DataEncoding);
 
                     byte[] decryptedDataByteArray = CryptUtil.DecryptAES (ivByteArray, secretKeyBytes, encryptedDataByteArray, configuration.SymmetricKeysize, configuration.SymmetricMode, configuration.SymmetricPadding);
                     String decryptedDataString = System.Text.Encoding.UTF8.GetString (decryptedDataByteArray);
 
                     if (decryptedDataString.StartsWith("{")) {
-                        Dictionary<String,Object> decryptedDataMap =JsonConvert.DeserializeObject<Dictionary<String, Object>>(decryptedDataString);
+                        Dictionary<String,Object> decryptedDataMap = (Dictionary < String, Object > ) SmartMap.AsDictionary(decryptedDataString);
                         foreach(KeyValuePair<String, Object> entry in decryptedDataMap) {
-                            smartMap.Add(baseKey+configuration.EncryptedDataFieldName+"."+entry.Key, entry.Value);
+                            smartMap.Add(baseKey + encryptedDataMapField + "."+entry.Key, entry.Value);
                         }
                     } else {
-                        smartMap.Add(baseKey+configuration.EncryptedDataFieldName, decryptedDataString);
+                        smartMap.Add(baseKey + encryptedDataMapField, decryptedDataString);
                     }
 
                     break;

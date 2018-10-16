@@ -146,6 +146,12 @@ namespace MasterCard.Core
                             {
                                 try
                                 {
+                                    if(interceptor is HttpRequestCryptographyInterceptor)
+                                    {
+                                        responseObj = ((HttpRequestCryptographyInterceptor)interceptor).RemoveCustomHeaders(response.Headers, responseObj);
+
+                                    }
+
                                     responseObj = interceptor.Decrypt(responseObj);
                                 }
                                 catch (Exception e)
@@ -362,7 +368,10 @@ namespace MasterCard.Core
 				if (interceptor != null) {
                     paramterMap = interceptor.Encrypt (paramterMap);
 				}
-				request.AddJsonBody (paramterMap);
+                if (interceptor is HttpRequestCryptographyInterceptor) {
+                    headerMap = ((HttpRequestCryptographyInterceptor)interceptor).AddCustomHeaders(headerMap, paramterMap);
+                }
+                request.AddJsonBody (paramterMap);
 				break;
 			case "delete":
 				request = new RestyRequest(url, Method.DELETE);
@@ -374,7 +383,11 @@ namespace MasterCard.Core
 				if (interceptor != null) {
                     paramterMap = interceptor.Encrypt (paramterMap);
 				}
-				request.AddJsonBody (paramterMap);
+                if (interceptor is HttpRequestCryptographyInterceptor)
+                {
+                    headerMap = ((HttpRequestCryptographyInterceptor)interceptor).AddCustomHeaders(headerMap, paramterMap);
+                }
+                request.AddJsonBody (paramterMap);
 				break;
 			case "read":
 			case "list":
