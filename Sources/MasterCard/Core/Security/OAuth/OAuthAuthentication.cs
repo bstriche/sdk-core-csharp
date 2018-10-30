@@ -54,6 +54,20 @@ namespace MasterCard.Core.Security.OAuth
 			}
 		}
 
+	    /// <summary>
+	    /// Create a new instance of OAuthAuthentication using the specified X509 certificate.
+	    /// </summary>
+	    /// <param name="clientId">The ClientId (Consumer Key) for MasterCard API.</param>
+	    /// <param name="x509Certificate">The X509 certificate to use for authenticating to Mastercard API via OAuth.</param>
+	    public OAuthAuthentication(String clientId,  X509Certificate2 x509Certificate)
+	    {
+	        cert = x509Certificate;
+
+	        privateKey = cert.PrivateKey;
+	        this.clientId = clientId;
+	        encoder =  new UTF8Encoding();
+	    }
+
     /// <summary>
     /// Create a new instance of OAuthAuthentication using a file path for certificate data.
     /// </summary>
